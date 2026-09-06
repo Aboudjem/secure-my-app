@@ -352,6 +352,9 @@ jobs:
             --exclude linkedin\.com
             --exclude adam-boudjemaa\.com
             --exclude 'github\.com/.*/stargazers'
+            --exclude '^https?://(127\.|0\.0\.0\.0|localhost|\[::1\]|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|169\.254\.)'
+            --exclude 'evil\.example'
+            --exclude 'example\.(com|org|net)'
             './**/*.md'
           fail: true
 
