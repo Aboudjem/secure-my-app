@@ -1,0 +1,24 @@
+{
+  "name": "lockpatch",
+  "version": "0.1.0",
+  "description": "Find what a stranger can take from your app. Then close it and prove it closed.",
+  "author": {
+    "name": "Adam Boudjemaa",
+    "email": "boudjemaa.adam@gmail.com"
+  },
+  "homepage": "https://github.com/Aboudjem/lockpatch",
+  "repository": "https://github.com/Aboudjem/lockpatch",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "lockpatch",
+    "security",
+    "appsec",
+    "owasp",
+    "row-level-security",
+    "supabase",
+    "hardening",
+    "agent-skills"
+  ]
+}

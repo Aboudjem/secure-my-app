@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none" role="img"
+     aria-label="lockpatch, proof not advice: close it, then prove it closed">
+  <title>lockpatch</title>
+  <defs>
+    <linearGradient id="lk-ground" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#F7F8FB"/>
+      <stop offset="100%" stop-color="#EEF1F7"/>
+    </linearGradient>
+    <radialGradient id="lk-bloomA" cx="0.15" cy="0.13" r="0.44">
+      <stop offset="0%" stop-color="#12752A" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#12752A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-bloomB" cx="0.88" cy="0.85" r="0.50">
+      <stop offset="0%" stop-color="#006A80" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#006A80" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-bloomC" cx="0.52" cy="0.04" r="0.36">
+      <stop offset="0%" stop-color="#0B6D5D" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#0B6D5D" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-wash" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%"   stop-color="#12752A" stop-opacity="0.07"/>
+      <stop offset="42%"  stop-color="#0B6D5D" stop-opacity="0.043"/>
+      <stop offset="76%"  stop-color="#006A80" stop-opacity="0.016"/>
+      <stop offset="100%" stop-color="#006A80" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="lk-frame"><rect width="1200" height="400"/></clipPath>
+    <linearGradient id="lk-rule" gradientUnits="userSpaceOnUse" x1="552" y1="100" x2="552" y2="300">
+      <stop offset="0%"   stop-color="#12752A" stop-opacity="0"/>
+      <stop offset="45%"  stop-color="#12752A" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#006A80" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="lk-ink" gradientUnits="userSpaceOnUse" x1="40" y1="202" x2="216" y2="54">
+      <stop class="lkk1" offset="0%"   stop-color="#12752A"/>
+      <stop class="lkk2" offset="52%"  stop-color="#12752A"/>
+      <stop class="lkk3" offset="100%" stop-color="#0B6D5D"/>
+    </linearGradient>
+    <linearGradient id="lk-word" x1="0" y1="0" x2="1" y2="0.25">
+      <stop class="lkk1" offset="0%"   stop-color="#12752A"/>
+      <stop class="lkk2" offset="46%"  stop-color="#12752A"/>
+      <stop class="lkk3" offset="100%" stop-color="#0B6D5D"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    .disp { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; }
+    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 4.5px; fill: #12752A; }
+    .head    { font-size: 34px; font-weight: 700; fill: #1A2233; letter-spacing: -0.5px; }
+    .sub     { font-size: 16.5px; font-weight: 500; fill: #48546B; }
+    .tag     { font-size: 11.5px; letter-spacing: 1.6px; fill: #48546B; }
+    @keyframes lk-breathe { 0%,100% { opacity:0.72; } 50% { opacity:1; } }
+    .lkbloom { animation: lk-breathe 11s ease-in-out infinite; }
+    @keyframes lk-sweep { 0% { transform: translateX(-360px); } 100% { transform: translateX(1560px); } }
+    .lkwash { animation: lk-sweep 17s cubic-bezier(.5,0,.5,1) infinite; }
+    /* four pips, four rungs */
+    @keyframes lk-pip { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    .lkp1 { animation: lk-pip 5s ease-in-out infinite 0.0s; }
+    .lkp2 { animation: lk-pip 5s ease-in-out infinite 0.4s; }
+    .lkp3 { animation: lk-pip 5s ease-in-out infinite 0.8s; }
+    .lkp4 { animation: lk-pip 5s ease-in-out infinite 1.2s; }
+    @keyframes lk-climb { 0% { opacity:0; } 3% { opacity:1; } 21% { opacity:1; } 24%,100% { opacity:0; } }
+    .lkr1 { animation: lk-climb 8s linear infinite 0s; }
+    .lkr2 { animation: lk-climb 8s linear infinite -6s; }
+    .lkr3 { animation: lk-climb 8s linear infinite -4s; }
+    .lkr4 { animation: lk-climb 8s linear infinite -2s; }
+    @keyframes lk-k1 { 0%,100% { stop-color:#12752A; } 50% { stop-color:#12752A; } }
+    @keyframes lk-k2 { 0%,100% { stop-color:#12752A; } 50% { stop-color:#0B6D5D; } }
+    @keyframes lk-k3 { 0%,100% { stop-color:#0B6D5D; } 50% { stop-color:#006A80; } }
+    .lkk1 { animation: lk-k1 12s ease-in-out infinite; }
+    .lkk2 { animation: lk-k2 12s ease-in-out infinite; }
+    .lkk3 { animation: lk-k3 12s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect width="1200" height="400" fill="url(#lk-ground)"/>
+  <g class="lkbloom">
+    <rect width="1200" height="400" fill="url(#lk-bloomA)"/>
+    <rect width="1200" height="400" fill="url(#lk-bloomB)"/>
+    <rect width="1200" height="400" fill="url(#lk-bloomC)"/>
+  </g>
+  <g clip-path="url(#lk-frame)">
+    <g transform="translate(0,196)">
+      <ellipse class="lkwash" cx="0" cy="0" rx="430" ry="300" fill="url(#lk-wash)"/>
+    </g>
+  </g>
+
+  <g transform="translate(56.6,50.8) scale(0.5781)">
+    <g stroke="#12752A" stroke-opacity="0.32" stroke-width="15" stroke-linecap="round">
+      <line x1="41.1" y1="178" x2="214.9" y2="178"/>
+      <line x1="50.9" y1="140" x2="205.1" y2="140"/>
+      <line x1="60.7" y1="102" x2="195.3" y2="102"/>
+      <line x1="70.5" y1="64"  x2="185.5" y2="64"/>
+    </g>
+    <g stroke="url(#lk-ink)" stroke-width="8" stroke-linecap="round">
+      <line x1="36" y1="198" x2="72" y2="58"/>
+      <line x1="220" y1="198" x2="184" y2="58"/>
+    </g>
+    <g stroke="url(#lk-ink)" stroke-width="15" stroke-linecap="round">
+      <line class="lkr1" x1="41.1" y1="178" x2="214.9" y2="178"/>
+      <line class="lkr2" x1="50.9" y1="140" x2="205.1" y2="140" opacity="0"/>
+      <line class="lkr3" x1="60.7" y1="102" x2="195.3" y2="102" opacity="0"/>
+      <line class="lkr4" x1="70.5" y1="64"  x2="185.5" y2="64" opacity="0"/>
+    </g>
+  </g>
+
+  <g>
+    <text class="disp" x="76" y="286" font-size="100" font-weight="800"
+          letter-spacing="-3.6" fill="url(#lk-word)">lockpatch</text>
+  </g>
+
+  <line x1="552" y1="100" x2="552" y2="300" stroke="url(#lk-rule)" stroke-width="1.5"/>
+  <g transform="translate(596,0)">
+    <text class="mono eyebrow" x="0" y="134">PROOF, NOT ADVICE</text>
+    <text class="disp head" x="0" y="186">Close it, then prove it closed</text>
+    <text class="disp sub" x="0" y="222">Find what a stranger can take from your app.</text>
+    <text class="disp sub" x="0" y="249">Every finding carries the command that shows it.</text>
+    <g transform="translate(0,292)"><g class="lkp1"><circle cx="0" cy="0" r="4.5" fill="#12752A"/></g><g class="lkp2"><circle cx="22" cy="0" r="4.5" fill="#12752A"/></g><g class="lkp3"><circle cx="44" cy="0" r="4.5" fill="#12752A"/></g><g class="lkp4"><circle cx="66" cy="0" r="4.5" fill="#12752A"/></g><text class="mono tag" x="102" y="4">FOUR RUNGS TO A FINDING</text></g>
+  </g>
+  <text class="mono tag" x="76" y="352">no proof, no finding  &#183;  read only until you approve  &#183;  runs locally</text>
+</svg>

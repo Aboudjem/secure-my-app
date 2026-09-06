@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none" role="img"
+     aria-label="lockpatch, proof not advice: close it, then prove it closed">
+  <title>lockpatch</title>
+  <defs>
+    <linearGradient id="lk-ground" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0D1626"/>
+      <stop offset="55%" stop-color="#0A0F1C"/>
+      <stop offset="100%" stop-color="#080C18"/>
+    </linearGradient>
+    <radialGradient id="lk-bloomA" cx="0.15" cy="0.13" r="0.44">
+      <stop offset="0%" stop-color="#2BE844" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#2BE844" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-bloomB" cx="0.88" cy="0.85" r="0.50">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-bloomC" cx="0.52" cy="0.04" r="0.36">
+      <stop offset="0%" stop-color="#2BE8C8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#2BE8C8" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-wash" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%"   stop-color="#5BFF74" stop-opacity="0.18"/>
+      <stop offset="42%"  stop-color="#2BE8C8" stop-opacity="0.112"/>
+      <stop offset="76%"  stop-color="#00D4FF" stop-opacity="0.044"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="lk-frame"><rect width="1200" height="400"/></clipPath>
+    <linearGradient id="lk-rule" gradientUnits="userSpaceOnUse" x1="552" y1="100" x2="552" y2="300">
+      <stop offset="0%"   stop-color="#2BE844" stop-opacity="0"/>
+      <stop offset="45%"  stop-color="#2BE844" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="lk-ink" gradientUnits="userSpaceOnUse" x1="40" y1="202" x2="216" y2="54">
+      <stop class="lkk1" offset="0%"   stop-color="#5BFF74"/>
+      <stop class="lkk2" offset="52%"  stop-color="#2BE844"/>
+      <stop class="lkk3" offset="100%" stop-color="#2BE8C8"/>
+    </linearGradient>
+    <filter id="lk-glow" x="-45%" y="-45%" width="190%" height="190%">
+      <feGaussianBlur stdDeviation="6.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="lk-glow-sm" x="-150%" y="-150%" width="400%" height="400%">
+      <feGaussianBlur stdDeviation="4.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <linearGradient id="lk-word" x1="0" y1="0" x2="1" y2="0.25">
+      <stop class="lkk1" offset="0%"   stop-color="#5BFF74"/>
+      <stop class="lkk2" offset="46%"  stop-color="#2BE844"/>
+      <stop class="lkk3" offset="100%" stop-color="#2BE8C8"/>
+    </linearGradient>
+    <linearGradient id="lk-sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.62"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="lk-wordclip">
+      <text x="76" y="286" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+            font-size="100" font-weight="800" letter-spacing="-3.6">lockpatch</text>
+    </clipPath>
+  </defs>
+
+  <style>
+    .disp { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; }
+    .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 4.5px; fill: #5BFF74; }
+    .head    { font-size: 34px; font-weight: 700; fill: #F2F6FF; letter-spacing: -0.5px; }
+    .sub     { font-size: 16.5px; font-weight: 500; fill: #C2CDE4; }
+    .tag     { font-size: 11.5px; letter-spacing: 1.6px; fill: #93A2BE; }
+    @keyframes lk-breathe { 0%,100% { opacity:0.62; } 50% { opacity:1; } }
+    .lkbloom { animation: lk-breathe 11s ease-in-out infinite; }
+    @keyframes lk-sweep { 0% { transform: translateX(-360px); } 100% { transform: translateX(1560px); } }
+    .lkwash { animation: lk-sweep 17s cubic-bezier(.5,0,.5,1) infinite; }
+    @keyframes lk-sheen { 0% { transform: translateX(0); } 15%,100% { transform: translateX(640px); } }
+    .lksheen { animation: lk-sheen 8.5s cubic-bezier(.4,0,.3,1) infinite; }
+    /* four pips, four rungs */
+    @keyframes lk-pip { 0%,100% { opacity: 0.45; } 50% { opacity: 1; } }
+    .lkp1 { animation: lk-pip 5s ease-in-out infinite 0.0s; }
+    .lkp2 { animation: lk-pip 5s ease-in-out infinite 0.4s; }
+    .lkp3 { animation: lk-pip 5s ease-in-out infinite 0.8s; }
+    .lkp4 { animation: lk-pip 5s ease-in-out infinite 1.2s; }
+    @keyframes lk-climb { 0% { opacity:0; } 3% { opacity:1; } 21% { opacity:1; } 24%,100% { opacity:0; } }
+    .lkr1 { animation: lk-climb 8s linear infinite 0s; }
+    .lkr2 { animation: lk-climb 8s linear infinite -6s; }
+    .lkr3 { animation: lk-climb 8s linear infinite -4s; }
+    .lkr4 { animation: lk-climb 8s linear infinite -2s; }
+    @keyframes lk-k1 { 0%,100% { stop-color:#5BFF74; } 50% { stop-color:#2BE844; } }
+    @keyframes lk-k2 { 0%,100% { stop-color:#2BE844; } 50% { stop-color:#2BE8C8; } }
+    @keyframes lk-k3 { 0%,100% { stop-color:#2BE8C8; } 50% { stop-color:#00D4FF; } }
+    .lkk1 { animation: lk-k1 12s ease-in-out infinite; }
+    .lkk2 { animation: lk-k2 12s ease-in-out infinite; }
+    .lkk3 { animation: lk-k3 12s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect width="1200" height="400" fill="url(#lk-ground)"/>
+  <g class="lkbloom">
+    <rect width="1200" height="400" fill="url(#lk-bloomA)"/>
+    <rect width="1200" height="400" fill="url(#lk-bloomB)"/>
+    <rect width="1200" height="400" fill="url(#lk-bloomC)"/>
+  </g>
+  <g clip-path="url(#lk-frame)">
+    <g transform="translate(0,196)">
+      <ellipse class="lkwash" cx="0" cy="0" rx="430" ry="300" fill="url(#lk-wash)"/>
+    </g>
+  </g>
+
+  <g transform="translate(56.6,50.8) scale(0.5781)">
+    <g stroke="#2BE844" stroke-opacity="0.30" stroke-width="15" stroke-linecap="round">
+      <line x1="41.1" y1="178" x2="214.9" y2="178"/>
+      <line x1="50.9" y1="140" x2="205.1" y2="140"/>
+      <line x1="60.7" y1="102" x2="195.3" y2="102"/>
+      <line x1="70.5" y1="64"  x2="185.5" y2="64"/>
+    </g>
+    <g stroke="url(#lk-ink)" stroke-width="8" stroke-linecap="round" filter="url(#lk-glow)">
+      <line x1="36" y1="198" x2="72" y2="58"/>
+      <line x1="220" y1="198" x2="184" y2="58"/>
+    </g>
+    <g stroke="url(#lk-ink)" stroke-width="15" stroke-linecap="round" filter="url(#lk-glow)">
+      <line class="lkr1" x1="41.1" y1="178" x2="214.9" y2="178"/>
+      <line class="lkr2" x1="50.9" y1="140" x2="205.1" y2="140" opacity="0"/>
+      <line class="lkr3" x1="60.7" y1="102" x2="195.3" y2="102" opacity="0"/>
+      <line class="lkr4" x1="70.5" y1="64"  x2="185.5" y2="64" opacity="0"/>
+    </g>
+  </g>
+
+  <g filter="url(#lk-glow)">
+    <text class="disp" x="76" y="286" font-size="100" font-weight="800"
+          letter-spacing="-3.6" fill="url(#lk-word)">lockpatch</text>
+  </g>
+  <g clip-path="url(#lk-wordclip)">
+    <g transform="skewX(-18)">
+      <rect class="lksheen" x="-56" y="200" width="52"
+            height="130" fill="url(#lk-sheen)" opacity="0.45"/>
+    </g>
+  </g>
+
+  <line x1="552" y1="100" x2="552" y2="300" stroke="url(#lk-rule)" stroke-width="1.5"/>
+  <g transform="translate(596,0)">
+    <text class="mono eyebrow" x="0" y="134">PROOF, NOT ADVICE</text>
+    <text class="disp head" x="0" y="186">Close it, then prove it closed</text>
+    <text class="disp sub" x="0" y="222">Find what a stranger can take from your app.</text>
+    <text class="disp sub" x="0" y="249">Every finding carries the command that shows it.</text>
+    <g transform="translate(0,292)"><g class="lkp1"><circle cx="0" cy="0" r="4.5" fill="#2BE844" filter="url(#lk-glow-sm)"/></g><g class="lkp2"><circle cx="22" cy="0" r="4.5" fill="#2BE844" filter="url(#lk-glow-sm)"/></g><g class="lkp3"><circle cx="44" cy="0" r="4.5" fill="#2BE844" filter="url(#lk-glow-sm)"/></g><g class="lkp4"><circle cx="66" cy="0" r="4.5" fill="#2BE844" filter="url(#lk-glow-sm)"/></g><text class="mono tag" x="102" y="4">FOUR RUNGS TO A FINDING</text></g>
+  </g>
+  <text class="mono tag" x="76" y="352">no proof, no finding  &#183;  read only until you approve  &#183;  runs locally</text>
+</svg>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>lockpatch</title>
+<style>
+  :root{
+    --body:#0B2417; --sheet:#DFE7DC; --shade:#CBD6C7;
+    --ink:#8C1F45; --ink-faded:#C08AA1; --bone:#E9F1E6;
+    --dim:#9FB8A8; --sheet-dim:#4A5F52; --rule-body:#7C9A87; --rule-sheet:#63796B;
+    --shut:#1E6B32;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1280px;height:640px;overflow:hidden}
+  body{background:var(--body);font-family:var(--sans);color:var(--bone);
+       border:1px solid var(--rule-body);border-radius:14px}
+  .card{width:100%;height:100%;padding:52px 64px;display:flex;flex-direction:column}
+
+  header{display:flex;align-items:baseline;justify-content:space-between;
+         padding-bottom:16px;border-bottom:1px solid var(--rule-body)}
+  .wordmark{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.4px}
+  .kicker{font-size:16px;color:var(--dim)}
+
+  main{flex:1;display:flex;gap:44px;padding-top:34px;min-height:0}
+  .left{flex:1;display:flex;flex-direction:column;min-width:0}
+  h1{font-size:54px;font-weight:800;line-height:1.1;letter-spacing:-.6px}
+  .sub{font-size:25px;line-height:1.38;color:var(--dim);margin-top:16px;max-width:560px}
+
+  .capsule{margin-top:auto;background:var(--ink);border-radius:26px;padding:20px 28px;
+           font-family:var(--mono);font-size:13.5px;line-height:1.85;color:var(--bone)}
+  .capsule b{font-size:16px;letter-spacing:1.4px}
+  .chip{background:var(--sheet);color:var(--ink);border-radius:4px;padding:2px 5px}
+
+  .sheet{width:472px;background:var(--sheet);border-radius:4px;overflow:hidden;
+         align-self:flex-start}
+  .clamp{height:14px;background:var(--shade);display:flex;align-items:center;
+         justify-content:space-between;padding:0 32px}
+  .clamp u{display:block;width:8px;height:8px;border-radius:50%;background:var(--rule-sheet)}
+  .sheet-in{padding:16px 22px 20px}
+  .sheet-hd{display:flex;align-items:baseline;justify-content:space-between;
+            font-family:var(--mono);font-weight:700;color:var(--body);font-size:18px;
+            padding-bottom:9px;border-bottom:1px solid var(--rule-sheet)}
+  .sheet-hd em{font-style:normal;font-size:15px;color:var(--sheet-dim)}
+  .row{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
+       font-family:var(--mono);font-size:12.5px;color:var(--sheet-dim);
+       padding-bottom:6px;margin-top:11px;border-bottom:1px solid var(--rule-sheet)}
+  .row.crit{color:var(--ink);font-weight:600}
+  .row s{text-decoration:none;flex:none;font-size:11px;letter-spacing:.8px}
+  .rungs{display:flex;flex-direction:column-reverse;gap:2.5px;flex:none;
+         align-items:flex-start;padding-bottom:1px}
+  .rungs i{display:block;height:2.5px;border-radius:1.25px;background:var(--ink-faded)}
+  .row.crit .rungs i{background:var(--ink)}
+  .rungs i.off{background:none;box-shadow:inset 0 0 0 1px var(--ink-faded)}
+
+  footer{display:flex;align-items:baseline;justify-content:space-between;
+         padding-top:22px;font-size:17px;color:var(--dim)}
+  footer .repo{font-family:var(--mono);font-size:15px}
+</style>
+</head>
+<body>
+<div class="card">
+  <header>
+    <span class="wordmark">lockpatch</span>
+    <span class="kicker">read only until you approve a fix</span>
+  </header>
+
+  <main>
+    <div class="left">
+      <h1>Find what a stranger<br>can take.</h1>
+      <p class="sub">Then close it and prove it closed. Every finding carries the command that shows the hole.</p>
+      <div class="capsule">
+        <b>GATE: DO NOT LAUNCH</b><br>
+        coverage <span class="chip">41 checked / 9 unproven / 6 n/a</span><br>
+        static only, no live probes. Nothing is fixed<br>
+        until you approve it, one finding at a time.
+      </div>
+    </div>
+
+    <div class="sheet">
+      <div class="clamp"><u></u><u></u></div>
+      <div class="sheet-in">
+        <div class="sheet-hd"><span>FINDINGS</span><em>4 rungs each</em></div>
+    <div class="row crit"><span>ROOMS &middot; profiles readable by anyone</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
+    <div class="row crit"><span>KEYS &middot; live key committed in .env</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
+    <div class="row"><span>DOOR &middot; no rate limit on /login</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>HIGH</s></div>
+    <div class="row"><span>PIPES &middot; CORS allows any origin</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>MEDIUM</s></div>
+    <div class="row"><span>VAULT &middot; stack traces reach users</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>LOW</s></div>
+    <div class="row"><span>FLOOR &middot; no cap on upload size</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i class="off" style="width:14px"></i><i class="off" style="width:11px"></i></div><s>UNPROVEN</s></div>
+    <div class="row"><span>SUPPLY &middot; no install-script surface</span><div class="rungs"><i class="off" style="width:20px"></i><i class="off" style="width:17px"></i><i class="off" style="width:14px"></i><i class="off" style="width:11px"></i></div><s>N/A</s></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span>No proof, no finding. No re-proof, no fix.</span>
+    <span class="repo">a Claude Code skill &middot; github.com/Aboudjem/lockpatch</span>
+  </footer>
+</div>
+</body>
+</html>

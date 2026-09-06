@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" role="img"
+     aria-label="lockpatch: the four rung ladder a candidate climbs before it may be called a finding">
+  <title>lockpatch</title>
+  <desc>Animated dark-mode logo mark. The whole ladder is drawn as a muted track with lit rails;
+  one rung lights at a time as a candidate climbs it, so no frame is an incomplete logo and the
+  reduced-motion resting frame is the finished mark.</desc>
+  <defs>
+    <linearGradient id="lk-plate" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0D1626"/>
+      <stop offset="58%" stop-color="#0A0F1C"/>
+      <stop offset="100%" stop-color="#080C18"/>
+    </linearGradient>
+    <radialGradient id="lk-bloomA" cx="0.24" cy="0.24" r="0.68">
+      <stop offset="0%" stop-color="#2BE844" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#2BE844" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="lk-bloomB" cx="0.80" cy="0.82" r="0.64">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="lk-ink" gradientUnits="userSpaceOnUse" x1="40" y1="202" x2="216" y2="54">
+      <stop class="lkk1" offset="0%"   stop-color="#5BFF74"/>
+      <stop class="lkk2" offset="52%"  stop-color="#2BE844"/>
+      <stop class="lkk3" offset="100%" stop-color="#2BE8C8"/>
+    </linearGradient>
+    <filter id="lk-glow" x="-45%" y="-45%" width="190%" height="190%">
+      <feGaussianBlur stdDeviation="6.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes lk-breathe { 0%,100% { opacity:0.62; } 50% { opacity:1; } }
+    .lkbloom { animation: lk-breathe 9s ease-in-out infinite; }
+    /* one rung at a time, bottom to top: exists, reach, control, impact */
+    @keyframes lk-climb { 0% { opacity:0; } 3% { opacity:1; } 21% { opacity:1; } 24%,100% { opacity:0; } }
+    .lkr1 { animation: lk-climb 8s linear infinite 0s; }
+    .lkr2 { animation: lk-climb 8s linear infinite -6s; }
+    .lkr3 { animation: lk-climb 8s linear infinite -4s; }
+    .lkr4 { animation: lk-climb 8s linear infinite -2s; }
+    @keyframes lk-k1 { 0%,100% { stop-color:#5BFF74; } 50% { stop-color:#2BE844; } }
+    @keyframes lk-k2 { 0%,100% { stop-color:#2BE844; } 50% { stop-color:#2BE8C8; } }
+    @keyframes lk-k3 { 0%,100% { stop-color:#2BE8C8; } 50% { stop-color:#00D4FF; } }
+    .lkk1 { animation: lk-k1 12s ease-in-out infinite; }
+    .lkk2 { animation: lk-k2 12s ease-in-out infinite; }
+    .lkk3 { animation: lk-k3 12s ease-in-out infinite; }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+
+  <rect width="256" height="256" rx="56" fill="url(#lk-plate)"/>
+  <g class="lkbloom">
+    <rect width="256" height="256" rx="56" fill="url(#lk-bloomA)"/>
+    <rect width="256" height="256" rx="56" fill="url(#lk-bloomB)"/>
+  </g>
+  <rect x="0.9" y="0.9" width="254.2" height="254.2" rx="55.2" fill="none"
+        stroke="#22314D" stroke-width="1.8"/>
+
+  <g stroke="#2BE844" stroke-opacity="0.30" stroke-width="15" stroke-linecap="round">
+    <line x1="41.1" y1="178" x2="214.9" y2="178"/>
+    <line x1="50.9" y1="140" x2="205.1" y2="140"/>
+    <line x1="60.7" y1="102" x2="195.3" y2="102"/>
+    <line x1="70.5" y1="64"  x2="185.5" y2="64"/>
+  </g>
+  <g stroke="url(#lk-ink)" stroke-width="8" stroke-linecap="round" filter="url(#lk-glow)">
+    <line x1="36" y1="198" x2="72" y2="58"/>
+    <line x1="220" y1="198" x2="184" y2="58"/>
+  </g>
+  <g stroke="url(#lk-ink)" stroke-width="15" stroke-linecap="round" filter="url(#lk-glow)">
+    <line class="lkr1" x1="41.1" y1="178" x2="214.9" y2="178"/>
+    <line class="lkr2" x1="50.9" y1="140" x2="205.1" y2="140" opacity="0"/>
+    <line class="lkr3" x1="60.7" y1="102" x2="195.3" y2="102" opacity="0"/>
+    <line class="lkr4" x1="70.5" y1="64"  x2="185.5" y2="64" opacity="0"/>
+  </g>
+</svg>

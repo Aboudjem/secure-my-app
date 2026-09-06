@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="One run, six phases: scope, map, check, probe, report, then stop and ask before any fix.">
+  <defs>
+    <linearGradient id="w-ground" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#0D1626"/>
+      <stop offset="60%" stop-color="#0A0F1C"/>
+      <stop offset="100%" stop-color="#080C18"/>
+    </linearGradient>
+    <linearGradient id="w-rule" gradientUnits="userSpaceOnUse" x1="36" y1="64" x2="1164" y2="64">
+      <stop offset="0%"   stop-color="#2BE844" stop-opacity="0.65"/>
+      <stop offset="45%"  stop-color="#2BE8C8" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="w-track" gradientUnits="userSpaceOnUse" x1="140" y1="180" x2="1060" y2="180">
+      <stop offset="0%"   stop-color="#2BE844"/>
+      <stop offset="55%"  stop-color="#2BE8C8"/>
+      <stop offset="100%" stop-color="#00D4FF"/>
+    </linearGradient>
+    <filter id="w-glow-sm" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="w-card"><rect x="0" y="0" width="1200" height="300" rx="14"/></clipPath>
+    <radialGradient id="v2-bloomA" cx="0.18" cy="0.22" r="0.72">
+      <stop offset="0%" stop-color="#2BE844" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#2BE844" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="v2-bloomB" cx="0.84" cy="0.86" r="0.68">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.11"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <style>
+    .disp { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; }
+    .h1   { font-size: 28px; font-weight: 700; fill: #F2F6FF; letter-spacing: -0.3px; }
+    .st   { font-size: 22px; font-weight: 700; fill: #F2F6FF; letter-spacing: 0.4px; }
+    .sd   { font-size: 16px; fill: #C2CDE4; }
+    .ft   { font-size: 16px; fill: #93A2BE; }
+    .ct   { font-size: 22px; font-weight: 700; }
+    .gate { font-size: 16px; fill: #FFB341; }
+    .chip { font-size: 11.5px; letter-spacing: 1.2px; }
+
+    @keyframes w-flow { to { stroke-dashoffset: -240; } }
+    .flowline { animation: w-flow 14s linear infinite; }
+
+    @keyframes w-cue { 0% { opacity: 0; } 2% { opacity: 1; } 15% { opacity: 1; } 17%, 100% { opacity: 0; } }
+    .s1 { animation: w-cue 18s linear infinite 0s; }
+    .s2 { animation: w-cue 18s linear infinite -15s; }
+    .s3 { animation: w-cue 18s linear infinite -12s; }
+    .s4 { animation: w-cue 18s linear infinite -9s; }
+    .s5 { animation: w-cue 18s linear infinite -6s; }
+    .s6 { animation: w-cue 18s linear infinite -3s; }
+
+    @keyframes w-count { 0% { opacity: 0; } 1% { opacity: 1; } 24% { opacity: 1; } 25%, 100% { opacity: 0; } }
+    .k1 { animation: w-count 24s linear infinite 0s; }
+    .k2 { animation: w-count 24s linear infinite -18s; }
+    .k3 { animation: w-count 24s linear infinite -12s; }
+    .k4 { animation: w-count 24s linear infinite -6s; }
+
+    @keyframes w-hold { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+    .holdbar { animation: w-hold 3.4s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+    @keyframes v2-breathe { 0%,100% { opacity:0.66; } 50% { opacity:1; } }
+    .v2bloom { animation: v2-breathe 11s ease-in-out infinite; }
+  </style>
+
+  <g clip-path="url(#w-card)"><rect width="1200" height="300" fill="url(#w-ground)"/>
+  <g class="v2bloom"><rect width="1200" height="300" fill="url(#v2-bloomA)"/><rect width="1200" height="300" fill="url(#v2-bloomB)"/></g></g>
+  <rect x="0.5" y="0.5" width="1199" height="299" rx="13.5" fill="none" stroke="#1E2A42" stroke-width="1"/>
+
+  <text class="disp h1" x="36" y="46">One run, six phases.</text>
+  <g class="mono ct" text-anchor="end">
+    <text class="k1" x="1164" y="46" fill="#2BE844">pass 41</text>
+    <text class="k2" x="1164" y="46" fill="#FF2D78" opacity="0">fail 3</text>
+    <text class="k3" x="1164" y="46" fill="#FFB341" opacity="0">unproven 9</text>
+    <text class="k4" x="1164" y="46" fill="#93A2BE" opacity="0">n/a 6</text>
+  </g>
+  <line x1="36" y1="64" x2="1164" y2="64" stroke="url(#w-rule)" stroke-width="1.25"/>
+  <line class="flowline" x1="36" y1="64" x2="1164" y2="64" stroke="url(#w-rule)" stroke-width="1.25" stroke-dasharray="3 9"/>
+
+  <line x1="140" y1="180" x2="1060" y2="180" stroke="#1E2A42" stroke-width="2"/>
+  <line class="flowline" x1="140" y1="180" x2="1060" y2="180" stroke="url(#w-track)" stroke-width="2" stroke-dasharray="4 10" opacity="0.9"/>
+  <g fill="none" stroke="#5B9DFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+    <path d="M226 172 L238 180 L226 188"/>
+    <path d="M410 172 L422 180 L410 188"/>
+    <path d="M594 172 L606 180 L594 188"/>
+    <path d="M778 172 L790 180 L778 188"/>
+  </g>
+
+  <g text-anchor="middle">
+    <text class="disp st" x="140"  y="100">SCOPE</text>
+    <text class="disp sd" x="140"  y="124">stack card,</text>
+    <text class="disp sd" x="140"  y="145">three questions</text>
+    <text class="disp st" x="324"  y="100">MAP</text>
+    <text class="disp sd" x="324"  y="124">routes, tables,</text>
+    <text class="disp sd" x="324"  y="145">keys, uploads</text>
+    <text class="disp st" x="508"  y="100">CHECK</text>
+    <text class="disp sd" x="508"  y="124">seven groups,</text>
+    <text class="disp sd" x="508"  y="145">three outcomes</text>
+    <text class="disp st" x="692"  y="100">PROBE</text>
+    <text class="disp sd" x="692"  y="124">live requests,</text>
+    <text class="disp sd" x="692"  y="145">only on a yes</text>
+    <text class="disp st" x="876"  y="100">REPORT</text>
+    <text class="disp sd" x="876"  y="124">the gate, with</text>
+    <text class="disp sd" x="876"  y="145">its coverage</text>
+    <text class="disp st" x="1060" y="100">FIX</text>
+    <text class="disp sd" x="1060" y="124">one at a time,</text>
+    <text class="disp sd" x="1060" y="145">re-proved</text>
+  </g>
+
+  <g class="holdbar">
+    <line x1="968" y1="158" x2="968" y2="202" stroke="#FFB341" stroke-width="3" stroke-linecap="round"/>
+    <path d="M960 158 H976 M960 202 H976" stroke="#FFB341" stroke-width="2.5" stroke-linecap="round"/>
+    <text class="mono gate" x="968" y="228" text-anchor="middle">stop and ask</text>
+  </g>
+
+  <g fill="#0E1524" stroke="#2BE844" stroke-width="3">
+    <circle cx="140" cy="180" r="13"/><circle cx="324" cy="180" r="13"/><circle cx="508" cy="180" r="13"/>
+    <circle cx="692" cy="180" r="13"/><circle cx="876" cy="180" r="13"/><circle cx="1060" cy="180" r="13"/>
+  </g>
+  <g fill="#2BE844" filter="url(#w-glow-sm)">
+    <circle class="s1" cx="140"  cy="180" r="13"/>
+    <circle class="s2" cx="324"  cy="180" r="13" opacity="0"/>
+    <circle class="s3" cx="508"  cy="180" r="13" opacity="0"/>
+    <circle class="s4" cx="692"  cy="180" r="13" opacity="0"/>
+    <circle class="s5" cx="876"  cy="180" r="13" opacity="0"/>
+    <circle class="s6" cx="1060" cy="180" r="13" opacity="0"/>
+  </g>
+
+  <g transform="translate(0,236)">
+    <rect x="348" y="0" width="56" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="376" y="15" text-anchor="middle" fill="#2BE844">KEYS</text>
+    <rect x="414" y="0" width="56" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="442" y="15" text-anchor="middle" fill="#2BE844">DOOR</text>
+    <rect x="480" y="0" width="64" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="512" y="15" text-anchor="middle" fill="#2BE844">ROOMS</text>
+    <rect x="554" y="0" width="64" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="586" y="15" text-anchor="middle" fill="#2BE844">PIPES</text>
+    <rect x="628" y="0" width="64" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="660" y="15" text-anchor="middle" fill="#2BE844">VAULT</text>
+    <rect x="702" y="0" width="64" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="734" y="15" text-anchor="middle" fill="#2BE844">FLOOR</text>
+    <rect x="776" y="0" width="72" height="22" rx="5" fill="#2BE844" fill-opacity="0.12" stroke="#2BE844" stroke-opacity="0.45"/>
+    <text class="mono chip" x="812" y="15" text-anchor="middle" fill="#2BE844">SUPPLY</text>
+  </g>
+
+  <text class="mono" x="36" y="283" font-size="16" font-weight="700" fill="#FF2D78">GATE: DO NOT LAUNCH</text>
+  <text class="mono ft" x="246" y="283">coverage 41 checked / 9 unproven / 6 n/a  &#183;  static only, no live probes</text>
+</svg>

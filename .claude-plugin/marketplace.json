@@ -1,0 +1,17 @@
+{
+  "name": "lockpatch-marketplace",
+  "owner": {
+    "name": "Adam Boudjemaa"
+  },
+  "metadata": {
+    "description": "Find what a stranger can take from your app. Then close it and prove it closed."
+  },
+  "plugins": [
+    {
+      "name": "lockpatch",
+      "source": "./",
+      "description": "Find what a stranger can take from your app. Then close it and prove it closed.",
+      "version": "0.1.0"
+    }
+  ]
+}

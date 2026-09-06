@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" role="img" aria-label="The paired test: before the fix the attacker's request succeeds and a legitimate user's request succeeds; after the fix the attacker's request is refused and the legitimate user's request still works.">
+  <defs>
+    <linearGradient id="h-ground" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#0D1626"/>
+      <stop offset="60%" stop-color="#0A0F1C"/>
+      <stop offset="100%" stop-color="#080C18"/>
+    </linearGradient>
+    <radialGradient id="h-bloom" cx="0.5" cy="1" r="0.75">
+      <stop offset="0%"  stop-color="#FF2D78" stop-opacity="0.18"/>
+      <stop offset="38%" stop-color="#7C3AED" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="h-brand" x1="0" y1="0" x2="1" y2="0.25" gradientUnits="objectBoundingBox">
+      <stop class="v2d1" offset="0%"   stop-color="#5BFF74"/>
+      <stop class="v2d2" offset="55%"  stop-color="#2BE844"/>
+      <stop class="v2d3" offset="100%" stop-color="#2BE8C8"/>
+</linearGradient>
+    <linearGradient id="h-rule" gradientUnits="userSpaceOnUse" x1="36" y1="68" x2="1164" y2="68">
+      <stop offset="0%"   stop-color="#2BE844" stop-opacity="0.65"/>
+      <stop offset="45%"  stop-color="#2BE8C8" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="h-glow-sm" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="h-card"><rect x="0" y="0" width="1200" height="420" rx="14"/></clipPath>
+    <radialGradient id="v2-bloomA" cx="0.18" cy="0.22" r="0.72">
+      <stop offset="0%" stop-color="#2BE844" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#2BE844" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="v2-bloomB" cx="0.84" cy="0.86" r="0.68">
+      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.11"/>
+      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <style>
+    .disp { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+    .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; }
+    .h1    { font-size: 26px; font-weight: 700; fill: #F2F6FF; letter-spacing: -0.3px; }
+    .colhd { font-size: 12.5px; font-weight: 600; letter-spacing: 2.4px; fill: #93A2BE; }
+    .rowhd { font-size: 12.5px; font-weight: 600; letter-spacing: 2.4px; fill: #93A2BE; }
+    .cmd   { font-size: 15px; fill: #C2CDE4; }
+    .res   { font-size: 14px; font-weight: 600; }
+    .tag   { font-size: 11.5px; letter-spacing: 1.6px; fill: #93A2BE; }
+    .ft    { font-size: 20px; fill: #C2CDE4; }
+    .card  { fill: #0E1524; stroke: #1E2A42; stroke-width: 1; }
+
+    @keyframes h-breathe { 0%,100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+    .bloom { animation: h-breathe 9s ease-in-out infinite; }
+    @keyframes v2-breathe { 0%,100% { opacity:0.66; } 50% { opacity:1; } }
+    .v2bloom { animation: v2-breathe 11s ease-in-out infinite; }
+
+    @keyframes h-flow { to { stroke-dashoffset: -240; } }
+    .flowline { animation: h-flow 14s linear infinite; }
+    @keyframes h-drop { to { stroke-dashoffset: -48; } }
+    .dropline { animation: h-drop 3.2s linear infinite; }
+
+    @keyframes h-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .row-fix { animation: h-rise 0.7s ease-out 0.8s both; }
+    .row-new { animation: h-rise 0.7s ease-out 1.4s both; }
+
+    @keyframes h-pip { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+    .hole  { animation: h-pip 2.6s ease-in-out infinite; }
+    .shut  { animation: h-pip 2.6s ease-in-out infinite 1.3s; }
+
+    @keyframes v2-d1 { 0%,100% { stop-color:#5BFF74; } 50% { stop-color:#2BE844; } }
+    .v2d1 { animation: v2-d1 16s ease-in-out infinite; }
+    @keyframes v2-d2 { 0%,100% { stop-color:#2BE844; } 50% { stop-color:#2BE8C8; } }
+    .v2d2 { animation: v2-d2 16s ease-in-out infinite; }
+    @keyframes v2-d3 { 0%,100% { stop-color:#2BE8C8; } 50% { stop-color:#00D4FF; } }
+    .v2d3 { animation: v2-d3 16s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+
+  <g clip-path="url(#h-card)">
+    <rect width="1200" height="420" fill="url(#h-ground)"/>
+    <g class="v2bloom"><rect width="1200" height="420" fill="url(#v2-bloomA)"/><rect width="1200" height="420" fill="url(#v2-bloomB)"/></g>
+    <ellipse class="bloom" cx="600" cy="424" rx="720" ry="200" fill="url(#h-bloom)"/>
+  </g>
+  <rect x="0.5" y="0.5" width="1199" height="419" rx="13.5" fill="none" stroke="#1E2A42" stroke-width="1"/>
+
+  <text class="disp" x="36" y="48" font-size="34" font-weight="800" letter-spacing="-1" fill="url(#h-brand)">lockpatch</text>
+  <text class="mono tag" x="1164" y="48" text-anchor="end">A CLAUDE CODE SKILL</text>
+  <line x1="36" y1="68" x2="1164" y2="68" stroke="url(#h-rule)" stroke-width="1.25"/>
+  <line class="flowline" x1="36" y1="68" x2="1164" y2="68" stroke="url(#h-rule)" stroke-width="1.25" stroke-dasharray="3 9"/>
+
+  <text class="disp h1" x="36" y="106">Every fix is proven twice, in opposite directions.</text>
+
+  <text class="mono colhd" x="120" y="140">THE ATTACKER'S REQUEST</text>
+  <text class="mono colhd" x="654" y="140">A LEGITIMATE USER'S REQUEST</text>
+  <text class="mono rowhd" x="36" y="195">BEFORE</text>
+  <text class="mono rowhd" x="36" y="329">AFTER</text>
+
+  <rect x="120" y="152" width="510" height="76" rx="10" class="card"/>
+  <rect x="120" y="170" width="3" height="40" rx="1.5" fill="#FF2D78"/>
+  <text class="mono cmd" x="140" y="184">curl -s $APP/api/orders/1042</text>
+  <g class="hole">
+    <rect x="140" y="204" width="8" height="8" rx="2" fill="#FF2D78"/>
+    <text class="mono res" x="158" y="212" fill="#FF2D78">200 OK  &#183;  another tenant's order, in full</text>
+  </g>
+
+  <rect x="654" y="152" width="510" height="76" rx="10" class="card"/>
+  <rect x="654" y="170" width="3" height="40" rx="1.5" fill="#5B9DFF"/>
+  <text class="mono cmd" x="674" y="184">curl -s -b "$SESSION" $APP/api/orders/7</text>
+  <rect x="674" y="204" width="8" height="8" rx="2" fill="#2BE844"/>
+  <text class="mono res" x="692" y="212" fill="#2BE844">200 OK  &#183;  their own order</text>
+
+  <g stroke="#1E2A42" stroke-width="2">
+    <line x1="375" y1="228" x2="375" y2="242"/><line x1="909" y1="228" x2="909" y2="242"/>
+    <line x1="375" y1="272" x2="375" y2="286"/><line x1="909" y1="272" x2="909" y2="286"/>
+  </g>
+  <g class="dropline" stroke="#2BE844" stroke-width="2" stroke-dasharray="4 6" stroke-linecap="round" opacity="0.9">
+    <line x1="375" y1="228" x2="375" y2="242"/><line x1="909" y1="228" x2="909" y2="242"/>
+    <line x1="375" y1="272" x2="375" y2="286"/><line x1="909" y1="272" x2="909" y2="286"/>
+  </g>
+
+  <g class="row-fix">
+    <rect x="120" y="242" width="1044" height="30" rx="8" fill="#0E1524" stroke="#2BE844" stroke-opacity="0.4" stroke-width="1"/>
+    <text class="mono" x="642" y="262" font-size="15" fill="#2BE844" text-anchor="middle">FIX APPLIED  &#183;  one finding, on your approval  &#183;  nothing else touched</text>
+  </g>
+
+  <g class="row-new">
+    <rect x="120" y="286" width="510" height="76" rx="10" class="card"/>
+    <rect x="120" y="304" width="3" height="40" rx="1.5" fill="#2BE844"/>
+    <text class="mono cmd" x="140" y="318">curl -s $APP/api/orders/1042</text>
+    <g class="shut">
+      <rect x="140" y="338" width="8" height="8" rx="2" fill="#2BE844"/>
+      <text class="mono res" x="158" y="346" fill="#2BE844">403 FORBIDDEN  &#183;  refused by the app</text>
+    </g>
+
+    <rect x="654" y="286" width="510" height="76" rx="10" class="card"/>
+    <rect x="654" y="304" width="3" height="40" rx="1.5" fill="#2BE844"/>
+    <text class="mono cmd" x="674" y="318">curl -s -b "$SESSION" $APP/api/orders/7</text>
+    <rect x="674" y="338" width="8" height="8" rx="2" fill="#2BE844"/>
+    <text class="mono res" x="692" y="346" fill="#2BE844">200 OK  &#183;  their own order, still</text>
+  </g>
+
+  <text class="disp ft" x="36" y="400">Fails means refused, not merely unsuccessful. A timeout proves nothing.</text>
+  <text class="mono tag" x="1164" y="400" text-anchor="end">NO RE-PROOF, NO FIX</text>
+</svg>
