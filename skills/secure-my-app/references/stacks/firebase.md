@@ -127,7 +127,7 @@ firebase emulators:exec "npm test"
 ```
 
 `assertFails` passing is the attacker half of the paired test. `assertSucceeds` passing is the
-legitimate twin. Save the file into the project's own test suite so it keeps running after lockpatch
+legitimate twin. Save the file into the project's own test suite so it keeps running after secure-my-app
 is gone.
 
 ### Probe a live database

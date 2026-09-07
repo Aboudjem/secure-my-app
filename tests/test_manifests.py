@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Manifest + contract tests for lockpatch (a release gate; runs in CI).
+Manifest + contract tests for secure-my-app (a release gate; runs in CI).
 
   1. All four manifests parse and carry the required fields, and every one of them names
-     the plugin "lockpatch".
+     the plugin "secure-my-app".
   2. One version, everywhere: .claude-plugin/plugin.json, .claude-plugin/marketplace.json,
      .cursor-plugin/plugin.json, .copilot-plugin/plugin.json, the latest CHANGELOG.md entry
      and SKILL.md's metadata.version. The two editor mirrors must otherwise match
      .claude-plugin/plugin.json field for field.
   3. Every required repo file exists.
-  4. skills/lockpatch/SKILL.md has frontmatter with name, description, license and a quoted
+  4. skills/secure-my-app/SKILL.md has frontmatter with name, description, license and a quoted
      metadata.version, and that version matches plugin.json.
   5. Every relative link in README.md resolves to a file that exists.
   6. Every asset README.md references resolves to a file that exists.
@@ -30,7 +30,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 failures = []
 _total = 0
 
-NAME = "lockpatch"
+NAME = "secure-my-app"
 # The story sentence is not hardcoded here. .claude-plugin/plugin.json owns it, and every
 # other place that carries it is compared against that one, so a copy cannot silently
 # drift. evals/check_skill.py pins it independently as a Python literal, and the last
@@ -309,7 +309,7 @@ except FileNotFoundError:
     check("README.md is readable", False, "README.md is missing")
 
 # --- 7. every references/*.md SKILL.md names must exist ---
-REFERENCE_RE = re.compile(r"(?:skills/lockpatch/)?references/([A-Za-z0-9._\-]+\.md)")
+REFERENCE_RE = re.compile(r"(?:skills/secure-my-app/)?references/([A-Za-z0-9._\-]+\.md)")
 if _skill_text is None:
     check(f"{SKILL_MD} is readable", False, f"{SKILL_MD} is missing")
 else:
@@ -320,7 +320,7 @@ else:
                     if not os.path.isfile(os.path.join(ROOT, "skills", NAME, "references", r))]
     check(f"every references/*.md {SKILL_MD} names exists ({len(refs)} checked)",
           not missing_refs,
-          "missing under skills/lockpatch/references/: " + ", ".join(missing_refs[:8]))
+          "missing under skills/secure-my-app/references/: " + ", ".join(missing_refs[:8]))
 
 # --- 8. translations ---
 for lang in TRANSLATIONS:

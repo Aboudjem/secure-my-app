@@ -29,7 +29,7 @@ already have happened and the clock is running.
 | K2 | No secret is exposed through a public env prefix | Reads your "hidden" key straight out of page source | `rg -n '(NEXT_PUBLIC\|VITE\|EXPO_PUBLIC\|REACT_APP)_[A-Z_]*(SECRET\|SERVICE\|PRIVATE\|TOKEN\|PASSWORD)'` across the repo and across `.env*` file names | Same grep returns nothing, and `curl -s $URL \| rg 'sk_live_\|sk-\|SG\.\|AKIA\|AIza\|xoxb-'` is empty |
 | K3 | No secret literal in the working tree | Clones the repo and reads the key | `gitleaks detect --no-git --redact` if installed. Fallback: `rg -n 'sk_live_\|sk-[A-Za-z0-9]{20}\|ghp_\|github_pat_\|AKIA\|AIza\|xoxb-\|-----BEGIN [A-Z ]*PRIVATE KEY-----'` | Re-run returns zero findings, and `git check-ignore .env` exits 0 |
 | K4 | No secret in git history, even if deleted | Runs `git log -p`, or lets GitHub's own search do it | `gitleaks detect --redact` over full history. Fallback: `git rev-list --all` piped into `git grep` for the K3 patterns across those revisions | Rewritten history is clean under the same command **and** K5 passed. Removing it from history without rotating is not a fix |
-| K5 | Every exposed key has been rotated | Uses the leaked key. It still works | For each K3 or K4 hit, ask the user directly: has this been rotated, yes or no. Unrotated stays CRITICAL no matter what the history looks like | The user confirms the new value differs, and the old prefix appears nowhere in the tree or in history. lockpatch never rotates for you |
+| K5 | Every exposed key has been rotated | Uses the leaked key. It still works | For each K3 or K4 hit, ask the user directly: has this been rotated, yes or no. Unrotated stays CRITICAL no matter what the history looks like | The user confirms the new value differs, and the old prefix appears nowhere in the tree or in history. secure-my-app never rotates for you |
 | K6 | The client key is the publishable key, correctly scoped | Uses an over-scoped "public" key as an admin key | Decode the JWT used in client code and read the `role` claim, or check for the `sb_publishable_` prefix. For Firebase, check that API key restrictions exist | Decoded `role` is `anon`, or the prefix is `sb_publishable_`. A live request with that key against a protected table returns 401 or an empty set |
 | K7 | Secrets come from the environment, never a committed file | Reads `config.json` in the repo | `rg --files \| rg -i '(config\|secrets\|credentials)\.(json\|ya?ml)$'` then check each for literal values rather than placeholders | Values replaced by env references, file gitignored, and K3 clean |
 | K8 | Third-party keys are scoped to the minimum | One stolen key does everything instead of one thing | For each provider key found, check whether a restricted variant exists and is used (Stripe restricted keys, GitHub fine-grained PATs, scoped S3 policies) | The key in use is the restricted variant. Verified by the user against the provider dashboard, tier 3 recipe |
@@ -137,7 +137,7 @@ This is the highest-value thing in the whole catalogue, and almost nothing else 
 For a multi-tenant app, generate a runnable test that creates two users in two tenants and, for every
 route in `surface.json` that takes an id, asserts that A cannot read, update, or delete B's row **by
 calling the API directly, not through the UI**. The UI hides the button. The API is what the attacker
-uses. Save it into the project's own test suite so it keeps running after lockpatch is gone.
+uses. Save it into the project's own test suite so it keeps running after secure-my-app is gone.
 
 ---
 

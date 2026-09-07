@@ -79,7 +79,7 @@ These require their own explicit conversation, and they are never included in a 
 
 - **Rewriting git history.** `git filter-repo`, `git filter-branch`, `git rebase`, any force push.
   See `secrets-runbook.md`.
-- **Rotating a credential.** lockpatch writes the runbook. The human runs it. You do not have the
+- **Rotating a credential.** secure-my-app writes the runbook. The human runs it. You do not have the
   provider console and you cannot verify the result.
 - **Changing a production database.** Migrations that enable RLS are still schema changes. Propose the
   SQL, explain the lock behaviour, let the human run it against production.

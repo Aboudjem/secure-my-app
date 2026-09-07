@@ -7,8 +7,8 @@ labels: bug
 
 <!--
 Thanks for filing a bug. Please DO NOT paste secrets, tokens, session cookies, real
-hostnames, or private source from the app lockpatch was auditing. Redact anything
-sensitive, and never attach a `.lockpatch/` report as-is: a findings report is a map of
+hostnames, or private source from the app secure-my-app was auditing. Redact anything
+sensitive, and never attach a `.secure-my-app/` report as-is: a findings report is a map of
 what still works.
 -->
 
@@ -23,7 +23,7 @@ what still works.
 ## How you triggered it
 
 <!--
-What did you ask? e.g. "lockpatch this app".
+What did you ask? e.g. "secure my app".
 Did it happen in the AUDIT phase (finding and proving), or in the FIX phase (applying a
 fix and re-running its proof)?
 -->

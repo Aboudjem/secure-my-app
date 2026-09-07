@@ -1,17 +1,17 @@
-# gitleaks configuration for the lockpatch repo.
+# gitleaks configuration for the secure-my-app repo.
 #
-# lockpatch is a security tool, so its own secret scan stays ON and stays strict. This file does not
+# secure-my-app is a security tool, so its own secret scan stays ON and stays strict. This file does not
 # disable any rule. It adds one narrow allowlist for a single, structural false positive.
 #
 # THE FALSE POSITIVE
-# The documentation has to show what a lockpatch finding looks like, and a finding about a leaked key
+# The documentation has to show what a secure-my-app finding looks like, and a finding about a leaked key
 # necessarily contains the shape of a key. examples/sample-report.md shows a Supabase publishable key
 # inside a curl `-H "apikey: ..."` header, which trips `curl-auth-header` and `generic-api-key` on the
 # shape of the line rather than on any real credential.
 #
 # WHY THE ALLOWLIST IS SAFE
 # Every credential written anywhere in this repo follows the house redaction convention from
-# skills/lockpatch/references/secrets-runbook.md: the provider prefix, at most a few characters, then
+# skills/secure-my-app/references/secrets-runbook.md: the provider prefix, at most a few characters, then
 # a literal ellipsis. `sb_publishable_7f2a...`, `sk_live_51H...`, `sb_secret_...`.
 #
 # The allowlist below matches ONLY values that end in that ellipsis. A real credential cannot end in
@@ -27,9 +27,9 @@ useDefault = true
 [[rules]]
 # Keep the default rules; this block exists only so `[rules.allowlist]` below has a parent that does
 # not narrow the default rule set.
-id = "lockpatch-placeholder-never-matches"
+id = "secure-my-app-placeholder-never-matches"
 description = "Inert rule. Present so the file is valid without redefining any default rule."
-regex = '''\$\^lockpatch-never-matches\$'''
+regex = '''\$\^secure-my-app-never-matches\$'''
 
 [allowlist]
 description = "Redacted credential examples in documentation. Every one ends in a literal ellipsis."

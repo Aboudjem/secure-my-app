@@ -1,6 +1,6 @@
-# lockpatch report
+# secure-my-app report
 
-An illustrative `.lockpatch/report.md` in the shape lockpatch produces. The app is fictional:
+An illustrative `.secure-my-app/report.md` in the shape secure-my-app produces. The app is fictional:
 **Tidemark**, a Next.js 15 and Supabase booking app, three months old, mostly agent-written, with a
 preview deployment on Vercel and one shared database across customer teams. Every value below is
 invented. The structure, the field order, the redaction convention and the honesty rules are real.
@@ -8,7 +8,7 @@ invented. The structure, the field order, the redaction convention and the hones
 ---
 
 ```
-LOCKPATCH   gate: DO NOT LAUNCH
+SECURE-MY-APP   gate: DO NOT LAUNCH
 coverage 47 checked / 8 unproven / 4 n/a   [static + live: tidemark-preview.vercel.app]
 scan: gitleaks yes, osv-scanner yes, semgrep no, trufflehog no
 findings: 2 critical  1 high  1 medium  0 low        run 2026-09-06T14:22Z
@@ -121,7 +121,7 @@ PROOF    [executed] gitleaks detect --redact
 IMPACT   Charge cards, issue refunds, and read your entire customer list, from
          anywhere, by anyone who cloned or scraped the repository during those two
          weeks. Bots scrape new public commits within seconds.
-FIX      Not a code change. lockpatch does not rotate credentials: it does not have
+FIX      Not a code change. secure-my-app does not rotate credentials: it does not have
          your Stripe console, cannot confirm the new key propagated, and a
          half-completed rotation takes checkout down mid-day.
 
@@ -194,7 +194,7 @@ VERIFY   attacker:    GET /api/bookings/b_39fd21 as user B  -> 404
          refusal rather than a missing record.
 
          Repeat for all 6 dynamic id routes in surface.json. The two-account test
-         belongs in your own test suite so it keeps running after lockpatch is gone.
+         belongs in your own test suite so it keeps running after secure-my-app is gone.
 STATUS   OPEN
 ```
 
@@ -269,7 +269,7 @@ path.
 
 ## Not checked, and why
 
-None of the following is inside what lockpatch can see. This list is printed on every run, including
+None of the following is inside what secure-my-app can see. This list is printed on every run, including
 runs with no findings at all, because a clean report that omits it invites exactly the wrong
 conclusion.
 
@@ -307,6 +307,6 @@ you scale it.
 ---
 
 ```
-next run: lockpatch diffs against .lockpatch/surface.json and reports
+next run: secure-my-app diffs against .secure-my-app/surface.json and reports
           "n fixed, n regressed, n new" rather than starting over.
 ```

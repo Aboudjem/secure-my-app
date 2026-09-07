@@ -16,8 +16,8 @@ labels: enhancement
 ## The failure it fixes (if applicable)
 
 <!--
-lockpatch is built test-first. If your request is about reliability, what did you see
-lockpatch do wrong? A finding it invented, a fix it applied without asking, a fix it
+secure-my-app is built test-first. If your request is about reliability, what did you see
+secure-my-app do wrong? A finding it invented, a fix it applied without asking, a fix it
 called verified without re-running the proof, a class of hole it walked past. A short
 redacted transcript of the misbehavior is the strongest case.
 -->

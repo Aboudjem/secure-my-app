@@ -4,6 +4,47 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-09-07
+
+Renamed from `lockpatch` to `secure-my-app`, and the docs cut down to something you can read in a
+minute. No behaviour changed: the same 65 controls, the same ladder, the same paired test.
+
+### Changed
+
+- **Renamed.** `lockpatch` said nothing to someone who had not already been told what it was.
+  `secure-my-app` says it. The GitHub repo moved to `Aboudjem/secure-my-app`; the old URL
+  redirects. The command is now `/secure-my-app`, the install is
+  `claude plugin install secure-my-app@10x`, and the state directory the skill writes is
+  `.secure-my-app/`.
+- **The README is 99 lines, down from 239.** Three bullets tell you what it does, one sample
+  report shows you what you get, one table lists the seven groups. Everything longer moved into
+  `docs/`. The four translations track it at the same length.
+- **The docs got shorter without losing anything load-bearing.** `faq.md` 264 to 157,
+  `quickstart.md` 189 to 145, `limits.md` 212 to 154, `editors.md` 95 to 83. All 65 controls
+  stayed in `controls.md`.
+- **New artwork.** The social card now shows both halves of the paired test in one picture: the
+  attacker's request going 200 to 403, and a real user's request staying 200 throughout. That is
+  the whole product in one image, which the old ladder drawing was not.
+- **Naming honesty.** The new name sounds like a promise of safety and this tool does not make
+  one, so the README now leads its Good to know section with the gate's real third label,
+  `NOTHING CONFIRMED HERE`, and the fact that it is never printed without its coverage counts.
+
+### Added
+
+- `P13`, untrusted bytes are never deserialized into objects. That takes the catalogue from 64
+  controls to 65.
+- The canonical vulnerability names are now searchable in the catalogue: IDOR and BOLA on `R4`,
+  cross-tenant access on `R5`, mass assignment on `R6`, SSRF on `P6`, logging and monitoring
+  failures on `V5`.
+- `.github/workflows/no-ai-attribution.yml`, which fails the build if an AI attribution trailer
+  reaches a commit message. A local hook cannot cover `rebase`, `--no-verify`, or anything
+  composed on GitHub's servers.
+
+### Fixed
+
+- The link checker tried to fetch `http://127.0.0.1:22`, which is the SSRF example in `P6`, not a
+  link. Loopback, RFC 1918, link-local and the RFC 2606 example domains are now excluded.
+
 ## [0.1.0] - 2026-09-06
 
 First public release. A security audit that has to show its work: every finding carries the
@@ -12,8 +53,8 @@ still works.
 
 ### Added
 
-- **The skill** (`skills/lockpatch/SKILL.md`): `/lockpatch` reads the app, maps what an
-  unauthenticated stranger can reach, and writes its whole audit into `.lockpatch/` in the
+- **The skill** (`skills/secure-my-app/SKILL.md`): `/secure-my-app` reads the app, maps what an
+  unauthenticated stranger can reach, and writes its whole audit into `.secure-my-app/` in the
   project. It runs in two phases. **AUDIT** finds and proves. **FIX** applies, one approval at a
   time, and re-verifies. The skill is Markdown only: no runtime dependency, no API key, no
   telemetry, and no network call of its own.
@@ -22,17 +63,17 @@ still works.
   it into a terminal and watch it happen. A hole nobody could reproduce is reported as a suspicion
   with that word on it, never as a finding.
 - **A fix is not applied until the human approves it, and not closed until it is re-run.**
-  lockpatch shows the diff for one finding, waits, applies only what was approved, then runs two
+  secure-my-app shows the diff for one finding, waits, applies only what was approved, then runs two
   commands: the proof request, which must now fail, and the user's own authenticated path, which
   must still work. A fix that closes the hole and locks the owner out is a broken fix, and the
   second check is what catches it.
 - **Secrets by location, never by value.** When the finding is an exposed credential, the report
   names where it lives (the file, the line, the environment variable) and prints a redacted form.
-  The raw value is never written into the report or anywhere else under `.lockpatch/`.
-- **`.lockpatch/` is gitignored on creation**, and `.gitignore` is created when the project has
+  The raw value is never written into the report or anywhere else under `.secure-my-app/`.
+- **`.secure-my-app/` is gitignored on creation**, and `.gitignore` is created when the project has
   none. A findings report is a map of what still works, so committing one publishes the hole
   before the fix lands.
-- **Reference files** under `skills/lockpatch/references/`, loaded only when the audit reaches
+- **Reference files** under `skills/secure-my-app/references/`, loaded only when the audit reaches
   the area they cover, so the skill body stays short and the depth is there when it is needed.
 - **Evals and tests in CI**: `evals/check_skill.py` (deterministic assertions on the skill body,
   written before the skill existed and run once against the missing file to record RED),
@@ -45,4 +86,4 @@ still works.
 - **Packaging**: `.claude-plugin/plugin.json` and `marketplace.json`, plus the `.cursor-plugin`
   and `.copilot-plugin` mirrors, listed in the
   [10x marketplace](https://github.com/Aboudjem/10x) and installable with
-  `npx skills add Aboudjem/lockpatch`.
+  `npx skills add Aboudjem/secure-my-app`.

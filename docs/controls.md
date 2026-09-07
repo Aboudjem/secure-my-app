@@ -1,31 +1,21 @@
-# The control catalogue, in brief
+# The control catalogue
 
-This is the browsable index: every control lockpatch knows how to check, what it is for, and what an
-attacker does when it is missing. It is 65 controls in seven groups.
+Every control secure-my-app knows how to check, what it is for, and what an attacker does when it is
+missing. 65 controls in seven groups, in the order an attacker tries them.
 
-**This page is not the runnable file.** The `DETECT` command that decides whether a control is
-present, and the `VERIFY` command that must change once a fix lands, live in
-[`skills/lockpatch/references/controls.md`](../skills/lockpatch/references/controls.md), which is what
-phase 2 of a run actually loads. This page exists so you can read the map without reading the
-machinery.
+This is the browsable map, not the runnable file. The `DETECT` command that decides whether a control
+is present and the `VERIFY` command that must change once a fix lands live in
+[`skills/secure-my-app/references/controls.md`](../skills/secure-my-app/references/controls.md), which
+is what a run actually loads.
 
-Three things to keep in mind while reading it.
+Two rules apply to every row below. A control that does not apply is `N/A`, never `PASS`: an app with
+no file upload gets `N/A` on F3, and that counts separately on the gate line. A control that could not
+be settled is `UNPROVEN`, never `PASS`: an empty grep is not evidence that a control exists.
 
-**A control that does not apply is `N/A`, never `PASS`.** An app with no file upload gets `N/A` on F3.
-That is a real result, and it is counted separately on the gate line.
+## KEYS (8 controls)
 
-**A control that could not be settled is `UNPROVEN`, never `PASS`.** An empty grep is not evidence
-that a control exists. Unproven checks get no severity and sit in their own appendix, with the
-command a human can run to settle them.
-
-**A group's order is the order an attacker tries things**, which is why KEYS runs first and SUPPLY
-runs last.
-
-## KEYS
-
-Secrets, key scope, and rotation. Run first. It is the only group where the damage may already be done and the clock is running.
-
-8 controls.
+Secrets, key scope, and rotation. Run first: the only group where the damage may already be done
+and the clock is running.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -38,11 +28,10 @@ Secrets, key scope, and rotation. Run first. It is the only group where the dama
 | K7 | Secrets come from the environment, never a committed file | Reads `config.json` in the repo |
 | K8 | Third-party keys are scoped to the minimum | One stolen key does everything instead of one thing |
 
-## DOOR
+## DOOR (9 controls)
 
-Authentication. Proving who somebody is. Sessions, cookies, password storage, tokens, and login rate limits.
-
-9 controls.
+Authentication. Proving who somebody is: sessions, cookies, password storage, tokens, login rate
+limits.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -56,11 +45,11 @@ Authentication. Proving who somebody is. Sessions, cookies, password storage, to
 | D8 | Multi-factor, where the app offers it, cannot be skipped | Logs in with the password alone by calling the second-step endpoint directly |
 | D9 | Auth failures fail closed | An exception in the auth path returns 200 and a logged-in session |
 
-## ROOMS
+## ROOMS (10 controls)
 
-Authorization. What you may touch once you are inside. The group that matters most, and the one AI-written code gets wrong most often, because a missing ownership check looks exactly like working code in every test a developer writes for themselves.
-
-10 controls.
+Authorization. What you may touch once you are inside. The group that matters most, and the one
+agent-written code gets wrong most often, because a missing ownership check looks exactly like working
+code in every test a developer writes for themselves.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -75,11 +64,9 @@ Authorization. What you may touch once you are inside. The group that matters mo
 | R9 | Database functions and views do not bypass RLS | RLS is on, policies are right, and a view leaks every row anyway |
 | R10 | Admin surfaces are gated by role, not by obscurity | Finds `/admin` and it loads |
 
-## PIPES
+## PIPES (13 controls)
 
-The boundary and the wire. Injection, XSS, CSRF, SSRF, CORS, redirects, webhooks, headers, and transport.
-
-12 controls.
+The boundary and the wire. Injection, XSS, CSRF, SSRF, CORS, redirects, webhooks, headers, transport.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -97,11 +84,10 @@ The boundary and the wire. Injection, XSS, CSRF, SSRF, CORS, redirects, webhooks
 | P12 | Path traversal is impossible on any file read | Requests `../../.env` through your file-serving route |
 | P13 | Untrusted bytes are never deserialized into objects | Sends a crafted payload that becomes code the moment your app unpacks it |
 
-## VAULT
+## VAULT (8 controls)
 
-Data at rest, and data on its way out. Encryption, response shape, error leakage, logs, backups, and exports.
-
-8 controls.
+Data at rest and data on its way out. Encryption, response shape, error leakage, logs, backups,
+exports.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -114,11 +100,9 @@ Data at rest, and data on its way out. Encryption, response shape, error leakage
 | V7 | Deleted data is actually deleted | Recovers records you told a user were erased |
 | V8 | PII does not leak through third-party scripts | Your analytics vendor receives your users' email addresses in URLs and payloads |
 
-## FLOOR
+## FLOOR (10 controls)
 
 Abuse, cost, and business logic. The things a scanner never finds, because none of them are bugs.
-
-10 controls.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -133,11 +117,10 @@ Abuse, cost, and business logic. The things a scanner never finds, because none 
 | F9 | Enumeration does not leak who exists | Learns which email addresses have accounts, then targets them |
 | F10 | Bulk export is bounded | Pages through your entire user list one hundred rows at a time |
 
-## SUPPLY
+## SUPPLY (7 controls)
 
-What you build on, and what builds you. Dependencies, lockfiles, install scripts, CI permissions, and preview environments.
-
-7 controls.
+What you build on, and what builds you. Dependencies, lockfiles, install scripts, CI permissions,
+preview environments.
 
 | ID | The control | What an attacker does without it |
 | --- | --- | --- |
@@ -151,52 +134,48 @@ What you build on, and what builds you. Dependencies, lockfiles, install scripts
 
 ## Per-stack detail
 
-The catalogue is stack-neutral. Where a control's detection or its fix differs meaningfully by stack,
-the specifics live in a reference file the skill loads only when that stack is detected.
+The catalogue is stack-neutral. Where detection or the fix differs by stack, the specifics live in a
+reference file the skill loads only when that stack is detected. A stack file never adds or removes a
+control; it tells you what R1 looks like there, which `DETECT` command actually works, and which fixes
+are wrong for it.
 
 | Stack | Reference |
 | --- | --- |
-| Supabase, Next.js | [`references/stacks/supabase-nextjs.md`](../skills/lockpatch/references/stacks/supabase-nextjs.md) |
-| Express, Fastify, node-postgres | [`references/stacks/express-postgres.md`](../skills/lockpatch/references/stacks/express-postgres.md) |
-| Firebase, Firestore | [`references/stacks/firebase.md`](../skills/lockpatch/references/stacks/firebase.md) |
-| Django, FastAPI, SQLAlchemy | [`references/stacks/python.md`](../skills/lockpatch/references/stacks/python.md) |
+| Supabase, Next.js | [`stacks/supabase-nextjs.md`](../skills/secure-my-app/references/stacks/supabase-nextjs.md) |
+| Express, Fastify, node-postgres | [`stacks/express-postgres.md`](../skills/secure-my-app/references/stacks/express-postgres.md) |
+| Firebase, Firestore | [`stacks/firebase.md`](../skills/secure-my-app/references/stacks/firebase.md) |
+| Django, FastAPI, SQLAlchemy | [`stacks/python.md`](../skills/secure-my-app/references/stacks/python.md) |
 
-A stack file never adds or removes controls. It tells you what R1 looks like in that stack, which
-`DETECT` command actually works there, and which fixes are wrong for it.
+## Running one group
 
-## Reading a group on its own
+Each group name is an argument. `--group keys` runs KEYS alone, the right call in a hurry, because a
+leaked credential is the only finding class where the clock started before you ran anything. The rest
+are `door`, `rooms`, `pipes`, `vault`, `floor`, `supply`.
 
-Each group name is also an argument. `--group keys` runs the KEYS group alone, which is the right
-call when you are in a hurry, because a leaked credential is the only finding class where the clock
-started before you ran anything. The rest are `door`, `rooms`, `pipes`, `vault`, `floor`, `supply`.
+## Two places this is easy to misread
 
-## Two places the catalogue is easy to misread
-
-**Row level security switched ON with no matching policy denies.** It does not allow. So "there is no
+**Row level security switched ON with no matching policy denies.** It does not allow. "There is no
 policy on this table" is not by itself evidence of exposure, and reporting it as one tells you your
-safest table is your worst. The exposure is R1, security switched off, or R2, a policy that permits
-too much. Policies of the same command combine with OR, so one permissive policy defeats every
-careful one beside it.
+safest table is your worst. The exposure is R1, security switched off, or R2, a policy that permits too
+much. Policies of the same command combine with OR, so one permissive policy defeats every careful one
+beside it.
 
 **A null `WITH CHECK` on an `UPDATE` policy is not a bug.** Postgres applies the `USING` expression to
 the new row when `WITH CHECK` is omitted. Flagging it produces a false positive on correct code, which
-costs you trust for every other finding in the report. The per-command rules are in the reference
-file, and they are worth reading before you argue with an R3 finding.
+costs you trust for every other finding in the report. The per-command rules are in the reference file,
+and they are worth reading before you argue with an R3 finding.
 
 ## What the catalogue cannot see
 
-Cloud IAM roles and trust policies. Network boundaries, security groups, and firewalls. DNS,
-registrar access, and subdomain takeover. Physical and device security. Social engineering and
-support-desk takeover. Insider access. Anything behind a login lockpatch was not given. Anything in a
-service your app calls but whose code it cannot read. Race conditions and timing attacks, which need a
-running system under load. Cryptographic implementation review. Whether your team can actually respond
-when something happens.
+Cloud IAM. Network boundaries and firewalls. DNS and subdomain takeover. Physical and device security.
+Social engineering. Insider access. Anything behind a login it was not given, or inside a service whose
+code it cannot read. Race conditions and timing attacks. Cryptographic implementation review. Whether
+your team can actually respond when something happens.
 
 Every report reprints that list. [Honest limits](limits.md) explains why it is there.
 
 ## Related
 
-- [The runnable catalogue](../skills/lockpatch/references/controls.md), with DETECT and VERIFY per control
-- Per-stack detail: [Supabase and Next.js](../skills/lockpatch/references/stacks/supabase-nextjs.md) · [Express and Postgres](../skills/lockpatch/references/stacks/express-postgres.md) · [Firebase](../skills/lockpatch/references/stacks/firebase.md) · [Python](../skills/lockpatch/references/stacks/python.md)
+- [The runnable catalogue](../skills/secure-my-app/references/controls.md), with DETECT and VERIFY per control
 - [A worked report](../examples/sample-report.md), showing findings from three of these groups
 - [Quickstart](quickstart.md) · [FAQ](faq.md) · [Honest limits](limits.md)

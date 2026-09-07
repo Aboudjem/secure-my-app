@@ -1,4 +1,4 @@
-# AGENTS.md, lockpatch
+# AGENTS.md, secure-my-app
 
 Instructions for AI agents and coding assistants working in or invoking this repository. Plain
 Markdown, no required fields (per the AGENTS.md convention: the agent parses the text below).
@@ -6,17 +6,17 @@ Human-facing docs live in `README.md`; this file holds the extra context an agen
 
 ## What this repo is
 
-This repo is `lockpatch`, a Claude Code and Agent Skills skill that **finds what a stranger can take
-from an app, then closes it and proves it closed.** It reads one specific codebase, runs 64 named
+This repo is `secure-my-app`, a Claude Code and Agent Skills skill that **finds what a stranger can take
+from an app, then closes it and proves it closed.** It reads one specific codebase, runs 65 named
 control checks in seven groups, and writes a report in which every finding carries the command that
 demonstrates it and that command's real output.
 
 It is the absence-of-a-control tool, not the flaw-in-a-diff tool. Claude Code's built-in
-`/security-review` reads a diff and finds the bug in code somebody wrote. lockpatch reads the whole
+`/security-review` reads a diff and finds the bug in code somebody wrote. secure-my-app reads the whole
 app and finds the defence nobody wrote. The two are complements and the SKILL.md says so.
 
-The skill is `skills/lockpatch/SKILL.md` plus `skills/lockpatch/references/`. There is no script to
-run and no server. The output is `.lockpatch/report.md` and `.lockpatch/surface.json` inside the user's
+The skill is `skills/secure-my-app/SKILL.md` plus `skills/secure-my-app/references/`. There is no script to
+run and no server. The output is `.secure-my-app/report.md` and `.secure-my-app/surface.json` inside the user's
 project, never inside this repository.
 
 ## The one rule everything rests on
@@ -36,7 +36,7 @@ These are non-negotiable. Do not look for loopholes; violating the letter violat
    and never echo them.
 2. **Never rotate a credential, and never rewrite git history.** No `git filter-repo`, no
    `git filter-branch`, no `git rebase`, no force push, not on your own initiative and never inside a
-   "fix everything" approval. lockpatch writes the runbook; the human runs it. Rotation comes before
+   "fix everything" approval. secure-my-app writes the runbook; the human runs it. Rotation comes before
    history scrubbing, always.
 3. **Read-only until the human approves a specific fix.** Phases 0 to 4 read, grep and (with an
    explicit yes and a URL the user confirmed they own) make at most about 30 benign requests. No
@@ -66,7 +66,7 @@ These are non-negotiable. Do not look for loopholes; violating the letter violat
     the user rather than a thing to run, especially on a repository the user did not write.
 
 Additional hygiene for agents editing this repo: never commit secrets or tokens; never commit
-`.lockpatch/` state from a build run; keep the SVGs in `assets/` GitHub-safe (no `<script>`, no
+`.secure-my-app/` state from a build run; keep the SVGs in `assets/` GitHub-safe (no `<script>`, no
 external references, a `prefers-reduced-motion` guard). Cite a primary source for any load-bearing
 security claim rather than writing it from memory, especially anything about PostgreSQL RLS
 semantics, JWT algorithm handling, or a provider's key naming. Never invent star counts, download
@@ -74,13 +74,13 @@ counts, usage metrics or benchmark figures.
 
 ## How an agent should invoke the skill
 
-- Inside Claude Code with the skill installed, trigger it by describing intent: "lockpatch this",
-  "secure my app", "harden this", "is this safe to launch", "am I going to get hacked", "check my
-  RLS", "did I leak a key", "security audit". Claude Code matches these to the skill's `description`
-  and loads `SKILL.md`.
+- Inside Claude Code with the skill installed, trigger it by describing intent: "secure my app before
+  I launch", "harden this", "is this safe to launch", "am I going to get hacked", "check my RLS",
+  "did I leak a key", "security audit". Claude Code matches these to the skill's `description` and
+  loads `SKILL.md`.
 - Install: the plugin (`claude plugin marketplace add Aboudjem/10x`, then
-  `claude plugin install lockpatch@10x`); the skills CLI (`npx skills add Aboudjem/lockpatch`); or by
-  hand, `git clone https://github.com/Aboudjem/lockpatch` then copy `skills/lockpatch` into
+  `claude plugin install secure-my-app@10x`); the skills CLI (`npx skills add Aboudjem/secure-my-app`); or by
+  hand, `git clone https://github.com/Aboudjem/secure-my-app` then copy `skills/secure-my-app` into
   `~/.claude/skills/`. Copy the whole directory, because `references/` is loaded by relative path at
   run time.
 - Arguments: `$ARGUMENTS` may be empty, a path, a live URL, or a group name. `--report-only` never
@@ -92,10 +92,10 @@ counts, usage metrics or benchmark figures.
 
 ## Where things live
 
-- `skills/lockpatch/SKILL.md`, the skill: the ladder, the three outcomes plus `N/A`, the evidence
+- `skills/secure-my-app/SKILL.md`, the skill: the ladder, the three outcomes plus `N/A`, the evidence
   tiers, the six phases, the seven groups, the severity matrix and the gate, the paired test, the
   dangerous parts, what it refuses to do, the honest limits, the output format, common mistakes.
-- `skills/lockpatch/references/`, loaded on demand during a run: `controls.md` (the 65 controls with a
+- `skills/secure-my-app/references/`, loaded on demand during a run: `controls.md` (the 65 controls with a
   DETECT and a VERIFY command each, the per-command RLS rules, the three-way read test),
   `severity.md`, `fix-protocol.md`, `secrets-runbook.md`, `scanners.md`, `wrong-advice.md`, and
   `stacks/` for per-stack detail (`supabase-nextjs.md`, `express-postgres.md`, `firebase.md`,
@@ -105,18 +105,20 @@ counts, usage metrics or benchmark figures.
 - `tests/test_manifests.py`, manifest validity, version parity across four manifests and the
   changelog, required files, the README's relative links and assets, the reference files SKILL.md
   names, translation parity, and a secrets scan. A release gate; CI runs it.
-- `docs/`, `quickstart.md`, `editors.md`, `faq.md`, `limits.md`, `controls.md`.
-- `examples/sample-report.md`, an illustrative full `.lockpatch/report.md`.
+- `docs/`: `quickstart.md` (a first run in eight numbered steps), `faq.md` (short answers, question per
+  heading), `limits.md` (what a clean run does not prove), `controls.md` (all 65 controls as tables),
+  `editors.md` (per-agent install).
+- `examples/sample-report.md`, an illustrative full `.secure-my-app/report.md`.
 - `assets/`, the animated SVGs (`hero-dark.svg`, `hero-light.svg`, `hero.svg`, `how-it-works.svg`,
   `logo-mark-animated.svg`) and the social preview (`social-card.html`, `social-preview.png`).
 - `READMEs/`, the zh-CN, ja, es and fr translations of `README.md`.
 - `README.md`, human-facing overview. `llms.txt`, the machine-readable map. `CHANGELOG.md`, release
-  history. `SECURITY.md`, how to report a problem in lockpatch itself. `LICENSE`, MIT.
+  history. `SECURITY.md`, how to report a problem in secure-my-app itself. `LICENSE`, MIT.
 
 ## Validate before claiming done
 
 ```bash
-python3 evals/check_skill.py skills/lockpatch/SKILL.md   # exit 0, all checks pass
+python3 evals/check_skill.py skills/secure-my-app/SKILL.md   # exit 0, all checks pass
 python3 tests/test_manifests.py                          # exit 0, all checks pass
 claude plugin validate . --strict                        # if the CLI is on this machine
 ```
@@ -129,7 +131,7 @@ resolve.
 ## Q&A
 
 **How is this different from `/security-review`?**
-`/security-review` reads a diff and finds the flaw in the code that is there. lockpatch reads the
+`/security-review` reads a diff and finds the flaw in the code that is there. secure-my-app reads the
 whole app and finds the control that was never written. Use the first on a change, the second before
 a launch.
 

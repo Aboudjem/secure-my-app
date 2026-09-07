@@ -2,79 +2,111 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>lockpatch</title>
+<title>secure-my-app</title>
 <style>
   :root{
-    --body:#0B2417; --sheet:#DFE7DC; --shade:#CBD6C7;
-    --ink:#8C1F45; --ink-faded:#C08AA1; --bone:#E9F1E6;
-    --dim:#9FB8A8; --sheet-dim:#4A5F52; --rule-body:#7C9A87; --rule-sheet:#63796B;
-    --shut:#1E6B32;
+    --body:#0A0F1C; --body-top:#0D1626; --body-bot:#080C18;
+    --sheet:#E8EDF6; --shade:#D3DAE8;
+    --bone:#F2F6FF; --dim:#93A2BE; --faint:#5B6B85;
+    --sheet-ink:#B3105C; --sheet-ink-faded:#C79BB0; --sheet-dim:#48546B;
+    --rule-body:#1E2A42; --rule-sheet:#B6C0D4;
+    --green:#2BE844; --green-lit:#5BFF74; --teal:#2BE8C8; --cyan:#00D4FF;
+    --bad:#FF2D78; --user:#5B9DFF;
+    --panel:#0E1524;
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1280px;height:640px;overflow:hidden}
-  body{background:var(--body);font-family:var(--sans);color:var(--bone);
+  body{background:
+         radial-gradient(46% 52% at 10% 12%, rgba(43,232,68,.20), transparent 70%),
+         radial-gradient(52% 58% at 90% 88%, rgba(0,212,255,.18), transparent 70%),
+         linear-gradient(160deg, var(--body-top) 0%, var(--body) 55%, var(--body-bot) 100%);
+       font-family:var(--sans);color:var(--bone);
        border:1px solid var(--rule-body);border-radius:14px}
-  .card{width:100%;height:100%;padding:52px 64px;display:flex;flex-direction:column}
+  .card{width:100%;height:100%;padding:44px 64px;display:flex;flex-direction:column}
 
   header{display:flex;align-items:baseline;justify-content:space-between;
-         padding-bottom:16px;border-bottom:1px solid var(--rule-body)}
-  .wordmark{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.4px}
-  .kicker{font-size:16px;color:var(--dim)}
+         padding-bottom:14px;border-bottom:1px solid var(--rule-body)}
+  .wordmark{font-size:32px;font-weight:800;letter-spacing:-.8px;
+            background:linear-gradient(100deg,var(--green-lit),var(--green) 46%,var(--teal));
+            -webkit-background-clip:text;background-clip:text;color:transparent}
+  .kicker{font-family:var(--mono);font-size:13px;letter-spacing:3.2px;color:var(--green-lit);
+          font-weight:600}
 
-  main{flex:1;display:flex;gap:44px;padding-top:34px;min-height:0}
+  main{flex:1;display:flex;gap:44px;padding-top:26px;min-height:0}
   .left{flex:1;display:flex;flex-direction:column;min-width:0}
-  h1{font-size:54px;font-weight:800;line-height:1.1;letter-spacing:-.6px}
-  .sub{font-size:25px;line-height:1.38;color:var(--dim);margin-top:16px;max-width:560px}
+  h1{font-size:50px;font-weight:800;line-height:1.08;letter-spacing:-1px}
+  .sub{font-size:23px;line-height:1.36;color:var(--dim);margin-top:16px;max-width:560px}
 
-  .capsule{margin-top:auto;background:var(--ink);border-radius:26px;padding:20px 28px;
-           font-family:var(--mono);font-size:13.5px;line-height:1.85;color:var(--bone)}
-  .capsule b{font-size:16px;letter-spacing:1.4px}
-  .chip{background:var(--sheet);color:var(--ink);border-radius:4px;padding:2px 5px}
+  /* the paired test: a fix counts only when the attacker is refused
+     and a real user still gets through */
+  .proof{margin-top:20px;background:var(--panel);border:1px solid rgba(43,232,68,.4);
+         border-radius:12px;padding:13px 22px 15px;font-family:var(--mono)}
+  .proof-hd{display:flex;align-items:baseline;justify-content:space-between;
+            font-size:11.5px;letter-spacing:2.4px;color:var(--dim);font-weight:600;
+            padding-bottom:9px;border-bottom:1px solid var(--rule-body)}
+  .proof-hd em{font-style:normal;letter-spacing:.3px;color:var(--faint);font-weight:400;
+               font-size:12px;text-transform:none}
+  .pair{display:grid;grid-template-columns:104px 1fr 88px 30px 124px;align-items:center;
+        gap:9px 12px;font-size:13.5px;margin-top:11px}
+  .who{font-size:11px;letter-spacing:1.4px;font-weight:600;padding:2px 0 2px 10px;
+       border-left:3px solid var(--user)}
+  .who.atk{border-left-color:var(--bad)}
+  .path{color:var(--dim)}
+  .was{color:var(--bad);font-weight:600}
+  .was.ok{color:var(--faint)}
+  .arrow{color:var(--faint);text-align:center}
+  .now{color:var(--green);font-weight:600}
+
+  .gate{margin-top:auto;font-family:var(--mono);font-size:13px;line-height:1.7;
+        padding-left:14px;border-left:3px solid var(--bad)}
+  .gate b{display:block;font-size:15px;letter-spacing:1.6px;color:var(--bad)}
+  .gate span{color:var(--dim)}
+  .gate .chip{color:var(--bone);background:rgba(255,45,120,.14);border-radius:4px;padding:1px 6px}
 
   .sheet{width:472px;background:var(--sheet);border-radius:4px;overflow:hidden;
          align-self:flex-start}
   .clamp{height:14px;background:var(--shade);display:flex;align-items:center;
          justify-content:space-between;padding:0 32px}
   .clamp u{display:block;width:8px;height:8px;border-radius:50%;background:var(--rule-sheet)}
-  .sheet-in{padding:16px 22px 20px}
+  .sheet-in{padding:13px 20px 15px}
   .sheet-hd{display:flex;align-items:baseline;justify-content:space-between;
-            font-family:var(--mono);font-weight:700;color:var(--body);font-size:18px;
-            padding-bottom:9px;border-bottom:1px solid var(--rule-sheet)}
+            font-family:var(--mono);font-weight:700;color:#0A0F1C;font-size:18px;
+            padding-bottom:7px;border-bottom:1px solid var(--rule-sheet)}
   .sheet-hd em{font-style:normal;font-size:15px;color:var(--sheet-dim)}
   .row{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
        font-family:var(--mono);font-size:12.5px;color:var(--sheet-dim);
-       padding-bottom:6px;margin-top:11px;border-bottom:1px solid var(--rule-sheet)}
-  .row.crit{color:var(--ink);font-weight:600}
+       padding-bottom:5px;margin-top:8px;border-bottom:1px solid var(--rule-sheet)}
+  .row.crit{color:var(--sheet-ink);font-weight:600}
   .row s{text-decoration:none;flex:none;font-size:11px;letter-spacing:.8px}
   .rungs{display:flex;flex-direction:column-reverse;gap:2.5px;flex:none;
          align-items:flex-start;padding-bottom:1px}
-  .rungs i{display:block;height:2.5px;border-radius:1.25px;background:var(--ink-faded)}
-  .row.crit .rungs i{background:var(--ink)}
-  .rungs i.off{background:none;box-shadow:inset 0 0 0 1px var(--ink-faded)}
+  .rungs i{display:block;height:2.5px;border-radius:1.25px;background:var(--sheet-ink-faded)}
+  .row.crit .rungs i{background:var(--sheet-ink)}
+  .rungs i.off{background:none;box-shadow:inset 0 0 0 1px var(--sheet-ink-faded)}
 
   footer{display:flex;align-items:baseline;justify-content:space-between;
-         padding-top:22px;font-size:17px;color:var(--dim)}
-  footer .repo{font-family:var(--mono);font-size:15px}
+         padding-top:16px;font-size:16px;color:var(--dim)}
+  footer .repo{font-family:var(--mono);font-size:14px;color:var(--faint)}
 </style>
 </head>
 <body>
 <div class="card">
   <header>
-    <span class="wordmark">lockpatch</span>
-    <span class="kicker">read only until you approve a fix</span>
+    <span class="wordmark">secure-my-app</span>
+    <span class="kicker">PROOF, NOT ADVICE</span>
   </header>
 
   <main>
     <div class="left">
       <h1>Find what a stranger<br>can take.</h1>
       <p class="sub">Then close it and prove it closed. Every finding carries the command that shows the hole.</p>
-      <div class="capsule">
-        <b>GATE: DO NOT LAUNCH</b><br>
-        coverage <span class="chip">41 checked / 9 unproven / 6 n/a</span><br>
-        static only, no live probes. Nothing is fixed<br>
-        until you approve it, one finding at a time.
+
+      <div class="gate">
+        <b>GATE: DO NOT LAUNCH</b>
+        <span>coverage <span class="chip">41 checked / 9 unproven / 6 n/a</span></span><br>
+        <span>static only, no live probes until you say yes</span>
       </div>
     </div>
 
@@ -93,9 +125,26 @@
     </div>
   </main>
 
+  <div class="proof">
+    <div class="proof-hd"><span>THE SAME REQUEST, BEFORE AND AFTER THE FIX</span><em>Both halves re-run, or the fix does not count.</em></div>
+    <div class="pair">
+      <span class="who atk">ATTACKER</span>
+      <span class="path">curl -s $APP/api/orders/1042</span>
+      <span class="was">200 OK</span>
+      <span class="arrow">&rarr;</span>
+      <span class="now">403 REFUSED</span>
+
+      <span class="who">REAL USER</span>
+      <span class="path">curl -s -b "$SESSION" $APP/api/orders/7</span>
+      <span class="was ok">200 OK</span>
+      <span class="arrow">&rarr;</span>
+      <span class="now">200 OK</span>
+    </div>
+  </div>
+
   <footer>
     <span>No proof, no finding. No re-proof, no fix.</span>
-    <span class="repo">a Claude Code skill &middot; github.com/Aboudjem/lockpatch</span>
+    <span class="repo">a Claude Code skill &middot; github.com/Aboudjem/secure-my-app</span>
   </footer>
 </div>
 </body>

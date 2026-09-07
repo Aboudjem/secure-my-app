@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-lockpatch skill eval: machine-checkable static assertions on skills/lockpatch/SKILL.md.
+secure-my-app skill eval: machine-checkable static assertions on skills/secure-my-app/SKILL.md.
 
 This is the deterministic half of the eval suite. It encodes the house contract and the
-lockpatch design lock as pass/fail checks, so a regression is caught in CI rather than in
+secure-my-app design lock as pass/fail checks, so a regression is caught in CI rather than in
 someone's security report. It was written BEFORE the skill existed and run once against the
 missing file (RED: not found, exit 1); see evals/RED-baseline.md. The behavioral half, a cold
 model asked to audit an app's security with no skill installed, is recorded in the same file.
@@ -20,14 +20,14 @@ What it enforces:
   - the control sections give orders, not advice ("you should" and friends are banned there).
 
 Usage:
-    python3 evals/check_skill.py [path-to-SKILL.md]   # default: skills/lockpatch/SKILL.md
+    python3 evals/check_skill.py [path-to-SKILL.md]   # default: skills/secure-my-app/SKILL.md
 Exit code 0 = all checks pass, 1 = at least one failed. Standard library only.
 """
 import os
 import re
 import sys
 
-NAME = "lockpatch"
+NAME = "secure-my-app"
 DEFAULT_PATH = os.path.join("skills", NAME, "SKILL.md")
 
 # Locked byte-identical across the whole repo (README, plugin.json, both mirrors,

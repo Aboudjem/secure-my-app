@@ -28,7 +28,7 @@ jobs:
           python3 - <<'PY'
           import re, sys
 
-          path = "skills/lockpatch/SKILL.md"
+          path = "skills/secure-my-app/SKILL.md"
           try:
               with open(path, "r", encoding="utf-8") as f:
                   text = f.read()
@@ -98,8 +98,8 @@ jobs:
           elif len(name) > 64:
               print(f"FAIL: 'name' must be <= 64 chars (got {len(name)})")
               ok = False
-          elif name != "lockpatch":
-              print(f"FAIL: 'name' must be 'lockpatch' to match skills/lockpatch/ (got {name!r})")
+          elif name != "secure-my-app":
+              print(f"FAIL: 'name' must be 'secure-my-app' to match skills/secure-my-app/ (got {name!r})")
               ok = False
           else:
               print(f"PASS: 'name' is valid ({name!r})")
@@ -178,7 +178,7 @@ jobs:
       # (b) SKILL EVAL: the design lock encoded as assertions (RED->GREEN regression guard)
       - name: Skill eval (check_skill.py)
         shell: bash
-        run: python3 evals/check_skill.py skills/lockpatch/SKILL.md
+        run: python3 evals/check_skill.py skills/secure-my-app/SKILL.md
 
       # (b2) MANIFEST + CONTRACT TESTS: AGENTS.md calls this a release gate, so CI must run it.
       #      Covers manifest validity, version parity, the required-file list, the frontmatter

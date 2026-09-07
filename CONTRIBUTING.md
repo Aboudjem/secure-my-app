@@ -1,6 +1,6 @@
-# Contributing to lockpatch
+# Contributing to secure-my-app
 
-Thanks for wanting to help. `lockpatch` is a Claude Code skill that audits an app's security:
+Thanks for wanting to help. `secure-my-app` is a Claude Code skill that audits an app's security:
 **find what a stranger can take from your app, then close it and prove it closed**. The second
 half is the whole promise. Every finding carries the command that shows the hole and the output
 that command produced, and no fix counts as done until the attacker's request is refused and a
@@ -23,9 +23,9 @@ They are fixed, and they mean one thing each.
 - The **re-run** is the same proof request, executed again after the fix. It has to fail now.
 - The **login check** is the user's own authenticated path, executed again after the fix. It has
   to still work.
-- The audit's output lives under `.lockpatch/` in the project being audited, never in this repo.
+- The audit's output lives under `.secure-my-app/` in the project being audited, never in this repo.
 
-Anything lockpatch believes but cannot reproduce is a **suspicion**, and the report says so in that
+Anything secure-my-app believes but cannot reproduce is a **suspicion**, and the report says so in that
 word. A suspicion is never counted, ranked or fixed as a finding.
 
 ## Repo layout
@@ -38,7 +38,7 @@ word. A suspicion is never counted, ranked or fixed as a finding.
   plugin.json           the same manifest under Cursor's directory name
 .copilot-plugin/
   plugin.json           the same manifest under GitHub Copilot's directory name
-skills/lockpatch/
+skills/secure-my-app/
   SKILL.md              the skill: the two phases, the audit procedure, the report
                         template, the proof rules, the fix-and-re-verify loop, the
                         handoff format
@@ -51,7 +51,7 @@ evals/
 tests/
   test_manifests.py     manifests, version parity, required files, README link and
                         asset resolution, i18n parity (runs in CI)
-examples/               an illustrative report in the shape lockpatch produces
+examples/               an illustrative report in the shape secure-my-app produces
 assets/                 animated SVGs + the 1280x640 social preview card
 docs/                   quickstart, editors, limits, faq
                         (docs/audit/ is a local build journal, gitignored)
@@ -108,7 +108,7 @@ These mirror the skill's rules in `AGENTS.md` and `SKILL.md`. Do not look for lo
   authenticated path has to still work. Removing the second check to make a scenario pass is the
   single change most likely to be rejected on sight.
 - **Secrets by location, never by value.** No code path may write a credential's value into the
-  report, the proof, or anything else under `.lockpatch/`. Name the file, the line, the
+  report, the proof, or anything else under `.secure-my-app/`. Name the file, the line, the
   environment variable, and print a redacted form.
 - **Never rewrite history, never destroy evidence.** No `git rebase`, no `git commit --amend`, no
   force-push, no `git filter-branch`, and no deleting a file that holds the evidence for a
@@ -137,12 +137,12 @@ These mirror the skill's rules in `AGENTS.md` and `SKILL.md`. Do not look for lo
 
 ```bash
 # 1. Both deterministic suites must pass.
-python3 evals/check_skill.py skills/lockpatch/SKILL.md    # expect: exit 0, all checks pass
+python3 evals/check_skill.py skills/secure-my-app/SKILL.md    # expect: exit 0, all checks pass
 python3 tests/test_manifests.py                           # expect: exit 0, all checks pass
 
 # 2. Run the skill for real: drop it in and exercise the path you changed.
-cp -r skills/lockpatch ~/.claude/skills/lockpatch
-#   then ask Claude Code: "lockpatch this" in an app you own
+cp -r skills/secure-my-app ~/.claude/skills/secure-my-app
+#   then ask Claude Code: "secure my app" in an app you own
 ```
 
 For a behavioral change, re-run the relevant [`evals/scenarios.md`](evals/scenarios.md) case cold
@@ -158,7 +158,7 @@ about the checks that matter.
 - One logical change per PR. Smaller PRs get reviewed faster.
 - In the PR description include: the RED baseline (the failure you observed), the GREEN fix, and
   how you verified it (`check_skill.py` output and/or a sample run).
-- **Never commit a `.lockpatch/` directory, a real proof request, a real hostname, a token, or
+- **Never commit a `.secure-my-app/` directory, a real proof request, a real hostname, a token, or
   anything from `docs/audit/`.** A finding from your own app is not a test fixture.
 - Be kind in review, see [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 

@@ -1,11 +1,11 @@
-# --- lockpatch's own state ---
-# lockpatch writes its whole audit into <project>/.lockpatch/: the findings report, the request
+# --- secure-my-app's own state ---
+# secure-my-app writes its whole audit into <project>/.secure-my-app/: the findings report, the request
 # that proves each finding, the re-run log for every applied fix, and the raw responses it read
 # to reach a verdict. Those files quote real hosts, real headers, real tokens and, when the
 # finding IS a leaked credential, the credential itself. A findings report is also a map of
 # what still works: committing one publishes the exploit before the fix lands. Never commit it,
 # in this repo or in the project being audited; keep this repo generic.
-.lockpatch/
+.secure-my-app/
 .goal/
 
 # --- OS / editor noise ---

@@ -1,11 +1,11 @@
-# lockpatch
+# secure-my-app
 
 > Find what a stranger can take from your app. Then close it and prove it closed.
 >
-> lockpatch is a Claude Code skill (an Agent Skill) that audits one specific codebase against 64
+> secure-my-app is a Claude Code skill (an Agent Skill) that audits one specific codebase against 65
 > named security controls in seven groups, and it is the absence-of-a-control tool rather than the
 > flaw-in-a-diff tool: Claude Code's built-in `/security-review` reads a diff and finds the bug in
-> code you wrote; lockpatch reads the whole app and finds the defence you never wrote. Every finding
+> code you wrote; secure-my-app reads the whole app and finds the defence you never wrote. Every finding
 > carries the command that demonstrates it and that command's real output, with secrets redacted to a
 > provider prefix plus four characters. Nothing is fixed until the user approves that specific fix,
 > one finding at a time, and no fix is marked closed until the attacker's request is refused AND a
@@ -15,9 +15,9 @@
 > that an app is secure. The third gate label is the words "NOTHING CONFIRMED HERE", printed with
 > its coverage counts. MIT licensed.
 
-lockpatch fills a specific gap. Diff-shaped security review cannot see a control that was never
+secure-my-app fills a specific gap. Diff-shaped security review cannot see a control that was never
 written, and generic security advice cannot tell you whether you needed a control, whether you
-already have it, or whether the thing you just added works. lockpatch answers those three questions
+already have it, or whether the thing you just added works. secure-my-app answers those three questions
 about one codebase, with commands whose output the user can read.
 
 The whole skill rests on one rule: **no proof, no finding; no re-proof, no fix.** A candidate finding
@@ -40,7 +40,7 @@ rule (`DO NOT LAUNCH` >= 1 critical; `LAUNCH WITH KNOWN GAPS` 0 critical and >= 
 CONFIRMED HERE` 0 critical and 0 high), always printed with its coverage on the same line, e.g.
 `GATE: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 6 n/a   [static only, no live
 probes]`. The rating is deterministic; the scan is not, because discovery and classification are
-judgements. `.lockpatch/surface.json` exists so a second run can be diffed against the first.
+judgements. `.secure-my-app/surface.json` exists so a second run can be diffed against the first.
 
 Every fix is proven twice, in opposite directions: after the fix the attacker's request must FAIL and
 the legitimate user's request must STILL SUCCEED. "Fails" means an authorization refusal from the
@@ -50,52 +50,52 @@ HUMAN`; fixes are never stacked.
 
 The seven control groups, in the order an attacker tries them: KEYS (8 controls: secrets, key scope,
 rotation), DOOR (9: authentication), ROOMS (10: authorization, RLS, IDOR, tenant isolation, mass
-assignment), PIPES (12: injection, XSS, CSRF, SSRF, CORS, redirects, webhooks, headers, transport),
+assignment), PIPES (13: injection, XSS, CSRF, SSRF, CORS, redirects, webhooks, headers, transport),
 VAULT (8: data at rest and data leaving), FLOOR (10: abuse, cost, business logic, AI
 features), SUPPLY (7: dependencies, lockfiles, CI). ROOMS is where the expensive breaches live and where
 agent-written code is weakest.
 
 ## Docs
 
-- [README](https://github.com/Aboudjem/lockpatch/blob/main/README.md): What lockpatch is, who it is for, how to install and use it.
-- [SKILL.md](https://github.com/Aboudjem/lockpatch/blob/main/skills/lockpatch/SKILL.md): The skill definition, covering the ladder, the three outcomes, the evidence tiers, the six phases, the severity matrix and the gate, the paired test, the dangerous parts, what it refuses to do, and the honest limits.
-- [Quickstart](https://github.com/Aboudjem/lockpatch/blob/main/docs/quickstart.md): A first run start to finish on a Next.js and Supabase app, with the output the user actually sees.
-- [Honest limits](https://github.com/Aboudjem/lockpatch/blob/main/docs/limits.md): Everything lockpatch does not promise: why a clean run is not a certificate, why UNPROVEN is not a pass, what it cannot see, and why it is not a pentest.
-- [The control catalogue](https://github.com/Aboudjem/lockpatch/blob/main/docs/controls.md): All 65 controls in seven groups, id and one line each, linking to the runnable file.
-- [Install in your editor](https://github.com/Aboudjem/lockpatch/blob/main/docs/editors.md): The `npx skills add` one-liner and the `-a` code for Claude Code, Cursor, Codex, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed and Continue.dev, plus the manual copy path.
-- [FAQ](https://github.com/Aboudjem/lockpatch/blob/main/docs/faq.md): How it differs from `/security-review`, why there is no score, what UNPROVEN means, what it does to a live site, and the rotate-before-scrub order.
-- [Security policy](https://github.com/Aboudjem/lockpatch/blob/main/SECURITY.md): How to report a problem in lockpatch itself.
-- [LICENSE (MIT)](https://github.com/Aboudjem/lockpatch/blob/main/LICENSE): Permissive MIT license.
+- [README](https://github.com/Aboudjem/secure-my-app/blob/main/README.md): What secure-my-app is, who it is for, how to install and use it.
+- [SKILL.md](https://github.com/Aboudjem/secure-my-app/blob/main/skills/secure-my-app/SKILL.md): The skill definition, covering the ladder, the three outcomes, the evidence tiers, the six phases, the severity matrix and the gate, the paired test, the dangerous parts, what it refuses to do, and the honest limits.
+- [Quickstart](https://github.com/Aboudjem/secure-my-app/blob/main/docs/quickstart.md): A first run in eight numbered steps on a Next.js and Supabase app: install, answer three questions, read the gate, fix one finding, hand over a leaked key.
+- [Honest limits](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md): Everything secure-my-app does not promise, opening on the line that a clean run is not evidence the app is secure: why UNPROVEN is not a pass, why the gate is not a verdict, what it cannot see, and why it is not a pentest.
+- [The control catalogue](https://github.com/Aboudjem/secure-my-app/blob/main/docs/controls.md): All 65 controls in seven groups as scannable tables, id, control and what an attacker does without it, one row each. The runnable file holds the DETECT and VERIFY commands.
+- [Install in your editor](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md): The `npx skills add` one-liner and the `-a` code and install paths for Claude Code, Cursor, Codex, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev and Kimi Code CLI, plus the manual copy path and what degrades on an agent with no shell, no network or no file write.
+- [FAQ](https://github.com/Aboudjem/secure-my-app/blob/main/docs/faq.md): Short answers to the questions people actually ask: is it safe to run, will it break my app, does it send code anywhere (no network call of its own), does it need an API key (no), how it differs from `/security-review`, whether it fixes things automatically (no), what UNPROVEN means, and the rotate-before-scrub order.
+- [Security policy](https://github.com/Aboudjem/secure-my-app/blob/main/SECURITY.md): How to report a problem in secure-my-app itself.
+- [LICENSE (MIT)](https://github.com/Aboudjem/secure-my-app/blob/main/LICENSE): Permissive MIT license.
 
 ## Install
 
-lockpatch ships as a Claude Code plugin (in the 10x marketplace), through the skills CLI, and as a
+secure-my-app ships as a Claude Code plugin (in the 10x marketplace), through the skills CLI, and as a
 drop-in skill directory. It has no dependencies, no server and no account. Optional scanners
 (`gitleaks`, `trufflehog`, `semgrep`, `osv-scanner`) are used only if already installed, are never
 installed silently, and their absence never turns a check into a `PASS`.
 
-- Plugin (recommended): `claude plugin marketplace add Aboudjem/10x` then `claude plugin install lockpatch@10x`.
-- Skills CLI: `npx skills add Aboudjem/lockpatch`.
-- Manual / skill-only: `git clone https://github.com/Aboudjem/lockpatch`, then copy `skills/lockpatch` into `~/.claude/skills/`. Copy the whole directory: `references/` is loaded by relative path at run time.
+- Plugin (recommended): `claude plugin marketplace add Aboudjem/10x` then `claude plugin install secure-my-app@10x`.
+- Skills CLI: `npx skills add Aboudjem/secure-my-app`.
+- Manual / skill-only: `git clone https://github.com/Aboudjem/secure-my-app`, then copy `skills/secure-my-app` into `~/.claude/skills/`. Copy the whole directory: `references/` is loaded by relative path at run time.
 
-Then say "lockpatch this before I launch", or run `/lockpatch`. Flags: `--report-only` never offers
+Then say "secure my app before I launch", or run `/secure-my-app`. Flags: `--report-only` never offers
 to fix; `--group <keys|door|rooms|pipes|vault|floor|supply>` runs one group; `--live <url>` unlocks
 the runtime probes, which are off unless the user gives a URL and says yes.
 
 ## Skill
 
-- [Skill directory](https://github.com/Aboudjem/lockpatch/tree/main/skills/lockpatch): The full skill (`SKILL.md` plus `references/`).
-- [The runnable control catalogue](https://github.com/Aboudjem/lockpatch/blob/main/skills/lockpatch/references/controls.md): 65 controls with a DETECT and a VERIFY command each, plus the per-command RLS rules and the three-way read test.
-- [Per-stack references](https://github.com/Aboudjem/lockpatch/tree/main/skills/lockpatch/references/stacks): What each control looks like in a given stack, loaded only when that stack is detected: `supabase-nextjs.md`, `express-postgres.md`, `firebase.md`, `python.md`. A stack file never adds or removes controls.
-- [AGENTS.md](https://github.com/Aboudjem/lockpatch/blob/main/AGENTS.md): Instructions for AI agents using this repo, including the rules an agent MUST honor.
+- [Skill directory](https://github.com/Aboudjem/secure-my-app/tree/main/skills/secure-my-app): The full skill (`SKILL.md` plus `references/`).
+- [The runnable control catalogue](https://github.com/Aboudjem/secure-my-app/blob/main/skills/secure-my-app/references/controls.md): 65 controls with a DETECT and a VERIFY command each, plus the per-command RLS rules and the three-way read test.
+- [Per-stack references](https://github.com/Aboudjem/secure-my-app/tree/main/skills/secure-my-app/references/stacks): What each control looks like in a given stack, loaded only when that stack is detected: `supabase-nextjs.md`, `express-postgres.md`, `firebase.md`, `python.md`. A stack file never adds or removes controls.
+- [AGENTS.md](https://github.com/Aboudjem/secure-my-app/blob/main/AGENTS.md): Instructions for AI agents using this repo, including the rules an agent MUST honor.
 
 ## Examples
 
-- [Worked report](https://github.com/Aboudjem/lockpatch/blob/main/examples/sample-report.md): A full illustrative `.lockpatch/report.md` for a fictional Supabase and Next.js app, showing the gate line with coverage, four findings across three severities in the six-field-plus-STATUS shape, the unproven appendix, and the "not checked, and why" section.
+- [Worked report](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md): A full illustrative `.secure-my-app/report.md` for a fictional Supabase and Next.js app, showing the gate line with coverage, four findings across three severities in the six-field-plus-STATUS shape, the unproven appendix, and the "not checked, and why" section.
 
 ## Optional
 
-- [Evals](https://github.com/Aboudjem/lockpatch/tree/main/evals): The deterministic checks (`check_skill.py`), the behavioral scenarios, and the recorded RED baseline. Skip if a shorter context is needed.
-- [Changelog](https://github.com/Aboudjem/lockpatch/blob/main/CHANGELOG.md): Release history. Skip if a shorter context is needed.
-- [Contributing](https://github.com/Aboudjem/lockpatch/blob/main/CONTRIBUTING.md): How to propose a new control or a fix. Skip if a shorter context is needed.
-- [Simplified Chinese README](https://github.com/Aboudjem/lockpatch/blob/main/READMEs/zh-CN.md) · [Japanese](https://github.com/Aboudjem/lockpatch/blob/main/READMEs/ja.md) · [Spanish](https://github.com/Aboudjem/lockpatch/blob/main/READMEs/es.md) · [French](https://github.com/Aboudjem/lockpatch/blob/main/READMEs/fr.md): Translations of the README; they may lag the English one.
+- [Evals](https://github.com/Aboudjem/secure-my-app/tree/main/evals): The deterministic checks (`check_skill.py`), the behavioral scenarios, and the recorded RED baseline. Skip if a shorter context is needed.
+- [Changelog](https://github.com/Aboudjem/secure-my-app/blob/main/CHANGELOG.md): Release history. Skip if a shorter context is needed.
+- [Contributing](https://github.com/Aboudjem/secure-my-app/blob/main/CONTRIBUTING.md): How to propose a new control or a fix. Skip if a shorter context is needed.
+- [Simplified Chinese README](https://github.com/Aboudjem/secure-my-app/blob/main/READMEs/zh-CN.md) · [Japanese](https://github.com/Aboudjem/secure-my-app/blob/main/READMEs/ja.md) · [Spanish](https://github.com/Aboudjem/secure-my-app/blob/main/READMEs/es.md) · [French](https://github.com/Aboudjem/secure-my-app/blob/main/READMEs/fr.md): Translations of the README; they may lag the English one.

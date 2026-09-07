@@ -1,6 +1,6 @@
 # Free scanners, and what to do without them
 
-lockpatch has no dependencies. These tools are optional accelerators, never requirements.
+secure-my-app has no dependencies. These tools are optional accelerators, never requirements.
 
 ## The rule
 

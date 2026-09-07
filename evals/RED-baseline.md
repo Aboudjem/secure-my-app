@@ -1,4 +1,4 @@
-# lockpatch, recorded RED baseline
+# secure-my-app, recorded RED baseline
 
 > The evidence that the skill fixes real, observed failures. Skills are built test-first (RED, then
 > GREEN, then REFACTOR): watch the failure happen *without* the skill, write the minimum that fixes
@@ -23,10 +23,10 @@ The falsifiable RED for a skill eval is the missing file, because it proves the 
 finds nothing rather than passing vacuously. Run against a path that does not exist, verbatim:
 
 ```text
-$ python3 evals/check_skill.py /nonexistent/lockpatch/SKILL.md
-FAIL: /nonexistent/lockpatch/SKILL.md not found
+$ python3 evals/check_skill.py /nonexistent/secure-my-app/SKILL.md
+FAIL: /nonexistent/secure-my-app/SKILL.md not found
 ------------------------------------------------------------
-0 checks passed for /nonexistent/lockpatch/SKILL.md (nothing to check: RED)
+0 checks passed for /nonexistent/secure-my-app/SKILL.md (nothing to check: RED)
 ```
 
 Exit **1**, and a denominator of zero rather than an estimate. A suite that reports "0/98" when
@@ -51,7 +51,7 @@ FAIL: required file exists: evals/RED-baseline.md  (evals/RED-baseline.md is mis
 FAIL: required file exists: evals/scenarios.md  (evals/scenarios.md is missing)
 FAIL: examples/ ships at least one worked example (.md)  (examples/ holds no .md file)
 FAIL: README.md is readable  (README.md is missing)
-FAIL: every references/*.md skills/lockpatch/SKILL.md names exists (6 checked)  (missing under skills/lockpatch/references/: severity.md)
+FAIL: every references/*.md skills/secure-my-app/SKILL.md names exists (6 checked)  (missing under skills/secure-my-app/references/: severity.md)
 FAIL: READMEs/es.md exists  (READMEs/es.md is missing)
 FAIL: READMEs/fr.md exists  (READMEs/fr.md is missing)
 FAIL: READMEs/ja.md exists  (READMEs/ja.md is missing)
@@ -77,10 +77,10 @@ The failure modes the skill is built against are written down as expectations in
 models produce when asked to audit an app's security, not from a scored run, and the difference
 matters: an expectation is a hypothesis and a transcript is evidence.
 
-**How to record the missing baseline.** For Scenario 1, prompt a model with *"lockpatch this before
+**How to record the missing baseline.** For Scenario 1, prompt a model with *"secure my app before
 we launch"* against an app you own that has two accounts, a database, and one table whose row-level
 security is genuinely off. Run it once with no skill installed and once with
-`../skills/lockpatch/SKILL.md` active. Score both transcripts against the seven-dimension rubric
+`../skills/secure-my-app/SKILL.md` active. Score both transcripts against the seven-dimension rubric
 with a separate, stronger model that did not produce either. Redact hosts, paths, headers and
 tokens before anything is written down. Then replace this section with the result, quoting the
 load-bearing lines, and say which model and which date.
@@ -95,15 +95,15 @@ because they are where a confident model does the most damage.
 Deterministic GREEN is both suites at exit 0:
 
 ```bash
-python3 evals/check_skill.py skills/lockpatch/SKILL.md
+python3 evals/check_skill.py skills/secure-my-app/SKILL.md
 python3 tests/test_manifests.py
 ```
 
 Measured 2026-09-06, after the skill landed and the story sentence was settled:
 
 ```text
-$ python3 evals/check_skill.py skills/lockpatch/SKILL.md
-72/72 checks passed for skills/lockpatch/SKILL.md          # exit 0, GREEN
+$ python3 evals/check_skill.py skills/secure-my-app/SKILL.md
+72/72 checks passed for skills/secure-my-app/SKILL.md          # exit 0, GREEN
 
 $ python3 tests/test_manifests.py
 69/79 checks passed                                         # exit 1, 10 failed

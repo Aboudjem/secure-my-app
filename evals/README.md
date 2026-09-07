@@ -1,9 +1,9 @@
-# lockpatch evals
+# secure-my-app evals
 
 Two layers, both built test-first (RED, then GREEN, then REFACTOR). The recorded baselines live in
 [`RED-baseline.md`](RED-baseline.md).
 
-The reason this repo carries an eval suite at all: lockpatch produces claims about somebody's
+The reason this repo carries an eval suite at all: secure-my-app produces claims about somebody's
 security, and people act on those claims. A skill that drifts into advice-shaped output, or that
 promotes a guess to a CRITICAL, fails silently. There is no crash and no red test in the user's
 project. CI is the only place that failure can be caught.
@@ -12,13 +12,13 @@ project. CI is the only place that failure can be caught.
 
 ### `check_skill.py`: the design lock as assertions on `SKILL.md`
 
-Encodes the house contract and the lockpatch design lock as pass/fail checks on
-`../skills/lockpatch/SKILL.md`. It is the regression guard: if a future edit drops the WHEN-only
+Encodes the house contract and the secure-my-app design lock as pass/fail checks on
+`../skills/secure-my-app/SKILL.md`. It is the regression guard: if a future edit drops the WHEN-only
 description, the story sentence, a required section, the section order, or a reference file it
 points at, CI goes red.
 
 ```bash
-python3 evals/check_skill.py skills/lockpatch/SKILL.md
+python3 evals/check_skill.py skills/secure-my-app/SKILL.md
 ```
 
 What it asserts:
@@ -34,7 +34,7 @@ What it asserts:
 - **Structure**: the H1 is the bare slug; a section exists for each house function (the overview,
   the invocation, when to use and when not, the procedure, the hard rules, the output artifact, the
   depth pointer, the failure modes) and they appear in that order; honest limits and cross-harness
-  are present; the body is under 600 lines; `/lockpatch`, `$ARGUMENTS` and the `.lockpatch/` output
+  are present; the body is under 600 lines; `/secure-my-app`, `$ARGUMENTS` and the `.secure-my-app/` output
   directory are all documented; and the report template sits in one fenced ` ```markdown ` block.
 - **Style**: no emoji in any heading, and no em dash anywhere in the file. Arrows, the middle dot
   and the maths operators the house uses on purpose are left alone.
@@ -58,14 +58,14 @@ A section may carry its own domain name as long as the function is there: `## Th
 procedure, `## The output` as the artifact, `## What this refuses to do` as the hard rules. The
 contract is the function and the order, not a fixed vocabulary.
 
-**The RED.** This suite was written and run before `skills/lockpatch/SKILL.md` existed. The
+**The RED.** This suite was written and run before `skills/secure-my-app/SKILL.md` existed. The
 recorded run and its verbatim output are in [`RED-baseline.md`](RED-baseline.md).
 
 Two RED targets you can reproduce right now:
 
 ```bash
 # (i) the missing-file RED, the original baseline's shape
-python3 evals/check_skill.py /nonexistent/lockpatch/SKILL.md   # exit 1, 0 checks ran
+python3 evals/check_skill.py /nonexistent/secure-my-app/SKILL.md   # exit 1, 0 checks ran
 
 # (ii) a real sibling skill of the wrong shape
 git clone https://github.com/Aboudjem/loopify /tmp/loopify
@@ -73,8 +73,8 @@ python3 evals/check_skill.py /tmp/loopify/skills/loopify/SKILL.md   # exit 1
 ```
 
 (ii) is the useful one. loopify is a well-formed, shipping Agent Skill built by the same author to
-the same standards, so the checks it fails are precisely the lockpatch-specific contract: the story
-sentence, the proof-and-approval clauses, the section functions, the `.lockpatch/` output directory.
+the same standards, so the checks it fails are precisely the secure-my-app-specific contract: the story
+sentence, the proof-and-approval clauses, the section functions, the `.secure-my-app/` output directory.
 It passes the generic ones (spec-clean frontmatter, a documented `$ARGUMENTS`, a body under the line
 cap). Record the figure you measure along with the loopify version you cloned; a number without a
 version pinned to it is not reproducible.
@@ -108,6 +108,6 @@ measured behavioral improvement. [`RED-baseline.md`](RED-baseline.md) section 2 
 the missing baseline, and which two scenarios are worth recording first.
 
 To run one yourself: prompt a model twice, once with no skill and once with
-`skills/lockpatch/SKILL.md` active, against an app you own with a real login and more than one user
+`skills/secure-my-app/SKILL.md` active, against an app you own with a real login and more than one user
 account, then score each transcript against the rubric. Never let the model that produced the
 transcript score it. Redact hosts, paths, headers and tokens before any transcript is written down.

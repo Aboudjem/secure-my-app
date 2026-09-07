@@ -58,7 +58,7 @@ with "probably fine". You do not know, and the failure mode is expensive.
 
 ## Step 3. Rotate. The human does this.
 
-lockpatch never rotates a credential. You do not have the provider console, you cannot see whether
+secure-my-app never rotates a credential. You do not have the provider console, you cannot see whether
 the new key propagated, and a rotation you get half-right takes the app down.
 
 Write the runbook instead. One block per leaked credential:

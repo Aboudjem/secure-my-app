@@ -1,24 +1,24 @@
 ---
-name: lockpatch
+name: secure-my-app
 description: >-
   Find what a stranger can take from your app. Then close it and prove it closed. Every finding
   carries the command that shows the hole and the output it produced, so nothing is reported that
   cannot be demonstrated. Nothing is fixed until you approve it, one finding at a time, and no fix
   counts as done until the attacker's request is refused and a legitimate user's still works. Use when
-  the user says "lockpatch", "secure my app", "harden this", "is this safe to launch", "am I going to
+  the user says "secure-my-app", "secure my app", "harden this", "is this safe to launch", "am I going to
   get hacked", "check my RLS", "did I leak a key", or "security audit", or ships a Supabase, Next.js,
   Firebase, Express or Django app built fast and wants it locked down. Claude Code's built-in
-  /security-review finds a bug in code you wrote; lockpatch finds the defence you never wrote. Covers
+  /security-review finds a bug in code you wrote; secure-my-app finds the defence you never wrote. Covers
   secrets, authentication, record and tenant access, injection, data leaving the app, abuse, and
   dependencies. Read-only until you approve a fix. Never rewrites git history and never rotates a
   credential for you.
 argument-hint: "[path, url, or control group to audit]"
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
-# lockpatch
+# secure-my-app
 
 ## Overview
 
@@ -26,7 +26,7 @@ In one line, for anyone: **Find what a stranger can take from your app. Then clo
 closed.**
 
 Most security advice tells you what to add. It cannot tell you whether you needed it, whether you
-already have it, or whether the thing you just added works. lockpatch answers those three questions
+already have it, or whether the thing you just added works. secure-my-app answers those three questions
 about one specific codebase, and it answers them with commands whose output you can read yourself.
 
 **The whole skill rests on one rule. Do not break it:**
@@ -38,7 +38,7 @@ trusts you are worse than silence. A fix you have not re-run is not a fix, it is
 
 ## Invocation
 
-Triggered by natural language ("lockpatch this before I launch") or as `/lockpatch <target>`.
+Triggered by natural language ("secure my app before I launch") or as `/secure-my-app <target>`.
 `$ARGUMENTS` may be empty, a path, a live URL, or a control group name (`keys`, `door`, `rooms`,
 `pipes`, `vault`, `floor`, `supply`).
 
@@ -59,7 +59,7 @@ is not a pentest, see "What this refuses to do"); a library with no runtime and 
 response on an app you believe is being attacked right now (that is a human page, not a skill);
 finding bugs in code the user just wrote, which is what Claude Code's built-in `/security-review`
 already does well. The two are complements. `/security-review` reads a diff and finds the flaw in
-what is there. lockpatch reads the whole app and finds the control that is not there at all.
+what is there. secure-my-app reads the whole app and finds the control that is not there at all.
 
 ## The ladder
 
@@ -140,7 +140,7 @@ touches git.
 **Phase 1. Map the surface.**
 Build the inventory before judging anything: every route and handler with its methods, every table
 with its RLS state, every client-side database call, every env var referenced from client-reachable
-code, every webhook receiver, every upload path, every LLM call. Write `.lockpatch/surface.json`.
+code, every webhook receiver, every upload path, every LLM call. Write `.secure-my-app/surface.json`.
 This is what makes a second run a diff instead of a fresh wall of text.
 
 **Phase 2. Run the control checks.**
@@ -277,7 +277,7 @@ explicit confirmation, and it comes with a warning that every collaborator must 
 
 **Rotation comes before rewriting, always.** This is the most common mistake in the entire genre. A
 secret that was public for five minutes is compromised forever. Purging it from history without
-rotating it produces a clean-looking repo and a live stolen key. lockpatch never rotates a credential
+rotating it produces a clean-looking repo and a live stolen key. secure-my-app never rotates a credential
 for you; it writes the runbook and you run it. See `references/secrets-runbook.md`.
 
 **Breaking a working login.** Auth fixes are the highest-risk edits here. Never apply one without the
@@ -285,7 +285,7 @@ paired test above. If the project has no tests covering the auth path, say that 
 touching it and offer to write the test first.
 
 **False confidence.** The report must always carry its "not checked, and why" section naming what
-lockpatch cannot see: infrastructure, IAM, DNS, physical access, social engineering, and anything
+secure-my-app cannot see: infrastructure, IAM, DNS, physical access, social engineering, and anything
 behind a login you were not given. A user who thinks a clean report means a safe app has been harmed
 by this skill, not helped.
 
@@ -342,9 +342,9 @@ The skill is Markdown, so it travels. Nothing here needs Claude Code specificall
 
 | Where | How |
 | --- | --- |
-| Claude Code | `claude plugin install lockpatch@10x`, then `/lockpatch` |
-| Cursor, Codex, Copilot, Gemini CLI, and others | `npx skills add Aboudjem/lockpatch` |
-| Anything else | Copy `skills/lockpatch/` into the directory your agent reads |
+| Claude Code | `claude plugin install secure-my-app@10x`, then `/secure-my-app` |
+| Cursor, Codex, Copilot, Gemini CLI, and others | `npx skills add Aboudjem/secure-my-app` |
+| Anything else | Copy `skills/secure-my-app/` into the directory your agent reads |
 
 What changes between harnesses is only the tooling underneath, and the skill degrades honestly rather
 than silently. An agent with no shell cannot run the DETECT commands, so those controls come back
@@ -359,7 +359,7 @@ Three artifacts, in decreasing urgency.
 **On screen:** the gate line, every CRITICAL in full, the HIGHs as one line each, then counts. If the
 criticals scroll off the top, it is wrong.
 
-**`.lockpatch/report.md`:** the full report, ordered by severity. Every finding is the same six
+**`.secure-my-app/report.md`:** the full report, ordered by severity. Every finding is the same six
 fields, in this order, always:
 
 ```markdown
@@ -376,13 +376,13 @@ STATUS   OPEN | FIXED | FIX FAILED | DECLINED | HANDED OVER | OUT OF SCOPE
 
 Then the `UNPROVEN` appendix, then "not checked, and why".
 
-**`.lockpatch/surface.json`:** the inventory and findings as data, so the next run can say "3 fixed,
+**`.secure-my-app/surface.json`:** the inventory and findings as data, so the next run can say "3 fixed,
 1 regressed, 1 new" instead of starting over.
 
 Example, as it appears on screen:
 
 ```
-LOCKPATCH   gate: DO NOT LAUNCH      2 critical  5 high  9 medium  4 unproven
+SECURE-MY-APP   gate: DO NOT LAUNCH      2 critical  5 high  9 medium  4 unproven
 scan: static + live (https://app.example.com)   gitleaks yes, osv yes, semgrep no
 
 CRITICAL  R1  Anyone can read every row of `profiles`
