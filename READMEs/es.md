@@ -30,6 +30,8 @@ Abre tu proyecto en tu agente y di:
 secure my app before I launch
 ```
 
+## Qué obtienes
+
 Escribe `.secure-my-app/report.md` y se detiene. Este es el inicio de un informe real, del 2026-11-17:
 
 ```text

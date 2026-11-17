@@ -30,6 +30,8 @@ Ouvrez votre projet dans votre agent et dites :
 secure my app before I launch
 ```
 
+## Ce que vous obtenez
+
 Il écrit `.secure-my-app/report.md` puis s'arrête. Voici le haut d'un vrai rapport, du 2026-11-17 :
 
 ```text

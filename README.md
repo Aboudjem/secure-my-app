@@ -29,6 +29,8 @@ Open your project in your agent and say:
 secure my app before I launch
 ```
 
+## What you get
+
 It writes `.secure-my-app/report.md` and stops. This is the top of a real one, from 2026-11-17:
 
 ```text

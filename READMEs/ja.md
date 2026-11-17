@@ -30,6 +30,8 @@ npx skills add Aboudjem/secure-my-app
 secure my app before I launch
 ```
 
+## 得られるもの
+
 `.secure-my-app/report.md` を書いて止まります。以下は 2026-11-17 の実際のレポートの冒頭です。
 
 ```text
