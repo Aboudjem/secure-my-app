@@ -31,6 +31,8 @@ npx skills add Aboudjem/secure-my-app -g
 # then, in your agent: secure my app before I launch
 ```
 
+## Qué obtienes
+
 El inicio de un informe real, de una ejecución sobre la pequeña aplicación de prueba de este repositorio, el 2026-11-17:
 
 ```text

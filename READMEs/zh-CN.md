@@ -31,6 +31,8 @@ npx skills add Aboudjem/secure-my-app -g
 # then, in your agent: secure my app before I launch
 ```
 
+## 你会得到什么
+
 一份真实报告的开头，来自 2026-11-17 在本仓库小型测试应用上的一次运行：
 
 ```text

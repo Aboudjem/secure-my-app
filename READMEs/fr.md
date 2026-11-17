@@ -31,6 +31,8 @@ npx skills add Aboudjem/secure-my-app -g
 # then, in your agent: secure my app before I launch
 ```
 
+## Ce que vous obtenez
+
 Le début d'un vrai rapport, issu d'une exécution sur la petite application d'essai de ce dépôt, le 2026-11-17 :
 
 ```text
