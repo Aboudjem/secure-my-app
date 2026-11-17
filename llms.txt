@@ -6,8 +6,9 @@
 > named security controls in seven groups, and it is the absence-of-a-control tool rather than the
 > flaw-in-a-diff tool: Claude Code's built-in `/security-review` reads a diff and finds the bug in
 > code you wrote; secure-my-app reads the whole app and finds the defence you never wrote. Every finding
-> carries the command that demonstrates it and that command's real output, with secrets redacted to a
-> provider prefix plus four characters. Nothing is fixed until the user approves that specific fix,
+> carries its proof: the code line, and with a live URL the request and its real output, with secrets
+> redacted to a provider prefix plus four characters. Without a live URL most access checks come
+> back UNPROVEN. Nothing is fixed until the user approves that specific fix,
 > one finding at a time, and no fix is marked closed until the attacker's request is refused AND a
 > legitimate user's request still works. It is read-only through phases 0 to 4. It never rotates a
 > credential and never rewrites git history on its own initiative. It is not a penetration test and

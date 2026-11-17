@@ -1,8 +1,9 @@
 # FAQ
 
 Find what a stranger can take from your app, then close it and prove it closed. One Agent Skill: it
-reads your project, runs 65 named control checks, writes a report where every finding carries the
-command that demonstrates it, and stops until you say what to fix.
+reads your project, runs 65 named control checks, writes a report where every finding carries its
+proof (a code line, and with a live URL the request and its output), and stops until you say what
+to fix.
 
 ## Is it safe to run
 

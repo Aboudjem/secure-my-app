@@ -100,51 +100,51 @@
 
   <main>
     <div class="left">
-      <h1>Find what a stranger<br>can take.</h1>
-      <p class="sub">Then close it and prove it closed. Every finding carries the command that shows the hole.</p>
+      <h1>What can a<br>stranger take?</h1>
+      <p class="sub">65 checks. Every hole proven. Nothing changed without your yes.</p>
 
       <div class="gate">
-        <b>GATE: DO NOT LAUNCH</b>
-        <span>coverage <span class="chip">41 checked / 9 unproven / 6 n/a</span></span><br>
-        <span>static only, no live probes until you say yes</span>
+        <b>VERDICT: DO NOT LAUNCH</b>
+        <span>coverage <span class="chip">21 checked / 2 unproven / 42 n/a</span></span><br>
+        <span>a real run on the repo's test app, 2026-11-17</span>
       </div>
     </div>
 
     <div class="sheet">
       <div class="clamp"><u></u><u></u></div>
       <div class="sheet-in">
-        <div class="sheet-hd"><span>FINDINGS</span><em>4 rungs each</em></div>
-    <div class="row crit"><span>ROOMS &middot; profiles readable by anyone</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
-    <div class="row crit"><span>KEYS &middot; live key committed in .env</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
-    <div class="row"><span>DOOR &middot; no rate limit on /login</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>HIGH</s></div>
-    <div class="row"><span>PIPES &middot; CORS allows any origin</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>MEDIUM</s></div>
-    <div class="row"><span>VAULT &middot; stack traces reach users</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>LOW</s></div>
-    <div class="row"><span>FLOOR &middot; no cap on upload size</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i class="off" style="width:14px"></i><i class="off" style="width:11px"></i></div><s>UNPROVEN</s></div>
-    <div class="row"><span>SUPPLY &middot; no install-script surface</span><div class="rungs"><i class="off" style="width:20px"></i><i class="off" style="width:17px"></i><i class="off" style="width:14px"></i><i class="off" style="width:11px"></i></div><s>N/A</s></div>
+        <div class="sheet-hd"><span>FINDINGS</span><em>7 of 11</em></div>
+    <div class="row crit"><span>K3 &middot; session signing key in the repo</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
+    <div class="row crit"><span>D3 &middot; unsalted SHA-256 passwords</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
+    <div class="row crit"><span>R10 &middot; /admin/export open to anyone</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>CRITICAL</s></div>
+    <div class="row"><span>R4 &middot; read any invoice by its number</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>HIGH</s></div>
+    <div class="row"><span>R6 &middot; a user can make themself admin</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>HIGH</s></div>
+    <div class="row"><span>D6 &middot; unlimited password guesses</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>MEDIUM</s></div>
+    <div class="row"><span>V3 &middot; stack traces reach the caller</span><div class="rungs"><i style="width:20px"></i><i style="width:17px"></i><i style="width:14px"></i><i style="width:11px"></i></div><s>MEDIUM</s></div>
       </div>
     </div>
   </main>
 
   <div class="proof">
-    <div class="proof-hd"><span>THE SAME REQUEST, BEFORE AND AFTER THE FIX</span><em>Both halves re-run, or the fix does not count.</em></div>
+    <div class="proof-hd"><span>R4 &middot; ALICE ASKS FOR BOB'S INVOICE</span><em>The fix counts only when VERIFY shows the change.</em></div>
     <div class="pair">
-      <span class="who atk">ATTACKER</span>
-      <span class="path">curl -s $APP/api/orders/1042</span>
+      <span class="who atk">ALICE</span>
+      <span class="path">GET /api/invoices/1042 (bob's)</span>
       <span class="was">200 OK</span>
       <span class="arrow">&rarr;</span>
-      <span class="now">403 REFUSED</span>
+      <span class="now">VERIFY: 404</span>
 
-      <span class="who">REAL USER</span>
-      <span class="path">curl -s -b "$SESSION" $APP/api/orders/7</span>
+      <span class="who">ALICE</span>
+      <span class="path">GET /api/invoices/1041 (hers)</span>
       <span class="was ok">200 OK</span>
       <span class="arrow">&rarr;</span>
-      <span class="now">200 OK</span>
+      <span class="now">VERIFY: 200</span>
     </div>
   </div>
 
   <footer>
-    <span>No proof, no finding. No re-proof, no fix.</span>
-    <span class="repo">a Claude Code skill &middot; github.com/Aboudjem/secure-my-app</span>
+    <span>Say: <b style="color:var(--bone);font-family:var(--mono);font-size:15px">secure my app before I launch</b></span>
+    <span class="repo">npx skills add Aboudjem/secure-my-app</span>
   </footer>
 </div>
 </body>

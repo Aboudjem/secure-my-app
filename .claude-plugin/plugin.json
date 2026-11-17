@@ -1,7 +1,7 @@
 {
   "name": "secure-my-app",
-  "version": "0.3.0",
-  "description": "Find what a stranger can take from your app. Then close it and prove it closed.",
+  "version": "0.3.1",
+  "description": "Runs 65 security checks on your app before launch. Each hole comes with its proof, and a fix counts only when the VERIFY command shows the change.",
   "author": {
     "name": "Adam Boudjemaa",
     "url": "https://github.com/Aboudjem"

@@ -14,7 +14,8 @@ Manifest + contract tests for secure-my-app (a release gate; runs in CI).
   5. Every relative link in README.md resolves to a file that exists.
   6. Every asset README.md references resolves to a file that exists.
   7. Every references/*.md path SKILL.md mentions exists on disk.
-  8. READMEs/{es,fr,ja,zh-CN}.md exist and carry the may-lag marker.
+  8. READMEs/{es,fr,ja,zh-CN}.md exist, carry the may-lag marker, and match the English README's
+     code blocks (verbatim) and heading levels.
   9. The README contract: the install commands, what to type next, the section order, a FAQ,
      no star badge, a works-with table with dates, and a sample that is the header of the
      committed real report, line for line. The counts it quotes are the counts the suites print.
@@ -37,10 +38,11 @@ failures = []
 _total = 0
 
 NAME = "secure-my-app"
-# The story sentence is not hardcoded here. .claude-plugin/plugin.json owns it, and every
-# other place that carries it is compared against that one, so a copy cannot silently
-# drift. evals/check_skill.py pins it independently as a Python literal, and the last
-# check in section 1 compares the two, which is what closes the loop.
+# Two strings, two owners, so neither copy can silently drift:
+#  - the story sentence (the README tagline, the start of SKILL.md's description) is owned by
+#    the STORY literal in evals/check_skill.py, which also checks SKILL.md against it;
+#  - the listing description (what a marketplace shows) is owned by .claude-plugin/plugin.json,
+#    and marketplace.json plus the two editor mirrors are compared against it.
 
 SKILL_MD = f"skills/{NAME}/SKILL.md"
 
@@ -150,8 +152,27 @@ check(".claude-plugin/plugin.json homepage points at the repo",
       f"github.com/Aboudjem/{NAME}" in plugin.get("homepage", ""),
       f"got {plugin.get('homepage')!r}")
 
-# The story sentence, read from the one manifest that owns it.
-STORY = plugin.get("description", "")
+# The listing description, read from the one manifest that owns it.
+LISTING = plugin.get("description", "")
+
+
+def _story_literal():
+    """The STORY literal of evals/check_skill.py, or None when it cannot be read."""
+    try:
+        m = re.search(r'^STORY = (.*?)\n\n', read("evals/check_skill.py"), re.DOTALL | re.MULTILINE)
+    except FileNotFoundError:
+        return None
+    return "".join(re.findall(r'"([^"]*)"', m.group(1))) if m else None
+
+
+# The story sentence, read from the one file that owns it.
+STORY = _story_literal() or ""
+check("evals/check_skill.py pins the story sentence as STORY", bool(STORY),
+      "evals/check_skill.py needs a `STORY = \"...\"` literal")
+check(".claude-plugin/plugin.json description is a listing line of 60 to 200 characters",
+      60 <= len(LISTING) <= 200, f"{len(LISTING)} characters")
+check(".claude-plugin/plugin.json description quotes the control count the catalogue holds",
+      "65 " in LISTING, LISTING[:80])
 
 check(f".claude-plugin/marketplace.json name == '{NAME}-marketplace'",
       mkt.get("name") == f"{NAME}-marketplace", f"got {mkt.get('name')!r}")
@@ -166,11 +187,11 @@ check(".claude-plugin/marketplace.json plugins[0].source == './'", _p0.get("sour
 check(".claude-plugin/marketplace.json plugins[0] has description >= 10 and version",
       len(_p0.get("description", "")) >= 10 and bool(_p0.get("version")),
       ".claude-plugin/marketplace.json plugins[0] is missing description or version")
-check(".claude-plugin/marketplace.json plugins[0].description matches the story sentence",
-      _p0.get("description") == STORY,
+check(".claude-plugin/marketplace.json plugins[0].description matches the listing description",
+      _p0.get("description") == LISTING,
       "plugins[0].description drifted from .claude-plugin/plugin.json")
-check(".claude-plugin/marketplace.json metadata.description matches the story sentence",
-      (mkt.get("metadata") or {}).get("description") == STORY,
+check(".claude-plugin/marketplace.json metadata.description matches the listing description",
+      (mkt.get("metadata") or {}).get("description") == LISTING,
       "metadata.description drifted from .claude-plugin/plugin.json")
 
 # The editor mirrors are the same plugin under another agent's directory name, so nothing but
@@ -188,21 +209,6 @@ for rel, m in ((".cursor-plugin/plugin.json", cursor), (".copilot-plugin/plugin.
           f"{rel} skills is {m.get('skills')!r}")
     check(f"{rel} declares no mcp key ({NAME} ships no server)", "mcp" not in m,
           f"{rel} carries an mcp key")
-
-# evals/check_skill.py pins the story sentence as a Python literal, so the skill eval can assert
-# it without reading a manifest. That literal and .claude-plugin/plugin.json are two copies of one
-# string, so they are compared here: without this check they drift apart and both suites stay
-# green while the repo says two different things.
-try:
-    _cs = read("evals/check_skill.py")
-    _csm = re.search(r'^STORY = (.*?)\n\n', _cs, re.DOTALL | re.MULTILINE)
-    _cs_story = "".join(re.findall(r'"([^"]*)"', _csm.group(1))) if _csm else None
-    check("evals/check_skill.py STORY matches .claude-plugin/plugin.json description",
-          _cs_story == STORY,
-          f"check_skill.py has {(_cs_story or '')[:60]!r}, plugin.json has {STORY[:60]!r}")
-except FileNotFoundError:
-    check("evals/check_skill.py is readable", False, "evals/check_skill.py is missing")
-
 
 # --- 2. one version, everywhere it is declared ---
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*(?:\n|$)", re.DOTALL)
@@ -307,8 +313,8 @@ def relative_targets(text):
 ASSET_EXT = (".svg", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".mp4")
 try:
     readme = read("README.md")
-    check("README.md carries the story sentence verbatim", STORY in readme,
-          "README.md must open on the same sentence plugin.json and SKILL.md carry")
+    check("README.md carries the story sentence verbatim", bool(STORY) and STORY in readme,
+          "README.md must carry the same story sentence SKILL.md carries")
     targets = relative_targets(readme)
     check("README.md has at least one relative link to check", bool(targets),
           "README.md carries no relative link at all, which is not the house shape")
@@ -352,6 +358,39 @@ for lang in TRANSLATIONS:
           f"{rel} has no language switcher pointing at ../README.md")
     check(f"{rel} carries the may-lag marker", "<!-- may-lag -->" in t,
           f"{rel} must carry the literal `<!-- may-lag -->` marker")
+
+# A translation is a full translation of the English README: the same fenced blocks, byte for
+# byte and in the same order (commands, the sample, the counts), and the same heading levels in
+# the same order. Prose is translated; code is not. A stale translation fails here, by name.
+_FENCE_BLOCK = re.compile(r"^```([^\n]*)\n(.*?)^```\s*$", re.MULTILINE | re.DOTALL)
+
+
+def _blocks_and_levels(text):
+    blocks = [(m.group(1).strip(), m.group(2)) for m in _FENCE_BLOCK.finditer(text)]
+    levels = [len(m.group(1)) for m in re.finditer(r"^(#{1,6}) \S", _FENCE_BLOCK.sub("", text),
+                                                   re.MULTILINE)]
+    return blocks, levels
+
+
+try:
+    _en_blocks, _en_levels = _blocks_and_levels(read("README.md"))
+except FileNotFoundError:
+    _en_blocks, _en_levels = None, None
+for lang in TRANSLATIONS:
+    rel = f"READMEs/{lang}.md"
+    if _en_blocks is None or not os.path.isfile(os.path.join(ROOT, rel)):
+        continue
+    _t_blocks, _t_levels = _blocks_and_levels(read(rel))
+    _diff = next((i for i, (a, b) in enumerate(zip(_en_blocks, _t_blocks)) if a != b), None)
+    check(f"{rel} carries the English README's {len(_en_blocks)} code blocks, verbatim and in order",
+          _t_blocks == _en_blocks,
+          f"{len(_t_blocks)} blocks; first difference at block {_diff}" if _diff is not None
+          else f"{len(_t_blocks)} blocks, English has {len(_en_blocks)}")
+    check(f"{rel} has the English README's heading levels, in order ({len(_en_levels)} headings)",
+          _t_levels == _en_levels, f"translation {_t_levels}, English {_en_levels}")
+    check(f"{rel} ends with the machine-assisted translation note",
+          "../README.md" in read(rel).strip().split("\n")[-1],
+          "the last line must say the translation is machine-assisted and point at ../README.md")
 
 # The translations describe the committed sample by its finding count. That count is the
 # number of severity headings in examples/sample-report.md, so a new sample cannot leave a

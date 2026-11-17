@@ -8,8 +8,8 @@ Human-facing docs live in `README.md`; this file holds the extra context an agen
 
 This repo is `secure-my-app`, a Claude Code and Agent Skills skill that **finds what a stranger can take
 from an app, then closes it and proves it closed.** It reads one specific codebase, runs 65 named
-control checks in seven groups, and writes a report in which every finding carries the command that
-demonstrates it and that command's real output.
+control checks in seven groups, and writes a report in which every finding carries its proof: the code line and, with a
+live URL, the request and its real output. Without a live URL most access checks come back UNPROVEN.
 
 It is the absence-of-a-control tool, not the flaw-in-a-diff tool. Claude Code's built-in
 `/security-review` reads a diff and finds the bug in code somebody wrote. secure-my-app reads the whole

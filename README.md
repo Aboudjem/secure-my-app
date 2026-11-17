@@ -17,59 +17,19 @@
   <strong>Find what a stranger can take from your app. Then close it and prove it closed.</strong>
 </p>
 
-A skill for coding agents. It reads your whole app and runs 65 named security checks.
-Every hole it reports comes with the command that proves it.
-
-## Install
-
-**Claude Code.** Add the marketplace, then install the plugin.
-
-```bash
-claude plugin marketplace add Aboudjem/10x
-```
-
-```bash
-claude plugin install secure-my-app@10x
-```
-
-**Any other agent.** One command.
+It reads your app, runs 65 named checks, and shows the proof for every hole it reports.
 
 ```bash
 npx skills add Aboudjem/secure-my-app
 ```
 
-**Then run it.** Open your project in the agent and say:
+Open your project in your agent and say:
 
 ```text
 secure my app before I launch
 ```
 
-That sentence matches the skill's description, so any agent that loads skills picks it up.
-On Codex CLI 0.169.0 it started the skill on 2026-11-17. Each agent also has a short trigger:
-
-| Agent | Short trigger |
-| --- | --- |
-| Claude Code | `/secure-my-app:secure-my-app` |
-| Codex CLI | `$secure-my-app` |
-
-It asks three questions, reads your code, and writes `.secure-my-app/report.md`. Then it stops.
-Nothing in your app changes until you approve one fix.
-
-### Works with
-
-| Agent | What ran | Tested |
-| --- | --- | --- |
-| Claude Code 2.1.326 | Plugin loaded, full run on the fixture, [report written](examples/sample-report.md) | 2026-11-17 |
-| Codex CLI 0.169.0 | `npx skills add -a codex`, full run on the fixture, [report written](examples/sample-report-codex.md) | 2026-11-17 |
-
-Documented, not tested: Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev and Kimi Code CLI.
-The skills CLI installs the same files for them. No run on those agents is recorded here.
-Per-agent paths are in [Install in your editor](docs/editors.md).
-
-## What you get
-
-A report that opens with the verdict, then the three things to do first.
-This is the top of a real one, written on 2026-11-17:
+It writes `.secure-my-app/report.md` and stops. This is the top of a real one, from 2026-11-17:
 
 ```text
 VERDICT: DO NOT LAUNCH   coverage 21 checked / 2 unproven / 42 n/a   [static + live: 127.0.0.1:4310]
@@ -80,7 +40,7 @@ DO FIRST
 3. R10 Put a sign-in check and an admin role check on GET /admin/export
 ```
 
-Below the header, every finding has the same fields. This one is from the same report:
+Can one user read another's invoice by changing a number in the URL? Here alice reads bob's:
 
 ```text
 HIGH R4 Any signed-in user can read any invoice by changing the number in the URL
@@ -97,9 +57,61 @@ VERIFY  alice:  GET /api/invoices/1042 (bob's)   -> 404 "no such invoice"
 STATUS  OPEN
 ```
 
+A fix counts only when that same request stops working.
+It is not a penetration test. Without a live URL most access checks come back `UNPROVEN`, and the only published run is a small fixture.
+
+You launch on Monday. You built fast, maybe with an agent.
+You do not know if one signed-in user can read another user's data. This finds out, and shows you how it knows.
+
+## Why use it
+
+- **Proof, not guesses.** Each finding shows its `PROOF`: the code line and, with a live URL, the request and its real output. `make test` replays the request behind each sample finding.
+- **A fix you can check.** Each finding has a `VERIFY` command whose output must change. All 11 findings in the [sample report](examples/sample-report.md) carry one: `grep -c '^VERIFY' examples/sample-report.md` prints 11.
+- **You stay in charge.** It writes a report and stops. Nothing in your app changes until you approve one fix. The sample report says `Nothing in the app was changed.`
+
+## Install
+
+**Claude Code.** Add the marketplace, then install the plugin.
+
+```bash
+claude plugin marketplace add Aboudjem/10x
+```
+
+```bash
+claude plugin install secure-my-app@10x
+```
+
+**Any other agent.** The skills CLI command at the top of this page installs it.
+Then say `secure my app before I launch`.
+That sentence matches the skill's description, so any agent that loads skills picks it up.
+On Codex CLI 0.169.0 it started the skill on 2026-11-17. Each agent also has a short trigger:
+
+| Agent | Short trigger |
+| --- | --- |
+| Claude Code | `/secure-my-app:secure-my-app` |
+| Codex CLI | `$secure-my-app` |
+
+It asks three questions, reads your code, and writes `.secure-my-app/report.md`. Then it stops.
+
+### Works with
+
+| Agent | What ran | Tested |
+| --- | --- | --- |
+| Claude Code 2.1.326 | Plugin loaded, full run on the fixture, [report written](examples/sample-report.md) | 2026-11-17 |
+| Codex CLI 0.169.0 | `npx skills add -a codex`, full run on the fixture, [report written](examples/sample-report-codex.md) | 2026-11-17 |
+
+Documented, not tested: Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev and Kimi Code CLI.
+The skills CLI installs the same files for them. No run on those agents is recorded here.
+Per-agent paths are in [Install in your editor](docs/editors.md).
+
+## Read the report
+
+The report opens with the verdict, then the three things to do first.
+Below the header, every finding has the same fields, like the R4 block at the top of this page.
+
 - **Where it comes from.** The app is [`examples/vulnerable-app/`](examples/vulnerable-app/README.md), a small API with holes left in on purpose.
-- **The whole report.** [`examples/sample-report.md`](examples/sample-report.md) is the file that run wrote, unedited. The second block above is shortened from it.
-- **`PROOF`** is a command and the output it gave, with secrets cut short.
+- **The whole report.** [`examples/sample-report.md`](examples/sample-report.md) is the file that run wrote, unedited. The R4 block above is shortened from it.
+- **`PROOF`** is the evidence. `[static]` is a line read in your code. `[executed]` is a request and the output it gave, with secrets cut short.
 - **`VERIFY`** is the command whose output must change before a fix counts.
 - **Second run.** `.secure-my-app/surface.json` lets the next run say what was fixed, what came back and what is new.
 
@@ -157,7 +169,7 @@ make test
 
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
-138/138 checks passed
+152/152 checks passed
 33/33 checks passed
 ```
 

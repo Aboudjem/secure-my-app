@@ -4,6 +4,24 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-11-17
+
+A clearer first screen and truer wording. No change to what the skill does.
+
+### Changed
+
+- **README first screen.** One install command, the line to type, then the real VERDICT block and
+  the alice and bob finding. A `Why use it` block follows, each point with its proof. The limit
+  sits next to the promise: without a live URL most access checks come back `UNPROVEN`.
+- **True wording about proof.** A `PROOF` can be a code line, not always a command. The README,
+  `llms.txt`, `AGENTS.md` and the FAQ now say so.
+- **Listing description.** The manifests now say what a run gives you: 65 checks, a proof per hole,
+  and a fix that counts only when its `VERIFY` command shows the change. The skill's own
+  description is unchanged.
+- **Translations.** The four translated READMEs are full translations of the new English README.
+  A new test checks that their code blocks and heading levels match the English one.
+- **Social preview.** Rebuilt with the new headline and the real run's numbers.
+
 ## [0.3.0] - 2026-11-17
 
 The report now opens with its verdict and the three things to do first. The README shows a report

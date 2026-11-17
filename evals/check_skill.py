@@ -30,9 +30,9 @@ import sys
 NAME = "secure-my-app"
 DEFAULT_PATH = os.path.join("skills", NAME, "SKILL.md")
 
-# Locked byte-identical across the whole repo (README, plugin.json, both mirrors,
-# marketplace.json, SKILL.md). Compared against the RAW text: the point of locking it is that
-# the wording does not drift.
+# The story sentence. Locked byte-identical in SKILL.md (where agents match on it) and in the
+# README tagline. Compared against the RAW text: the point of locking it is that the wording does
+# not drift. The listing description in the manifests is a separate, longer pitch line.
 STORY = "Find what a stranger can take from your app. Then close it and prove it closed."
 
 # The house section skeleton, in order. Each entry is (what the section DOES, the heading
@@ -243,7 +243,7 @@ def main():
 
     # --- description contract (WHEN-only) ---
     checks.append(("description: carries the story sentence verbatim", STORY in desc,
-                   "the first sentences must be byte-identical to plugin.json and the README"))
+                   "the first sentences must be byte-identical to the README tagline"))
     checks.append((f"description: names the trigger word {NAME!r}", NAME in desc.lower(), ""))
     checks.append(("description: says every finding carries a proof",
                    "prove" in desc.lower() or "proof" in desc.lower(), ""))
