@@ -108,7 +108,9 @@ counts, usage metrics or benchmark figures.
 - `docs/`: `quickstart.md` (a first run in eight numbered steps), `faq.md` (short answers, question per
   heading), `limits.md` (what a clean run does not prove), `controls.md` (all 65 controls as tables),
   `editors.md` (per-agent install).
-- `examples/sample-report.md`, an illustrative full `.secure-my-app/report.md`.
+- `examples/sample-report.md`, the unedited report a real run wrote on `examples/vulnerable-app/`
+  (a one-file API with holes on purpose). `examples/illustration-supabase.md` is invented and says so.
+- `tests/test_fixture.py`, starts the fixture and replays the request behind each sample finding.
 - `assets/`, the animated SVGs (`hero-dark.svg`, `hero-light.svg`, `hero.svg`, `how-it-works.svg`,
   `logo-mark-animated.svg`) and the social preview (`social-card.html`, `social-preview.png`).
 - `READMEs/`, the zh-CN, ja, es and fr translations of `README.md`.
@@ -118,9 +120,8 @@ counts, usage metrics or benchmark figures.
 ## Validate before claiming done
 
 ```bash
-python3 evals/check_skill.py skills/secure-my-app/SKILL.md   # exit 0, all checks pass
-python3 tests/test_manifests.py                          # exit 0, all checks pass
-claude plugin validate . --strict                        # if the CLI is on this machine
+make test                            # the skill eval, the contract tests, the fixture replay
+claude plugin validate . --strict    # CI runs it on a pinned Claude Code
 ```
 
 `SKILL.md` frontmatter must parse as valid YAML (`name` matching the directory, `description`,
