@@ -67,7 +67,7 @@ You do not know if one signed-in user can read another user's data. This finds o
 
 ## Why use it
 
-- **Proof, not guesses.** Each finding shows its `PROOF`: the code line and, with a live URL, the request and its real output. `make test` replays the request behind each sample finding.
+- **Proof, not guesses.** Each finding shows its `PROOF`, tagged `[static]` for a code line or `[executed]` for a command and its real output. `make test` replays the proof behind all 11 sample findings.
 - **A fix you can check.** Each finding has a `VERIFY` command whose output must change. All 11 findings in the [sample report](examples/sample-report.md) carry one: `grep -c '^VERIFY' examples/sample-report.md` prints 11.
 - **You stay in charge.** It writes a report and stops. Nothing in your app changes until you approve one fix. The sample report says `Nothing in the app was changed.`
 
@@ -113,7 +113,7 @@ Below the header, every finding has the same fields, like the R4 block at the to
 
 - **Where it comes from.** The app is [`examples/vulnerable-app/`](examples/vulnerable-app/README.md), a small API with holes left in on purpose.
 - **The whole report.** [`examples/sample-report.md`](examples/sample-report.md) is the file that run wrote, unedited. The R4 block above is shortened from it.
-- **`PROOF`** is the evidence. `[static]` is a line read in your code. `[executed]` is a request and the output it gave, with secrets cut short.
+- **`PROOF`** is the evidence. `[static]` is a line read in your code. `[executed]` is a command or request that ran, and the output it gave, with secrets cut short.
 - **`VERIFY`** is the command whose output must change before a fix counts.
 - **Second run.** `.secure-my-app/surface.json` lets the next run say what was fixed, what came back and what is new.
 
@@ -172,14 +172,14 @@ make test
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
 152/152 checks passed
-33/33 checks passed
+54/54 checks passed
 ```
 
 | Suite                     | What it checks                                                                 |
 | ------------------------- | ------------------------------------------------------------------------------ |
 | `evals/check_skill.py`    | The skill text: the ladder, the verdict line, the RLS rules, the report header |
 | `tests/test_manifests.py` | Manifests, one version everywhere, required files, this README                 |
-| `tests/test_fixture.py`   | Starts the fixture and replays the request behind each sample finding          |
+| `tests/test_fixture.py`   | Starts the fixture and replays the proof behind each of the 11 sample findings |
 
 The control count:
 

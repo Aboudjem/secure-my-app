@@ -35,11 +35,15 @@ REPORT = os.path.join(ROOT, "examples", "sample-report.md")
 
 failures = []
 _total = 0
+replayed = set()  # finding ids with at least one replay check that ran
 
 
 def check(name, ok, detail=""):
     global _total
     _total += 1
+    finding = re.match(r"([A-Z]\d+) (hole|twin|control):", name)
+    if finding:
+        replayed.add(finding.group(1))
     tag = "PASS" if ok else "FAIL"
     print(f"{tag}: {name}" + (f"  ({detail})" if detail and not ok else ""))
     if not ok:
@@ -52,9 +56,11 @@ def free_port():
         return s.getsockname()[1]
 
 
-def call(port, method, path, body=None, cookie=None):
+def call(port, method, path, body=None, cookie=None, raw_body=None):
     """One HTTP request. Returns (status, headers, parsed JSON or raw text)."""
     data = json.dumps(body).encode() if body is not None else None
+    if raw_body is not None:
+        data = raw_body.encode()
     req = urllib.request.Request(f"http://127.0.0.1:{port}{path}", data=data, method=method)
     if cookie:
         req.add_header("Cookie", cookie)
@@ -75,15 +81,23 @@ def login(port, email, password):
     return status, raw, raw.split(";")[0]
 
 
-def forge(secret, subject):
-    """A session cookie signed with the secret committed in server.js."""
-    body = base64.urlsafe_b64encode(json.dumps({"sub": subject}).encode()).rstrip(b"=").decode()
+def forge(secret, subject, **extra):
+    """A session cookie signed with the secret committed in server.js (compact JSON, as Node writes it)."""
+    payload = json.dumps({"sub": subject, **extra}, separators=(",", ":"))
+    body = base64.urlsafe_b64encode(payload.encode()).rstrip(b"=").decode()
     mac = hmac.new(secret.encode(), body.encode(), hashlib.sha256).digest()
     return f"session={body}.{base64.urlsafe_b64encode(mac).rstrip(b'=').decode()}"
 
 
+def decode_cookie(cookie):
+    """The JSON payload of a `session=<body>.<mac>` cookie."""
+    body = cookie.split("=", 1)[1].split(".")[0]
+    return json.loads(base64.urlsafe_b64decode(body + "=" * (-len(body) % 4)))
+
+
 def main():
     source = open(SERVER, encoding="utf-8").read()
+    lines = source.split("\n")
     check("examples/vulnerable-app/server.js exists and is not empty", len(source) > 500)
     check("the fixture declares no dependency (nothing to install, nothing to audit)",
           "dependencies" not in open(os.path.join(APP, "package.json"), encoding="utf-8").read())
@@ -100,10 +114,11 @@ def main():
         return finish()
 
     port = free_port()
+    up = False
+    server_output = ""
     proc = subprocess.Popen([node, SERVER], env={**os.environ, "PORT": str(port)},
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     try:
-        up = False
         for _ in range(50):
             try:
                 up = call(port, "GET", "/")[0] == 200
@@ -134,6 +149,17 @@ def main():
               isinstance(export, dict)
               and all(re.fullmatch(r"[0-9a-f]{64}", u.get("password_hash", ""))
                       for u in export.get("users", [])))
+        check("R10 control: the other data routes answer 401 without a cookie",
+              call(port, "GET", "/api/invoices")[0] == 401
+              and call(port, "GET", "/api/invoices/1042")[0] == 401)
+
+        # --- V2: the export sends whole user records, password_hash included ---
+        check("V2 hole: every exported user has exactly the keys id,email,team,role,password_hash",
+              isinstance(export, dict) and len(export.get("users", [])) == 3
+              and all(list(u) == ["id", "email", "team", "role", "password_hash"]
+                      for u in export["users"]))
+        check("V2 hole: the export answers 200 with no session, so the hashes reach anyone",
+              call(port, "GET", "/admin/export")[0] == 200)
 
         # --- R4: lookup by id alone, with its three-way read test ---
         status, _, own = call(port, "GET", "/api/invoices/1041", cookie=alice)
@@ -145,6 +171,11 @@ def main():
               status)
         check("R4 hole: the leaked row carries the customer email and the IBAN tail",
               isinstance(other, dict) and "customer_email" in other and "iban_last4" in other)
+        status, _, theirs = call(port, "GET", "/api/invoices/1041", cookie=bob)
+        check("R4 hole: bob reads alice's invoice 1041 the other way round (200)",
+              status == 200 and theirs.get("owner") == "u_1", status)
+        check("R4 twin: bob reads his own invoice 1042 (200, his row)",
+              call(port, "GET", "/api/invoices/1042", cookie=bob)[2].get("owner") == "u_2")
         check("R4 control: with no session the same route answers 401",
               call(port, "GET", "/api/invoices/1042")[0] == 401)
         status, _, listing = call(port, "GET", "/api/invoices", cookie=alice)
@@ -157,6 +188,14 @@ def main():
               status == 500 and isinstance(err, dict) and "stack" in err and "server.js" in err["stack"],
               status)
 
+        status, _, err = call(port, "POST", "/login", raw_body="{")
+        check("V3 hole: POST /login with the body '{' and no session returns 500 and the stack",
+              status == 500 and isinstance(err, dict) and "SyntaxError" in err.get("error", "")
+              and "JSON.parse" in err.get("stack", "") and "server.js:54" in err.get("stack", ""),
+              status)
+        check("V3 twin: POST /login with valid JSON and the right password still returns 200",
+              login(port, "alice@paperboat.test", "alice-demo-pass")[0] == 200)
+
         # --- D2: the session cookie has no flags ---
         check("D2 hole: the session cookie is set without HttpOnly, Secure or SameSite",
               bool(a_raw) and not re.search(r"httponly|secure|samesite", a_raw, re.I), a_raw)
@@ -165,18 +204,51 @@ def main():
         secret = re.search(r'const SESSION_SECRET = "([^"]+)"', source)
         check("K3 hole: the session signing secret is a string literal in server.js", bool(secret))
         if secret:
+            check("K3 hole: the cookie forged from the repo secret for u_1 equals the one the server issued to alice",
+                  forge(secret.group(1), "u_1") == alice)
             status, _, mine = call(port, "GET", "/api/invoices", cookie=forge(secret.group(1), "u_2"))
             check("K3 hole: a cookie forged with that secret is accepted as bob",
                   status == 200 and [i["id"] for i in mine] == [1042, 1043], status)
             check("K3 control: a cookie forged with another secret is refused with 401",
                   call(port, "GET", "/api/invoices", cookie=forge("not-the-secret", "u_2"))[0] == 401)
 
+        # --- D5: the session holds only the user id, with no expiry and no way to end it ---
+        check("D5 hole: the cookie the server issued to alice decodes to {\"sub\":\"u_1\"} and nothing else",
+              decode_cookie(alice) == {"sub": "u_1"}, decode_cookie(alice))
+        check("D5 hole: server.js has no expiry, max-age, logout or revoke",
+              not re.search(r"expir|max-age|logout|revoke|\bexp\b", source, re.I))
+        if secret:
+            stale = forge(secret.group(1), "u_1", exp=int(time.time() * 1000) - 24 * 3600 * 1000)
+            check("D5 hole: a correctly signed cookie whose exp passed a day ago is still accepted (200)",
+                  call(port, "GET", "/api/invoices", cookie=stale)[0] == 200)
+        check("D5 twin: a fresh sign-in cookie reads GET /api/invoices (200)",
+              call(port, "GET", "/api/invoices",
+                   cookie=login(port, "alice@paperboat.test", "alice-demo-pass")[2])[0] == 200)
+
+        # --- D6: login accepts unlimited guesses ---
+        check("D6 hole: server.js has no limiter, counter, lockout or 429",
+              not re.search(r"429|rate.?limit|lockout|attempts|too many", source, re.I))
+        emails = ["alice@paperboat.test", "nobody@paperboat.test"] * 6
+        guesses = [login(port, email, f"wrong-guess-{n}")[0] for n, email in enumerate(emails)]
+        check("D6 hole: 12 wrong-password POSTs, alternating alice's email and an unknown one, give 12 x 401 and no 429",
+              guesses == [401] * 12, guesses)
+        check("D6 twin: right after them, bob signs in with his password (200 and a cookie)",
+              login(port, "bob@paperboat.test", "bob-demo-pass")[2].startswith("session="))
+
         # --- D3: unsalted SHA-256 for passwords ---
         alice_hash = next(u["password_hash"] for u in export["users"] if u["id"] == "u_1")
+        check("D3 hole: server.js:12 hashes with one plain SHA-256",
+              'const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");' in lines[11])
         check("D3 hole: the stored hash is a bare SHA-256 of the password, no salt",
               alice_hash == hashlib.sha256(b"alice-demo-pass").hexdigest())
 
         # --- R6: mass assignment. Last, because it changes state. ---
+        check("R6 hole: server.js:97 copies the whole body onto the user record",
+              lines[96].strip() == "Object.assign(user, await readJson(req));")
+        status, _, me = call(port, "PATCH", "/api/me", {}, cookie=alice)
+        check("R6 twin: PATCH /api/me with {} is accepted and changes nothing (200, role member)",
+              status == 200 and me == {"id": "u_1", "email": "alice@paperboat.test",
+                                       "team": "team_1", "role": "member"}, me)
         status, _, me = call(port, "PATCH", "/api/me", {"role": "admin"}, cookie=alice)
         check("R6 hole: PATCH /api/me with {role: admin} makes a member an admin",
               status == 200 and me.get("role") == "admin", me)
@@ -186,6 +258,18 @@ def main():
             proc.wait(timeout=5)
         except subprocess.TimeoutExpired:
             proc.kill()
+            proc.wait()
+        server_output = proc.stdout.read() if proc.stdout else ""
+
+    # --- V5: no security event is recorded. Read after the run, so the failed sign-ins,
+    # the export downloads and the 401s above all had their chance to log. ---
+    console_lines = [n for n, l in enumerate(lines, 1) if "console." in l]
+    check("V5 hole: the only console call in server.js is the startup line (line 115)",
+          console_lines == [115] and "listening on" in lines[114], console_lines)
+    if up:
+        printed = [l for l in server_output.splitlines() if l.strip()]
+        check("V5 hole: after 13 failed sign-ins, the export and the refusals, the server printed only its startup line",
+              len(printed) == 1 and printed[0].startswith("paperboat listening on"), printed)
 
     # --- the sample report and the fixture name the same things ---
     report = open(REPORT, encoding="utf-8").read() if os.path.isfile(REPORT) else ""
@@ -210,6 +294,10 @@ def main():
               bool(re.search(rf"\b{control}\b", report)) and route in report)
     check("the sample report quotes no full session cookie (redaction rule)",
           not re.search(r"session=[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{20,}", report))
+    ids = re.findall(r"^## (?:CRITICAL|HIGH|MEDIUM|LOW) ([A-Z]\d+)\b", report, re.MULTILINE)
+    missing = [i for i in ids if i not in replayed]
+    check(f"every finding in the sample report's severity headings has a replay here ({len(ids) - len(missing)} of {len(ids)})",
+          bool(ids) and not missing, f"no replay for {missing}")
     return finish()
 
 

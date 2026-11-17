@@ -68,7 +68,7 @@ Vous ne savez pas si un utilisateur connecté peut lire les données d'un autre.
 
 ## Pourquoi l'utiliser
 
-- **Des preuves, pas des suppositions.** Chaque constat montre sa `PROOF` : la ligne de code et, avec une URL en ligne, la requête et sa vraie sortie. `make test` rejoue la requête derrière chaque constat de l'exemple.
+- **Des preuves, pas des suppositions.** Chaque constat montre sa `PROOF`, marquée `[static]` pour une ligne de code ou `[executed]` pour une commande et sa vraie sortie. `make test` rejoue la preuve des 11 constats de l'exemple.
 - **Une correction que vous pouvez vérifier.** Chaque constat a une commande `VERIFY` dont la sortie doit changer. Les 11 constats du [rapport d'exemple](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) en ont une : `grep -c '^VERIFY' examples/sample-report.md` affiche 11.
 - **Vous gardez la main.** Il écrit un rapport et s'arrête. Rien ne change dans votre application avant que vous approuviez une correction. Le rapport d'exemple dit `Nothing in the app was changed.`
 
@@ -114,7 +114,7 @@ Sous l'en-tête, chaque constat a les mêmes champs, comme le bloc R4 en haut de
 
 - **D'où il vient.** L'application est [`examples/vulnerable-app/`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/vulnerable-app/README.md), une petite API avec des failles laissées exprès.
 - **Le rapport entier.** [`examples/sample-report.md`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) est le fichier écrit par cette exécution, non modifié. Le bloc R4 ci-dessus en est un extrait raccourci.
-- **`PROOF`** est la preuve. `[static]` est une ligne lue dans votre code. `[executed]` est une requête et la sortie obtenue, secrets tronqués.
+- **`PROOF`** est la preuve. `[static]` est une ligne lue dans votre code. `[executed]` est une commande ou une requête exécutée, et la sortie obtenue, secrets tronqués.
 - **`VERIFY`** est la commande dont la sortie doit changer pour qu'une correction compte.
 - **Deuxième exécution.** `.secure-my-app/surface.json` permet à la suivante de dire ce qui a été corrigé, ce qui est revenu et ce qui est nouveau.
 
@@ -173,14 +173,14 @@ make test
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
 152/152 checks passed
-33/33 checks passed
+54/54 checks passed
 ```
 
 | Suite | Ce qu'elle vérifie |
 | --- | --- |
 | `evals/check_skill.py` | Le texte du skill : l'échelle de preuve, la ligne de verdict, les règles RLS, l'en-tête du rapport |
 | `tests/test_manifests.py` | Manifestes, une seule version partout, fichiers requis, ce README |
-| `tests/test_fixture.py` | Démarre l'application d'essai et rejoue la requête derrière chaque constat de l'exemple |
+| `tests/test_fixture.py` | Démarre l'application d'essai et rejoue la preuve de chacun des 11 constats de l'exemple |
 
 Le nombre de contrôles :
 

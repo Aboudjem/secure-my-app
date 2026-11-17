@@ -68,7 +68,7 @@ STATUS  OPEN
 
 ## 使う理由
 
-- **推測ではなく証拠。** 各検出結果は `PROOF` を示します。コードの行と、稼働中の URL があればリクエストとその実際の出力です。`make test` はサンプルの各検出結果の裏にあるリクエストを再実行します。
+- **推測ではなく証拠。** 各検出結果は `PROOF` を示します。コードの行には `[static]`、実行したコマンドとその実際の出力には `[executed]` が付きます。`make test` はサンプルの 11 件すべての証拠を再実行します。
 - **確かめられる修正。** 各検出結果には、出力が変わらなければならない `VERIFY` コマンドがあります。[サンプルレポート](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)の 11 件すべてにあります。`grep -c '^VERIFY' examples/sample-report.md` は 11 を出力します。
 - **決めるのはあなた。** レポートを書いて止まります。修正を一つ承認するまで、アプリは何も変わりません。サンプルレポートには `Nothing in the app was changed.` とあります。
 
@@ -114,7 +114,7 @@ skills CLI はこれらにも同じファイルをインストールします。
 
 - **出どころ。** アプリは [`examples/vulnerable-app/`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/vulnerable-app/README.md) で、わざと穴を残した小さな API です。
 - **レポート全文。** [`examples/sample-report.md`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) はその実行が書いたファイルで、無編集です。上の R4 ブロックはそこから短くしたものです。
-- **`PROOF`** は証拠です。`[static]` はコードから読んだ行。`[executed]` はリクエストとその出力で、秘密情報は短く切ってあります。
+- **`PROOF`** は証拠です。`[static]` はコードから読んだ行。`[executed]` は実行したコマンドまたはリクエストとその出力で、秘密情報は短く切ってあります。
 - **`VERIFY`** は、修正が認められる前に出力が変わらなければならないコマンドです。
 - **2 回目の実行。** `.secure-my-app/surface.json` により、次の実行は何が直り、何が戻り、何が新しいかを言えます。
 
@@ -173,14 +173,14 @@ make test
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
 152/152 checks passed
-33/33 checks passed
+54/54 checks passed
 ```
 
 | スイート | チェック内容 |
 | --- | --- |
 | `evals/check_skill.py` | スキルの本文: 証拠のはしご、判定行、RLS のルール、レポートのヘッダー |
 | `tests/test_manifests.py` | マニフェスト、全体で一つのバージョン、必須ファイル、この README |
-| `tests/test_fixture.py` | テスト用アプリを起動し、サンプルの各検出結果の裏にあるリクエストを再実行 |
+| `tests/test_fixture.py` | テスト用アプリを起動し、サンプルの 11 件それぞれの証拠を再実行 |
 
 コントロールの数:
 

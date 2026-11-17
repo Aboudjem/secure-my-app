@@ -68,7 +68,7 @@ STATUS  OPEN
 
 ## 为什么用它
 
-- **证据，而不是猜测。** 每条发现都给出它的 `PROOF`：代码行，以及在有在线 URL 时的请求和真实输出。`make test` 会重放示例中每条发现背后的请求。
+- **证据，而不是猜测。** 每条发现都给出它的 `PROOF`：代码行标为 `[static]`，执行过的命令及其真实输出标为 `[executed]`。`make test` 会重放示例中全部 11 条发现的证据。
 - **可以检验的修复。** 每条发现都有一个 `VERIFY` 命令，其输出必须改变。[示例报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)中的 11 条发现都有：`grep -c '^VERIFY' examples/sample-report.md` 输出 11。
 - **由你掌控。** 它写出报告就停下。在你批准某一项修复之前，你的应用不会有任何改动。示例报告写着 `Nothing in the app was changed.`
 
@@ -114,7 +114,7 @@ skills CLI 为它们安装相同的文件。这里没有记录这些智能体上
 
 - **来源。** 应用是 [`examples/vulnerable-app/`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/vulnerable-app/README.md)，一个故意留有漏洞的小型 API。
 - **完整报告。** [`examples/sample-report.md`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) 是那次运行写出的文件，未经编辑。上面的 R4 块是从中缩短的。
-- **`PROOF`** 是证据。`[static]` 是从你的代码中读到的一行。`[executed]` 是一个请求及其输出，机密已截短。
+- **`PROOF`** 是证据。`[static]` 是从你的代码中读到的一行。`[executed]` 是一个实际运行的命令或请求及其输出，机密已截短。
 - **`VERIFY`** 是修复生效前输出必须改变的命令。
 - **第二次运行。** `.secure-my-app/surface.json` 让下一次运行说出哪些已修复、哪些又出现、哪些是新的。
 
@@ -173,14 +173,14 @@ make test
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
 152/152 checks passed
-33/33 checks passed
+54/54 checks passed
 ```
 
 | 测试套件 | 检查内容 |
 | --- | --- |
 | `evals/check_skill.py` | 技能文本：证据阶梯、结论行、RLS 规则、报告标题 |
 | `tests/test_manifests.py` | 清单文件、处处一致的版本、必需文件、本 README |
-| `tests/test_fixture.py` | 启动测试应用并重放示例中每条发现背后的请求 |
+| `tests/test_fixture.py` | 启动测试应用并重放示例中 11 条发现各自的证据 |
 
 控制项数量：
 

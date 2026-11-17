@@ -110,7 +110,8 @@ counts, usage metrics or benchmark figures.
   `editors.md` (per-agent install).
 - `examples/sample-report.md`, the unedited report a real run wrote on `examples/vulnerable-app/`
   (a one-file API with holes on purpose). `examples/illustration-supabase.md` is invented and says so.
-- `tests/test_fixture.py`, starts the fixture and replays the request behind each sample finding.
+- `tests/test_fixture.py`, starts the fixture and replays the proof behind each sample finding; it fails if a
+  finding in the sample report has no replay.
 - `assets/`, the animated SVGs (`hero-dark.svg`, `hero-light.svg`, `hero.svg`, `how-it-works.svg`,
   `logo-mark-animated.svg`) and the social preview (`social-card.html`, `social-preview.png`).
 - `READMEs/`, the zh-CN, ja, es and fr translations of `README.md`.

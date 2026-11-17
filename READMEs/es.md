@@ -68,7 +68,7 @@ No sabes si un usuario con sesión puede leer los datos de otro. Esto lo averigu
 
 ## Por qué usarlo
 
-- **Pruebas, no suposiciones.** Cada hallazgo muestra su `PROOF`: la línea de código y, con una URL en vivo, la petición y su salida real. `make test` repite la petición detrás de cada hallazgo del ejemplo.
+- **Pruebas, no suposiciones.** Cada hallazgo muestra su `PROOF`, marcada `[static]` para una línea de código o `[executed]` para un comando y su salida real. `make test` repite la prueba de los 11 hallazgos del ejemplo.
 - **Una corrección que puedes comprobar.** Cada hallazgo tiene un comando `VERIFY` cuya salida debe cambiar. Los 11 hallazgos del [informe de ejemplo](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) tienen uno: `grep -c '^VERIFY' examples/sample-report.md` imprime 11.
 - **Tú mandas.** Escribe un informe y se detiene. Nada cambia en tu aplicación hasta que apruebes una corrección. El informe de ejemplo dice `Nothing in the app was changed.`
 
@@ -114,7 +114,7 @@ Bajo la cabecera, cada hallazgo tiene los mismos campos, como el bloque R4 al in
 
 - **De dónde sale.** La aplicación es [`examples/vulnerable-app/`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/vulnerable-app/README.md), una pequeña API con agujeros dejados a propósito.
 - **El informe completo.** [`examples/sample-report.md`](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) es el archivo que escribió esa ejecución, sin editar. El bloque R4 de arriba es un extracto acortado.
-- **`PROOF`** es la prueba. `[static]` es una línea leída en tu código. `[executed]` es una petición y la salida que dio, con los secretos recortados.
+- **`PROOF`** es la prueba. `[static]` es una línea leída en tu código. `[executed]` es un comando o una petición que se ejecutó, y la salida que dio, con los secretos recortados.
 - **`VERIFY`** es el comando cuya salida debe cambiar para que una corrección cuente.
 - **Segunda ejecución.** `.secure-my-app/surface.json` permite a la siguiente decir qué se corrigió, qué volvió y qué es nuevo.
 
@@ -173,14 +173,14 @@ make test
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
 152/152 checks passed
-33/33 checks passed
+54/54 checks passed
 ```
 
 | Suite | Qué comprueba |
 | --- | --- |
 | `evals/check_skill.py` | El texto del skill: la escalera de pruebas, la línea de veredicto, las reglas RLS, la cabecera del informe |
 | `tests/test_manifests.py` | Manifiestos, una sola versión en todas partes, archivos requeridos, este README |
-| `tests/test_fixture.py` | Arranca la aplicación de prueba y repite la petición detrás de cada hallazgo del ejemplo |
+| `tests/test_fixture.py` | Arranca la aplicación de prueba y repite la prueba de cada uno de los 11 hallazgos del ejemplo |
 
 El número de controles:
 
