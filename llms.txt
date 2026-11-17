@@ -76,7 +76,7 @@ drop-in skill directory. It has no dependencies, no server and no account. Optio
 installed silently, and their absence never turns a check into a `PASS`.
 
 - Plugin (recommended): `claude plugin marketplace add Aboudjem/10x` then `claude plugin install secure-my-app@10x`.
-- Skills CLI: `npx skills add Aboudjem/secure-my-app`.
+- Skills CLI, for all your projects: `npx skills add Aboudjem/secure-my-app -g`. Only this project: drop `-g`. One agent: add `-a <agent>`, for example `-a codex`.
 - Manual / skill-only: `git clone https://github.com/Aboudjem/secure-my-app`, then copy `skills/secure-my-app` into `~/.claude/skills/`. Copy the whole directory: `references/` is loaded by relative path at run time.
 
 Then say "secure my app before I launch", or run `/secure-my-app`. Flags: `--report-only` never offers

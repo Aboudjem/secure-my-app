@@ -79,7 +79,7 @@ counts, usage metrics or benchmark figures.
   "did I leak a key", "security audit". Claude Code matches these to the skill's `description` and
   loads `SKILL.md`.
 - Install: the plugin (`claude plugin marketplace add Aboudjem/10x`, then
-  `claude plugin install secure-my-app@10x`); the skills CLI (`npx skills add Aboudjem/secure-my-app`); or by
+  `claude plugin install secure-my-app@10x`); the skills CLI for all projects (`npx skills add Aboudjem/secure-my-app -g`, drop `-g` for one project); or by
   hand, `git clone https://github.com/Aboudjem/secure-my-app` then copy `skills/secure-my-app` into
   `~/.claude/skills/`. Copy the whole directory, because `references/` is loaded by relative path at
   run time.
@@ -112,8 +112,9 @@ counts, usage metrics or benchmark figures.
   (a one-file API with holes on purpose). `examples/illustration-supabase.md` is invented and says so.
 - `tests/test_fixture.py`, starts the fixture and replays the proof behind each sample finding; it fails if a
   finding in the sample report has no replay.
-- `assets/`, the animated SVGs (`hero-dark.svg`, `hero-light.svg`, `hero.svg`, `how-it-works.svg`,
-  `logo-mark-animated.svg`) and the social preview (`social-card.html`, `social-preview.png`).
+- `assets/`, the static hero SVGs (`hero-dark.svg`, `hero-light.svg`, `hero.svg`), the animated SVGs
+  (`how-it-works.svg`, `logo-mark-animated.svg`) and the social preview (`social-preview.svg`, rendered
+  through `social-card.html` to `social-preview.png`).
 - `READMEs/`, the zh-CN, ja, es and fr translations of `README.md`.
 - `README.md`, human-facing overview. `llms.txt`, the machine-readable map. `CHANGELOG.md`, release
   history. `SECURITY.md`, how to report a problem in secure-my-app itself. `LICENSE`, MIT.

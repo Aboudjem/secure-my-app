@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-    <img src="assets/hero-light.svg" alt="secure-my-app: find what a stranger can take from your app, then close it and prove it closed." width="100%">
+    <img src="assets/hero-light.svg" alt="secure-my-app: what can a stranger take? Three points: fixes proven closed, proof for each hole, no surprise changes. Alice asks for bob's invoice: 200 before the fix, 404 after it." width="100%">
   </picture>
 </p>
 
@@ -14,24 +14,23 @@
 </p>
 
 <p align="center">
-  <strong>Find what a stranger can take from your app. Then close it and prove it closed.</strong>
+  <strong>Find what a stranger can take from your app.</strong>
 </p>
 
-It reads your app, runs 65 named checks, and shows the proof for every hole it reports.
+It runs 65 named checks and shows the proof for each hole it reports.
+
+| Fixes proven closed | Proof for each hole | No surprise changes |
+|:--|:--|:--|
+| A fix counts only when its VERIFY output changes. All 11 sample findings have one. | Each finding shows its proof. `make test` replays the proof behind all 11 sample findings. | It writes a report and stops. Each fix waits for your yes. |
+
+**Works with:** any agent that reads skills. Full runs tested: Claude Code, Codex CLI. It is a Markdown skill, so it is not tied to one model.
 
 ```bash
-npx skills add Aboudjem/secure-my-app
+npx skills add Aboudjem/secure-my-app -g
+# then, in your agent: secure my app before I launch
 ```
 
-Open your project in your agent and say:
-
-```text
-secure my app before I launch
-```
-
-## What you get
-
-It writes `.secure-my-app/report.md` and stops. This is the top of a real one, from 2026-11-17:
+The top of a real report, from a run on this repo's small test app on 2026-11-17:
 
 ```text
 VERDICT: DO NOT LAUNCH   coverage 21 checked / 2 unproven / 42 n/a   [static + live: 127.0.0.1:4310]
@@ -59,41 +58,80 @@ VERIFY  alice:  GET /api/invoices/1042 (bob's)   -> 404 "no such invoice"
 STATUS  OPEN
 ```
 
-A fix counts only when that same request stops working.
-It is not a penetration test. Without a live URL most access checks come back `UNPROVEN`, and the only published run is a small fixture.
+**What it is:** a skill that looks for security holes in your app.
+**When to use it:** before you launch, or before strangers can sign up.
+**What you get:** one report with the proof for each hole. Your code stays as it was.
 
-You launch on Monday. You built fast, maybe with an agent.
-You do not know if one signed-in user can read another user's data. This finds out, and shows you how it knows.
-
-## Why use it
-
-- **Proof, not guesses.** Each finding shows its `PROOF`, tagged `[static]` for a code line or `[executed]` for a command and its real output. `make test` replays the proof behind all 11 sample findings.
-- **A fix you can check.** Each finding has a `VERIFY` command whose output must change. All 11 findings in the [sample report](examples/sample-report.md) carry one: `grep -c '^VERIFY' examples/sample-report.md` prints 11.
-- **You stay in charge.** It writes a report and stops. Nothing in your app changes until you approve one fix. The sample report says `Nothing in the app was changed.`
+**Limit:** it is not a penetration test (a paid attack by an expert). Without a live URL, most access checks stay `UNPROVEN`.
 
 ## Install
 
-**Claude Code.** Add the marketplace, then install the plugin.
+**Pick your agent.** Each command installs secure-my-app for all your projects.
+
+<p align="center">
+  <a href="#install-claude-code"><img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code"></a>
+  <a href="#install-codex"><img src="https://img.shields.io/badge/Codex-000000?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyBmaWxsPSJ3aGl0ZSIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHRpdGxlPk9wZW5BSTwvdGl0bGU%2BPHBhdGggZD0iTTIyLjI4MTkgOS44MjExYTUuOTg0NyA1Ljk4NDcgMCAwIDAtLjUxNTctNC45MTA4IDYuMDQ2MiA2LjA0NjIgMCAwIDAtNi41MDk4LTIuOUE2LjA2NTEgNi4wNjUxIDAgMCAwIDQuOTgwNyA0LjE4MThhNS45ODQ3IDUuOTg0NyAwIDAgMC0zLjk5NzcgMi45IDYuMDQ2MiA2LjA0NjIgMCAwIDAgLjc0MjcgNy4wOTY2IDUuOTggNS45OCAwIDAgMCAuNTExIDQuOTEwNyA2LjA1MSA2LjA1MSAwIDAgMCA2LjUxNDYgMi45MDAxQTUuOTg0NyA1Ljk4NDcgMCAwIDAgMTMuMjU5OSAyNGE2LjA1NTcgNi4wNTU3IDAgMCAwIDUuNzcxOC00LjIwNTggNS45ODk0IDUuOTg5NCAwIDAgMCAzLjk5NzctMi45MDAxIDYuMDU1NyA2LjA1NTcgMCAwIDAtLjc0NzUtNy4wNzI5em0tOS4wMjIgMTIuNjA4MWE0LjQ3NTUgNC40NzU1IDAgMCAxLTIuODc2NC0xLjA0MDhsLjE0MTktLjA4MDQgNC43NzgzLTIuNzU4MmEuNzk0OC43OTQ4IDAgMCAwIC4zOTI3LS42ODEzdi02LjczNjlsMi4wMiAxLjE2ODZhLjA3MS4wNzEgMCAwIDEgLjAzOC4wNTJ2NS41ODI2YTQuNTA0IDQuNTA0IDAgMCAxLTQuNDk0NSA0LjQ5NDR6bS05LjY2MDctNC4xMjU0YTQuNDcwOCA0LjQ3MDggMCAwIDEtLjUzNDYtMy4wMTM3bC4xNDIuMDg1MiA0Ljc4MyAyLjc1ODJhLjc3MTIuNzcxMiAwIDAgMCAuNzgwNiAwbDUuODQyOC0zLjM2ODV2Mi4zMzI0YS4wODA0LjA4MDQgMCAwIDEtLjAzMzIuMDYxNUw5Ljc0IDE5Ljk1MDJhNC40OTkyIDQuNDk5MiAwIDAgMS02LjE0MDgtMS42NDY0ek0yLjM0MDggNy44OTU2YTQuNDg1IDQuNDg1IDAgMCAxIDIuMzY1NS0xLjk3MjhWMTEuNmEuNzY2NC43NjY0IDAgMCAwIC4zODc5LjY3NjVsNS44MTQ0IDMuMzU0My0yLjAyMDEgMS4xNjg1YS4wNzU3LjA3NTcgMCAwIDEtLjA3MSAwbC00LjgzMDMtMi43ODY1QTQuNTA0IDQuNTA0IDAgMCAxIDIuMzQwOCA3Ljg3MnptMTYuNTk2MyAzLjg1NThMMTMuMTAzOCA4LjM2NCAxNS4xMTkyIDcuMmEuMDc1Ny4wNzU3IDAgMCAxIC4wNzEgMGw0LjgzMDMgMi43OTEzYTQuNDk0NCA0LjQ5NDQgMCAwIDEtLjY3NjUgOC4xMDQydi01LjY3NzJhLjc5Ljc5IDAgMCAwLS40MDctLjY2N3ptMi4wMTA3LTMuMDIzMWwtLjE0Mi0uMDg1Mi00Ljc3MzUtMi43ODE4YS43NzU5Ljc3NTkgMCAwIDAtLjc4NTQgMEw5LjQwOSA5LjIyOTdWNi44OTc0YS4wNjYyLjA2NjIgMCAwIDEgLjAyODQtLjA2MTVsNC44MzAzLTIuNzg2NmE0LjQ5OTIgNC40OTkyIDAgMCAxIDYuNjgwMiA0LjY2ek04LjMwNjUgMTIuODYzbC0yLjAyLTEuMTYzOGEuMDgwNC4wODA0IDAgMCAxLS4wMzgtLjA1NjdWNi4wNzQyYTQuNDk5MiA0LjQ5OTIgMCAwIDEgNy4zNzU3LTMuNDUzN2wtLjE0Mi4wODA1TDguNzA0IDUuNDU5YS43OTQ4Ljc5NDggMCAwIDAtLjM5MjcuNjgxM3ptMS4wOTc2LTIuMzY1NGwyLjYwMi0xLjQ5OTggMi42MDY5IDEuNDk5OHYyLjk5OTRsLTIuNTk3NCAxLjQ5OTctMi42MDY3LTEuNDk5N1oiLz48L3N2Zz4%3D" alt="Codex"></a>
+  <a href="#install-cursor"><img src="https://img.shields.io/badge/Cursor-3B3B3B?style=for-the-badge&logo=cursor&logoColor=white" alt="Cursor"></a>
+  <a href="#install-gemini-cli"><img src="https://img.shields.io/badge/Gemini_CLI-1A73E8?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini CLI"></a>
+  <a href="#install-github-copilot"><img src="https://img.shields.io/badge/GitHub_Copilot-24292F?style=for-the-badge&logo=githubcopilot&logoColor=white" alt="GitHub Copilot"></a>
+  <a href="#install-opencode"><img src="https://img.shields.io/badge/OpenCode-4A4A4A?style=for-the-badge&logo=opencode&logoColor=white" alt="OpenCode"></a>
+</p>
+
+<a id="install-claude-code"></a>**Claude Code**, tested. Installs for all your projects:
 
 ```bash
-claude plugin marketplace add Aboudjem/10x
+claude plugin marketplace add Aboudjem/10x && claude plugin install secure-my-app@10x
 ```
+
+<a id="install-codex"></a>**Codex**, tested:
 
 ```bash
-claude plugin install secure-my-app@10x
+npx skills add Aboudjem/secure-my-app -g -a codex
 ```
 
-**Any other agent.** The skills CLI command at the top of this page installs it.
-Then say `secure my app before I launch`.
+<a id="install-cursor"></a>**Cursor**, install tested:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a cursor
+```
+
+<a id="install-gemini-cli"></a>**Gemini CLI**, install tested:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a gemini-cli
+```
+
+<a id="install-github-copilot"></a>**GitHub Copilot**, install tested:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a github-copilot
+```
+
+<a id="install-opencode"></a>**OpenCode**, install tested:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a opencode
+```
+
+Only this project: drop `-g`. Another agent: see its `-a` code in [Install in your editor](docs/editors.md).
+
+**Your first command.** Open your project in your agent and say:
+
+```text
+secure my app before I launch
+```
+
+1. It asks three questions.
+2. It reads your code and writes `.secure-my-app/report.md`.
+3. It stops. Nothing changes until you say yes to one fix.
+
 That sentence matches the skill's description, so any agent that loads skills picks it up.
-On Codex CLI 0.169.0 it started the skill on 2026-11-17. Each agent also has a short trigger:
+Each agent also has a short trigger:
 
 | Agent | Short trigger |
 | --- | --- |
 | Claude Code | `/secure-my-app:secure-my-app` |
 | Codex CLI | `$secure-my-app` |
-
-It asks three questions, reads your code, and writes `.secure-my-app/report.md`. Then it stops.
 
 ### Works with
 
@@ -101,9 +139,11 @@ It asks three questions, reads your code, and writes `.secure-my-app/report.md`.
 | --- | --- | --- |
 | Claude Code 2.1.326 | Plugin loaded, full run on the fixture, [report written](examples/sample-report.md) | 2026-11-17 |
 | Codex CLI 0.169.0 | `npx skills add -a codex`, full run on the fixture, [report written](examples/sample-report-codex.md) | 2026-11-17 |
+| Claude Code (install only) | The plugin command above, into an empty home folder: installed with scope user | 2026-11-17 |
+| Cursor, Gemini CLI, GitHub Copilot, OpenCode (install only) | The `-g -a` command above, into an empty home folder: files in `~/.agents/skills/secure-my-app` | 2026-11-17 |
 
-Documented, not tested: Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev and Kimi Code CLI.
-The skills CLI installs the same files for them. No run on those agents is recorded here.
+"Install only" means the files landed where the agent reads them. No full run on those agents is recorded here.
+Documented, not tested: Windsurf, Zed, Continue.dev and Kimi Code CLI.
 Per-agent paths are in [Install in your editor](docs/editors.md).
 
 ## Read the report
@@ -117,11 +157,11 @@ Below the header, every finding has the same fields, like the R4 block at the to
 - **`VERIFY`** is the command whose output must change before a fix counts.
 - **Second run.** `.secure-my-app/surface.json` lets the next run say what was fixed, what came back and what is new.
 
-For a Supabase and Next.js shape, read the [illustration](examples/illustration-supabase.md). That one is invented and says so.
+For an app built with Supabase and Next.js, read the [illustration](examples/illustration-supabase.md). That one is invented and says so.
 
 ### Try it on the broken app first
 
-Clone this repo, then start the fixture:
+Clone this repo, then start the test app (the fixture):
 
 ```bash
 node examples/vulnerable-app/server.js
@@ -139,13 +179,16 @@ The [fixture README](examples/vulnerable-app/README.md) has the three answers an
 
 ## What it checks
 
+You launch on Monday. You built fast, maybe with an agent.
+Can one signed-in user read another user's data? This checks, and shows you the proof.
+
 65 controls in seven groups, in the order an attacker tries them ([full catalogue](docs/controls.md)).
 
 | Group      | Covers                                                           |
 | ---------- | ---------------------------------------------------------------- |
 | KEYS (8)   | Secrets in the repo, key exposure, key scope, rotation           |
 | DOOR (9)   | Login, sessions, cookies, password storage, tokens               |
-| ROOMS (10) | Row level security, IDOR, tenant isolation, mass assignment      |
+| ROOMS (10) | Row level security, IDOR (reading records by ID), tenant isolation, mass assignment |
 | PIPES (13) | Injection, XSS, CSRF, SSRF, CORS, redirects, webhooks, headers   |
 | VAULT (8)  | Encryption at rest, response shape, error leakage, logs, backups |
 | FLOOR (10) | Rate limits, bots, uploads, price tampering, AI features         |
@@ -153,11 +196,14 @@ The [fixture README](examples/vulnerable-app/README.md) has the three answers an
 
 ## How it works
 
+The skill's own summary: **Find what a stranger can take from your app. Then close it and prove it closed.**
+The closing part starts only when you say yes to a fix. A fix counts only when that same request fails.
+
 - **No proof, no finding.** What it cannot settle comes back `UNPROVEN`, never as a pass.
 - **You approve each fix.** Nothing in your repo changes until you say yes to that one fix. There is no batch mode.
 - **Every fix is proven twice.** The attacker's request now fails, and your own login still works.
-- **A fix that blocks everybody is reverted.** A patch that returns `403` to all users closes the hole and closes the product.
-- **It leaves history and keys alone.** It never rewrites git history and never rotates a credential. It writes the runbook, you run it.
+- **A fix that blocks everybody is reverted.** A patch that returns `403` to all users closes the hole, but then nobody can use the app.
+- **It leaves history and keys alone.** It never rewrites git history and never rotates a credential. It writes the steps (a runbook), and you run them.
 
 ## Proof
 
@@ -180,6 +226,18 @@ make test
 | `evals/check_skill.py`    | The skill text: the ladder, the verdict line, the RLS rules, the report header |
 | `tests/test_manifests.py` | Manifests, one version everywhere, required files, this README                 |
 | `tests/test_fixture.py`   | Starts the fixture and replays the proof behind each of the 11 sample findings |
+
+The `VERIFY` lines in the sample report, one per finding:
+
+```bash
+grep -c '^VERIFY' examples/sample-report.md
+```
+
+```text
+11
+```
+
+The sample run changed nothing: its header says `Nothing in the app was changed.`
 
 The control count:
 
@@ -217,7 +275,7 @@ It means nothing reached critical or high in what the run could check.
 ### How is it different from `/security-review`?
 
 `/security-review` reads a diff and finds the flaw in code you wrote.
-secure-my-app reads the whole app and finds the defence nobody wrote.
+secure-my-app reads the whole app and finds the protection nobody wrote.
 
 ### Do I need gitleaks or semgrep?
 
@@ -228,12 +286,12 @@ More answers are in the [full FAQ](docs/faq.md).
 
 ## Limits
 
-- **It is not a penetration test.** Nobody signs the report. It is not a compliance audit either.
+- **It is not a penetration test** (a paid attack by an expert). Nobody signs the report. It is not a compliance audit either.
 - **It sees your repository, not your system.** Cloud settings, DNS, laptops and people are outside it.
 - **Two runs can differ.** The rating is a fixed lookup. The scan is an agent's judgment.
-- **One recorded run.** The sample is from one small fixture. No run on a production app is published here.
-- **Without a URL it proves less.** Most access checks then come back `UNPROVEN`.
-- **Live probes are bounded.** About 30 requests, one host you own, no `DELETE`, no load testing.
+- **One recorded run.** The only published run is on a small test app. No run on a production app is published here.
+- **Without a URL it proves less.** Without a live URL, most access checks stay `UNPROVEN`.
+- **Live checks are limited.** About 30 requests, one host you own, no `DELETE`, no load testing.
 
 Everything it does not promise is in [Honest limits](docs/limits.md).
 

@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-dark.svg">
-    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app: 見知らぬ他人があなたのアプリから何を持ち出せるかを見つけ、それを塞ぎ、塞がったことを証明する。" width="100%">
+    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app: 見知らぬ他人は何を持ち出せるか。三つの点: 修正は証明つき、穴ごとに証拠、勝手な変更なし。alice が bob の請求書を要求: 修正前は 200、修正後は 404。" width="100%">
   </picture>
 </p>
 
@@ -15,24 +15,23 @@
 </p>
 
 <p align="center">
-  <strong>見知らぬ他人があなたのアプリから何を持ち出せるかを見つけてください。そしてそれを塞ぎ、塞がったことを証明してください。</strong>
+  <strong>見知らぬ他人があなたのアプリから何を持ち出せるかを見つけます。</strong>
 </p>
 
-アプリを読み、名前の付いた 65 個のチェックを実行し、報告するすべての穴について証拠を示します。
+名前付きの 65 個のチェックを実行し、報告する穴ごとに証拠を示します。
+
+| 修正は証明つき | 穴ごとに証拠 | 勝手な変更なし |
+|:--|:--|:--|
+| VERIFY の出力が変わったときだけ、修正は完了と数えます。サンプルの 11 件すべてにあります。 | 各検出結果が証拠を示します。`make test` がサンプル 11 件すべての証拠を再実行します。 | レポートを書いて止まります。修正はすべてあなたの同意を待ちます。 |
+
+**対応:** スキルを読むエージェントならどれでも。全工程のテスト済み: Claude Code、Codex CLI。Markdown のスキルなので、特定のモデルに縛られません。
 
 ```bash
-npx skills add Aboudjem/secure-my-app
+npx skills add Aboudjem/secure-my-app -g
+# then, in your agent: secure my app before I launch
 ```
 
-エージェントでプロジェクトを開き、こう言います。
-
-```text
-secure my app before I launch
-```
-
-## 得られるもの
-
-`.secure-my-app/report.md` を書いて止まります。以下は 2026-11-17 の実際のレポートの冒頭です。
+実際のレポートの冒頭です。このリポジトリの小さなテスト用アプリで 2026-11-17 に実行しました:
 
 ```text
 VERDICT: DO NOT LAUNCH   coverage 21 checked / 2 unproven / 42 n/a   [static + live: 127.0.0.1:4310]
@@ -43,7 +42,7 @@ DO FIRST
 3. R10 Put a sign-in check and an admin role check on GET /admin/export
 ```
 
-URL の数字を変えるだけで、あるユーザーが別のユーザーの請求書を読めるでしょうか。ここでは alice が bob の請求書を読んでいます。
+URL の数字を変えるだけで、他人の請求書を読めるでしょうか? ここでは alice が bob の請求書を読みます:
 
 ```text
 HIGH R4 Any signed-in user can read any invoice by changing the number in the URL
@@ -60,41 +59,80 @@ VERIFY  alice:  GET /api/invoices/1042 (bob's)   -> 404 "no such invoice"
 STATUS  OPEN
 ```
 
-修正が認められるのは、同じリクエストが通らなくなったときだけです。
-これはペネトレーションテストではありません。稼働中の URL がなければ、ほとんどのアクセスチェックは `UNPROVEN` になります。公開済みの実行は小さなテスト用アプリの 1 件だけです。
+**これは何か:** アプリのセキュリティの穴を探すスキルです。
+**いつ使うか:** 公開の前、または知らない人が登録できるようになる前に。
+**何が得られるか:** 穴ごとに証拠がついたレポート一つ。コードはそのままです。
 
-月曜にリリースする。エージェントも使って急いで作った。
-ログイン済みのユーザーが他人のデータを読めるかどうか、わからない。このツールがそれを確かめ、根拠を見せます。
-
-## 使う理由
-
-- **推測ではなく証拠。** 各検出結果は `PROOF` を示します。コードの行には `[static]`、実行したコマンドとその実際の出力には `[executed]` が付きます。`make test` はサンプルの 11 件すべての証拠を再実行します。
-- **確かめられる修正。** 各検出結果には、出力が変わらなければならない `VERIFY` コマンドがあります。[サンプルレポート](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)の 11 件すべてにあります。`grep -c '^VERIFY' examples/sample-report.md` は 11 を出力します。
-- **決めるのはあなた。** レポートを書いて止まります。修正を一つ承認するまで、アプリは何も変わりません。サンプルレポートには `Nothing in the app was changed.` とあります。
+**制限:** ペネトレーションテスト（専門家による有料の攻撃テスト）ではありません。稼働中の URL がなければ、ほとんどのアクセスチェックは `UNPROVEN` のままです。
 
 ## インストール
 
-**Claude Code。** マーケットプレイスを追加し、プラグインをインストールします。
+**エージェントを選んでください。** どのコマンドも、すべてのプロジェクト向けに secure-my-app をインストールします。
+
+<p align="center">
+  <a href="#install-claude-code"><img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code"></a>
+  <a href="#install-codex"><img src="https://img.shields.io/badge/Codex-000000?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyBmaWxsPSJ3aGl0ZSIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHRpdGxlPk9wZW5BSTwvdGl0bGU%2BPHBhdGggZD0iTTIyLjI4MTkgOS44MjExYTUuOTg0NyA1Ljk4NDcgMCAwIDAtLjUxNTctNC45MTA4IDYuMDQ2MiA2LjA0NjIgMCAwIDAtNi41MDk4LTIuOUE2LjA2NTEgNi4wNjUxIDAgMCAwIDQuOTgwNyA0LjE4MThhNS45ODQ3IDUuOTg0NyAwIDAgMC0zLjk5NzcgMi45IDYuMDQ2MiA2LjA0NjIgMCAwIDAgLjc0MjcgNy4wOTY2IDUuOTggNS45OCAwIDAgMCAuNTExIDQuOTEwNyA2LjA1MSA2LjA1MSAwIDAgMCA2LjUxNDYgMi45MDAxQTUuOTg0NyA1Ljk4NDcgMCAwIDAgMTMuMjU5OSAyNGE2LjA1NTcgNi4wNTU3IDAgMCAwIDUuNzcxOC00LjIwNTggNS45ODk0IDUuOTg5NCAwIDAgMCAzLjk5NzctMi45MDAxIDYuMDU1NyA2LjA1NTcgMCAwIDAtLjc0NzUtNy4wNzI5em0tOS4wMjIgMTIuNjA4MWE0LjQ3NTUgNC40NzU1IDAgMCAxLTIuODc2NC0xLjA0MDhsLjE0MTktLjA4MDQgNC43NzgzLTIuNzU4MmEuNzk0OC43OTQ4IDAgMCAwIC4zOTI3LS42ODEzdi02LjczNjlsMi4wMiAxLjE2ODZhLjA3MS4wNzEgMCAwIDEgLjAzOC4wNTJ2NS41ODI2YTQuNTA0IDQuNTA0IDAgMCAxLTQuNDk0NSA0LjQ5NDR6bS05LjY2MDctNC4xMjU0YTQuNDcwOCA0LjQ3MDggMCAwIDEtLjUzNDYtMy4wMTM3bC4xNDIuMDg1MiA0Ljc4MyAyLjc1ODJhLjc3MTIuNzcxMiAwIDAgMCAuNzgwNiAwbDUuODQyOC0zLjM2ODV2Mi4zMzI0YS4wODA0LjA4MDQgMCAwIDEtLjAzMzIuMDYxNUw5Ljc0IDE5Ljk1MDJhNC40OTkyIDQuNDk5MiAwIDAgMS02LjE0MDgtMS42NDY0ek0yLjM0MDggNy44OTU2YTQuNDg1IDQuNDg1IDAgMCAxIDIuMzY1NS0xLjk3MjhWMTEuNmEuNzY2NC43NjY0IDAgMCAwIC4zODc5LjY3NjVsNS44MTQ0IDMuMzU0My0yLjAyMDEgMS4xNjg1YS4wNzU3LjA3NTcgMCAwIDEtLjA3MSAwbC00LjgzMDMtMi43ODY1QTQuNTA0IDQuNTA0IDAgMCAxIDIuMzQwOCA3Ljg3MnptMTYuNTk2MyAzLjg1NThMMTMuMTAzOCA4LjM2NCAxNS4xMTkyIDcuMmEuMDc1Ny4wNzU3IDAgMCAxIC4wNzEgMGw0LjgzMDMgMi43OTEzYTQuNDk0NCA0LjQ5NDQgMCAwIDEtLjY3NjUgOC4xMDQydi01LjY3NzJhLjc5Ljc5IDAgMCAwLS40MDctLjY2N3ptMi4wMTA3LTMuMDIzMWwtLjE0Mi0uMDg1Mi00Ljc3MzUtMi43ODE4YS43NzU5Ljc3NTkgMCAwIDAtLjc4NTQgMEw5LjQwOSA5LjIyOTdWNi44OTc0YS4wNjYyLjA2NjIgMCAwIDEgLjAyODQtLjA2MTVsNC44MzAzLTIuNzg2NmE0LjQ5OTIgNC40OTkyIDAgMCAxIDYuNjgwMiA0LjY2ek04LjMwNjUgMTIuODYzbC0yLjAyLTEuMTYzOGEuMDgwNC4wODA0IDAgMCAxLS4wMzgtLjA1NjdWNi4wNzQyYTQuNDk5MiA0LjQ5OTIgMCAwIDEgNy4zNzU3LTMuNDUzN2wtLjE0Mi4wODA1TDguNzA0IDUuNDU5YS43OTQ4Ljc5NDggMCAwIDAtLjM5MjcuNjgxM3ptMS4wOTc2LTIuMzY1NGwyLjYwMi0xLjQ5OTggMi42MDY5IDEuNDk5OHYyLjk5OTRsLTIuNTk3NCAxLjQ5OTctMi42MDY3LTEuNDk5N1oiLz48L3N2Zz4%3D" alt="Codex"></a>
+  <a href="#install-cursor"><img src="https://img.shields.io/badge/Cursor-3B3B3B?style=for-the-badge&logo=cursor&logoColor=white" alt="Cursor"></a>
+  <a href="#install-gemini-cli"><img src="https://img.shields.io/badge/Gemini_CLI-1A73E8?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini CLI"></a>
+  <a href="#install-github-copilot"><img src="https://img.shields.io/badge/GitHub_Copilot-24292F?style=for-the-badge&logo=githubcopilot&logoColor=white" alt="GitHub Copilot"></a>
+  <a href="#install-opencode"><img src="https://img.shields.io/badge/OpenCode-4A4A4A?style=for-the-badge&logo=opencode&logoColor=white" alt="OpenCode"></a>
+</p>
+
+<a id="install-claude-code"></a>**Claude Code**、テスト済み。すべてのプロジェクト向けにインストール:
 
 ```bash
-claude plugin marketplace add Aboudjem/10x
+claude plugin marketplace add Aboudjem/10x && claude plugin install secure-my-app@10x
 ```
+
+<a id="install-codex"></a>**Codex**、テスト済み:
 
 ```bash
-claude plugin install secure-my-app@10x
+npx skills add Aboudjem/secure-my-app -g -a codex
 ```
 
-**その他のエージェント。** このページ冒頭の skills CLI コマンドでインストールできます。
-そのあと `secure my app before I launch` と言います。
+<a id="install-cursor"></a>**Cursor**、インストールのみテスト済み:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a cursor
+```
+
+<a id="install-gemini-cli"></a>**Gemini CLI**、インストールのみテスト済み:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a gemini-cli
+```
+
+<a id="install-github-copilot"></a>**GitHub Copilot**、インストールのみテスト済み:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a github-copilot
+```
+
+<a id="install-opencode"></a>**OpenCode**、インストールのみテスト済み:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a opencode
+```
+
+このプロジェクトだけなら `-g` を外します。他のエージェントの `-a` コードは[エディターへのインストール](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md)にあります。
+
+**最初のコマンド。** エージェントでプロジェクトを開き、こう言います:
+
+```text
+secure my app before I launch
+```
+
+1. 三つの質問をします。
+2. コードを読み、`.secure-my-app/report.md` を書きます。
+3. 止まります。あなたが修正に同意するまで何も変わりません。
+
 この文はスキルの説明と一致するので、スキルを読み込むエージェントならどれでも反応します。
-Codex CLI 0.169.0 では 2026-11-17 にこの文でスキルが起動しました。各エージェントには短いトリガーもあります。
+各エージェントには短いトリガーもあります:
 
 | エージェント | 短いトリガー |
 | --- | --- |
 | Claude Code | `/secure-my-app:secure-my-app` |
 | Codex CLI | `$secure-my-app` |
-
-三つの質問をし、コードを読み、`.secure-my-app/report.md` を書きます。そして止まります。
 
 ### 対応エージェント
 
@@ -102,9 +140,11 @@ Codex CLI 0.169.0 では 2026-11-17 にこの文でスキルが起動しまし�
 | --- | --- | --- |
 | Claude Code 2.1.326 | プラグインを読み込み、テスト用アプリで全工程を実行、[レポート出力](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) | 2026-11-17 |
 | Codex CLI 0.169.0 | `npx skills add -a codex`、テスト用アプリで全工程を実行、[レポート出力](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report-codex.md) | 2026-11-17 |
+| Claude Code（インストールのみ） | 上のプラグインコマンドを空のホームフォルダーで実行: scope user でインストール | 2026-11-17 |
+| Cursor、Gemini CLI、GitHub Copilot、OpenCode（インストールのみ） | 上の `-g -a` コマンドを空のホームフォルダーで実行: ファイルは `~/.agents/skills/secure-my-app` | 2026-11-17 |
 
-文書化済み・未テスト: Cursor、GitHub Copilot、Gemini CLI、OpenCode、Windsurf、Zed、Continue.dev、Kimi Code CLI。
-skills CLI はこれらにも同じファイルをインストールします。これらのエージェントでの実行記録はここにはありません。
+「インストールのみ」は、エージェントが読む場所にファイルが入ったという意味です。これらのエージェントでの全工程の実行記録はここにはありません。
+文書化済み・未テスト: Windsurf、Zed、Continue.dev、Kimi Code CLI。
 エージェントごとのパスは[エディターへのインストール](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md)にあります。
 
 ## レポートの読み方
@@ -140,6 +180,9 @@ Codex CLI では、同じ行を `$secure-my-app` で始めてください。
 
 ## チェック内容
 
+月曜日に公開します。エージェントも使って、急いで作りました。
+ログインしたユーザーが、別のユーザーのデータを読めるでしょうか? このスキルが確かめ、証拠を見せます。
+
 65 個のコントロールを七つのグループに分け、攻撃者が試す順に並べています（[完全なカタログ](https://github.com/Aboudjem/secure-my-app/blob/main/docs/controls.md)）。
 
 | グループ | 対象 |
@@ -153,6 +196,9 @@ Codex CLI では、同じ行を `$secure-my-app` で始めてください。
 | SUPPLY (7) | 依存関係、ロックファイル、インストールスクリプト、CI の権限 |
 
 ## 仕組み
+
+スキル自身の要約: **見知らぬ他人があなたのアプリから何を持ち出せるかを見つけ、それを塞ぎ、塞がったことを証明する。**
+塞ぐ作業は、あなたが修正に同意したときだけ始まります。同じリクエストが失敗したときだけ、修正は完了と数えます。
 
 - **証拠がなければ検出結果なし。** 判断できないものは `UNPROVEN` として返り、合格にはなりません。
 - **修正は一つずつ承認。** その修正にあなたが同意するまで、リポジトリは何も変わりません。一括モードはありません。
@@ -181,6 +227,18 @@ make test
 | `evals/check_skill.py` | スキルの本文: 証拠のはしご、判定行、RLS のルール、レポートのヘッダー |
 | `tests/test_manifests.py` | マニフェスト、全体で一つのバージョン、必須ファイル、この README |
 | `tests/test_fixture.py` | テスト用アプリを起動し、サンプルの 11 件それぞれの証拠を再実行 |
+
+サンプルレポートの `VERIFY` 行。検出結果ごとに一つ:
+
+```bash
+grep -c '^VERIFY' examples/sample-report.md
+```
+
+```text
+11
+```
+
+サンプルの実行は何も変更していません。ヘッダーに `Nothing in the app was changed.` とあります。
 
 コントロールの数:
 
@@ -229,11 +287,11 @@ secure-my-app はアプリ全体を読み、誰も書かなかった防御を見
 
 ## 制限事項
 
-- **ペネトレーションテストではありません。** レポートに誰も署名しません。コンプライアンス監査でもありません。
+- **ペネトレーションテスト（専門家による有料の攻撃テスト）ではありません。** レポートに誰も署名しません。コンプライアンス監査でもありません。
 - **見るのはリポジトリで、システムではありません。** クラウド設定、DNS、ノート PC、人は対象外です。
 - **2 回の実行で結果が違うことがあります。** 評価は固定の表で決まります。スキャンはエージェントの判断です。
-- **記録された実行は 1 件。** サンプルは小さなテスト用アプリのものです。本番アプリでの実行はここに公開していません。
-- **URL がなければ証明できることは減ります。** その場合、ほとんどのアクセスチェックは `UNPROVEN` になります。
+- **記録された実行は 1 件。** 公開している実行は、小さなテスト用アプリでの一件だけです。本番アプリでの実行はここに公開していません。
+- **URL がなければ証明できることは減ります。** 稼働中の URL がなければ、ほとんどのアクセスチェックは `UNPROVEN` のままです。
 - **稼働中のアプリへの調査には上限があります。** 約 30 リクエスト、あなたが所有する一つのホスト、`DELETE` なし、負荷テストなし。
 
 約束しないことはすべて[正直な制限事項](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md)にあります。

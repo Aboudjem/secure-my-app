@@ -1,132 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img"
-     aria-label="secure-my-app: find what a stranger can take from your app, then close it and prove it closed. Before the fix the attacker's request returns 200 OK and a real user's request returns 200 OK. After the fix the attacker's request is refused with 403 and the real user's request still returns 200 OK.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="secure-my-app. What can a stranger take? Three points: fixes proven closed, proof for each hole, no surprise changes. In the real sample, alice asks for bob's invoice with GET /api/invoices/1042 and gets 200 before the fix, and 404 after it. Install with npx skills add Aboudjem/secure-my-app -g. Full runs tested in Claude Code and Codex CLI.">
   <title>secure-my-app</title>
-  <desc>Static social preview card. It gets rasterised, so nothing here animates. The paired test
-  is the whole point: a fix counts only when the attacker is refused and a real user still works.</desc>
   <defs>
-    <linearGradient id="lk-ground" x1="0" y1="0" x2="0.4" y2="1">
-      <stop offset="0%" stop-color="#0D1626"/>
-      <stop offset="55%" stop-color="#0A0F1C"/>
+    <linearGradient id="g" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0D1626"/><stop offset="55%" stop-color="#0A0F1C"/>
       <stop offset="100%" stop-color="#080C18"/>
     </linearGradient>
-    <radialGradient id="lk-bloomA" cx="0.10" cy="0.12" r="0.46">
-      <stop offset="0%" stop-color="#2BE844" stop-opacity="0.22"/>
-      <stop offset="100%" stop-color="#2BE844" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="lk-bloomB" cx="0.90" cy="0.88" r="0.52">
-      <stop offset="0%" stop-color="#00D4FF" stop-opacity="0.20"/>
-      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="lk-bloomC" cx="0.55" cy="0.02" r="0.38">
-      <stop offset="0%" stop-color="#2BE8C8" stop-opacity="0.13"/>
-      <stop offset="100%" stop-color="#2BE8C8" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="lk-rule" gradientUnits="userSpaceOnUse" x1="64" y1="142" x2="1216" y2="142">
-      <stop offset="0%"   stop-color="#2BE844" stop-opacity="0.7"/>
-      <stop offset="45%"  stop-color="#2BE8C8" stop-opacity="0.45"/>
-      <stop offset="100%" stop-color="#00D4FF" stop-opacity="0"/>
-    </linearGradient>
-    <linearGradient id="lk-ink" gradientUnits="userSpaceOnUse" x1="40" y1="202" x2="216" y2="54">
-      <stop offset="0%"   stop-color="#5BFF74"/>
-      <stop offset="52%"  stop-color="#2BE844"/>
-      <stop offset="100%" stop-color="#2BE8C8"/>
-    </linearGradient>
-    <linearGradient id="lk-word" x1="0" y1="0" x2="1" y2="0.25">
-      <stop offset="0%"   stop-color="#5BFF74"/>
-      <stop offset="46%"  stop-color="#2BE844"/>
-      <stop offset="100%" stop-color="#2BE8C8"/>
-    </linearGradient>
-    <filter id="lk-glow" x="-45%" y="-45%" width="190%" height="190%">
-      <feGaussianBlur stdDeviation="5" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#FF2D78"/>
+    </marker>
   </defs>
-
-  <style>
-    .disp { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
-    .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; }
-    .kick  { font-size: 15px; font-weight: 600; letter-spacing: 4px; fill: #5BFF74; }
-    .lede  { font-size: 42px; font-weight: 800; fill: #F2F6FF; letter-spacing: -1px; }
-    .lede2 { font-size: 42px; font-weight: 500; fill: #93A2BE; letter-spacing: -1px; }
-    .colhd { font-size: 14px; font-weight: 600; letter-spacing: 2.8px; fill: #93A2BE; }
-    .rowhd { font-size: 14px; font-weight: 600; letter-spacing: 2.8px; fill: #5B6B85; }
-    .cmd   { font-size: 17px; fill: #C2CDE4; }
-    .res   { font-size: 16px; font-weight: 600; }
-    .tag   { font-size: 15px; letter-spacing: 1.6px; fill: #93A2BE; }
-    .card  { fill: #0E1524; stroke: #1E2A42; stroke-width: 1; }
-    @media (prefers-reduced-motion: reduce) { * { } }
-  </style>
-
-  <rect width="1280" height="640" fill="url(#lk-ground)"/>
-  <rect width="1280" height="640" fill="url(#lk-bloomA)"/>
-  <rect width="1280" height="640" fill="url(#lk-bloomB)"/>
-  <rect width="1280" height="640" fill="url(#lk-bloomC)"/>
-
-  <g transform="translate(54.26,52.26) scale(0.3417)">
-    <g stroke="#2BE844" stroke-opacity="0.30" stroke-width="15" stroke-linecap="round">
-      <line x1="41.1" y1="178" x2="214.9" y2="178"/>
-      <line x1="50.9" y1="140" x2="205.1" y2="140"/>
-      <line x1="60.7" y1="102" x2="195.3" y2="102"/>
-      <line x1="70.5" y1="64"  x2="185.5" y2="64"/>
-    </g>
-    <g stroke="url(#lk-ink)" stroke-width="8" stroke-linecap="round" filter="url(#lk-glow)">
-      <line x1="36" y1="198" x2="72" y2="58"/>
-      <line x1="220" y1="198" x2="184" y2="58"/>
-    </g>
-    <g stroke="url(#lk-ink)" stroke-width="15" stroke-linecap="round" filter="url(#lk-glow)">
-      <line x1="41.1" y1="178" x2="214.9" y2="178"/>
-      <line x1="50.9" y1="140" x2="205.1" y2="140" opacity="0.74"/>
-      <line x1="60.7" y1="102" x2="195.3" y2="102" opacity="0.48"/>
-      <line x1="70.5" y1="64"  x2="185.5" y2="64" opacity="0.26"/>
-    </g>
+  <rect width="1280" height="640" rx="15" fill="url(#g)"/>
+  <g transform="scale(1.0667)">
+    <text x="56" y="78" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="700" fill="#2BE844">secure-my-app</text>
+    <text x="54" y="182" font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5" fill="#F2F6FF">What can a stranger take?</text>
+    <rect x="56" y="234" width="246" height="46" rx="23" fill="#11201A" stroke="#2BE844" stroke-width="1.5"/>
+    <text x="179.0" y="264" text-anchor="middle" font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" font-weight="700" fill="#F2F6FF">Fixes proven closed</text>
+    <rect x="320" y="234" width="246" height="46" rx="23" fill="#11201A" stroke="#2BE844" stroke-width="1.5"/>
+    <text x="443.0" y="264" text-anchor="middle" font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" font-weight="700" fill="#F2F6FF">Proof for each hole</text>
+    <rect x="584" y="234" width="246" height="46" rx="23" fill="#11201A" stroke="#2BE844" stroke-width="1.5"/>
+    <text x="707.0" y="264" text-anchor="middle" font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="20" font-weight="700" fill="#F2F6FF">No surprise changes</text>
+    <rect x="56" y="362" width="500" height="54" rx="10" fill="#060A14" stroke="#24324F" stroke-width="1"/>
+    <text x="76" y="396" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" fill="#F2F6FF"><tspan fill="#2BE844">$</tspan> npx skills add Aboudjem/secure-my-app -g</text>
+    <text x="56" y="454" font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="18" font-weight="600" fill="#A9B6CF">Agent skills · Full runs tested: Claude Code, Codex CLI</text>
+    <text x="56" y="486" font-family="system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#6E7F9C">Not a penetration test. Each fix waits for your yes.</text>
+    <rect x="612" y="356" width="532" height="160" rx="12" fill="#0E1524" stroke="#24324F" stroke-width="1"/>
+    <rect x="630" y="374" width="92" height="124" rx="8" fill="none" stroke="#5B9DFF" stroke-width="2"/>
+    <text x="676.0" y="443.0" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="19" font-weight="700" fill="#F2F6FF">alice</text>
+    <rect x="1006" y="374" width="120" height="124" rx="8" fill="#141E33" stroke="#6E7F9C" stroke-width="1.5"/>
+    <text x="1066.0" y="432.0" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="17" font-weight="700" fill="#F2F6FF">bob&#8217;s</text>
+    <text x="1066.0" y="454.0" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="15" fill="#A9B6CF">invoice 1042</text>
+    <text x="736" y="402" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14.5" fill="#A9B6CF">GET /api/invoices/1042 <tspan fill="#FF2D78" font-weight="700">-&gt; 200</tspan></text>
+    <line x1="732" y1="414" x2="998" y2="414" stroke="#FF2D78" stroke-width="3" marker-end="url(#ar)"/>
+    <text x="736" y="468" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace" font-size="14.5" fill="#A9B6CF">after the fix <tspan fill="#2BE844" font-weight="700">-&gt; 404</tspan></text>
+    <line x1="732" y1="480" x2="946" y2="480" stroke="#2BE844" stroke-width="3"/>
+    <line x1="948" y1="466" x2="948" y2="494" stroke="#2BE844" stroke-width="5" stroke-linecap="round"/>
   </g>
-  <text class="disp" x="152" y="112" font-size="44" font-weight="800"
-        letter-spacing="-1.2" fill="url(#lk-word)">secure-my-app</text>
-  <text class="mono kick" x="1216" y="112" text-anchor="end">A CLAUDE CODE SKILL</text>
-
-  <line x1="64" y1="142" x2="1216" y2="142" stroke="url(#lk-rule)" stroke-width="1.5"/>
-
-  <text class="disp lede"  x="64" y="212">Find what a stranger can take from your app.</text>
-  <text class="disp lede2" x="64" y="266">Then close it and prove it closed.</text>
-
-  <text class="mono colhd" x="188" y="324">THE ATTACKER'S REQUEST</text>
-  <text class="mono colhd" x="722" y="324">A REAL USER'S REQUEST</text>
-  <text class="mono rowhd" x="64" y="380">BEFORE</text>
-  <text class="mono rowhd" x="64" y="522">AFTER</text>
-
-  <rect x="188" y="336" width="494" height="76" rx="11" class="card"/>
-  <rect x="188" y="356" width="4" height="36" rx="2" fill="#FF2D78"/>
-  <text class="mono cmd" x="210" y="368">curl -s $APP/api/orders/1042</text>
-  <rect x="210" y="384" width="8" height="8" rx="2" fill="#FF2D78"/>
-  <text class="mono res" x="228" y="392" fill="#FF2D78">200 OK  &#183;  another tenant's order, in full</text>
-
-  <rect x="722" y="336" width="494" height="76" rx="11" class="card"/>
-  <rect x="722" y="356" width="4" height="36" rx="2" fill="#5B9DFF"/>
-  <text class="mono cmd" x="744" y="368">curl -s -b "$SESSION" $APP/api/orders/7</text>
-  <rect x="744" y="384" width="8" height="8" rx="2" fill="#2BE844"/>
-  <text class="mono res" x="762" y="392" fill="#2BE844">200 OK  &#183;  their own order</text>
-
-  <g stroke="#2BE844" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6" stroke-linecap="round">
-    <line x1="435" y1="412" x2="435" y2="432"/><line x1="969" y1="412" x2="969" y2="432"/>
-    <line x1="435" y1="462" x2="435" y2="478"/><line x1="969" y1="462" x2="969" y2="478"/>
-  </g>
-
-  <rect x="188" y="432" width="1028" height="30" rx="8" fill="#0E1524"
-        stroke="#2BE844" stroke-opacity="0.4" stroke-width="1"/>
-  <text class="mono" x="702" y="452" font-size="16" fill="#2BE844" text-anchor="middle">FIX APPLIED  &#183;  one finding, on your approval  &#183;  nothing else touched</text>
-
-  <rect x="188" y="478" width="494" height="76" rx="11" class="card"/>
-  <rect x="188" y="498" width="4" height="36" rx="2" fill="#FF2D78"/>
-  <text class="mono cmd" x="210" y="510">curl -s $APP/api/orders/1042</text>
-  <rect x="210" y="526" width="8" height="8" rx="2" fill="#2BE844"/>
-  <text class="mono res" x="228" y="534" fill="#2BE844">403 REFUSED  &#183;  the app said no</text>
-
-  <rect x="722" y="478" width="494" height="76" rx="11" class="card"/>
-  <rect x="722" y="498" width="4" height="36" rx="2" fill="#5B9DFF"/>
-  <text class="mono cmd" x="744" y="510">curl -s -b "$SESSION" $APP/api/orders/7</text>
-  <rect x="744" y="526" width="8" height="8" rx="2" fill="#2BE844"/>
-  <text class="mono res" x="762" y="534" fill="#2BE844">200 OK  &#183;  their own order, still</text>
-
-  <text class="mono tag" x="64" y="600" fill="#2BE844">$ npx skills add Aboudjem/secure-my-app</text>
-  <text class="mono tag" x="1216" y="600" text-anchor="end" fill="#5B6B85">no proof, no finding  &#183;  read only until you approve</text>
 </svg>

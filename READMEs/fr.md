@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-dark.svg">
-    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app : trouvez ce qu'un inconnu peut prendre dans votre application, puis refermez-le et prouvez que c'est refermé." width="100%">
+    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app : que peut prendre un inconnu ? Trois points : corrections prouvées, une preuve par faille, aucun changement surprise. Alice demande la facture de bob : 200 avant la correction, 404 après." width="100%">
   </picture>
 </p>
 
@@ -15,24 +15,23 @@
 </p>
 
 <p align="center">
-  <strong>Trouvez ce qu'un inconnu peut prendre dans votre application. Puis refermez-le et prouvez que c'est refermé.</strong>
+  <strong>Trouvez ce qu'un inconnu peut prendre dans votre application.</strong>
 </p>
 
-Il lit votre application, applique 65 contrôles nommés et montre la preuve de chaque faille qu'il signale.
+Il applique 65 contrôles nommés et montre la preuve de chaque faille qu'il signale.
+
+| Corrections prouvées | Une preuve par faille | Aucun changement surprise |
+|:--|:--|:--|
+| Une correction ne compte que si la sortie de VERIFY change. Les 11 constats de l'exemple en ont une. | Chaque constat montre sa preuve. `make test` rejoue la preuve des 11 constats de l'exemple. | Il écrit un rapport et s'arrête. Chaque correction attend votre oui. |
+
+**Fonctionne avec :** tout agent qui lit les skills. Exécutions complètes testées : Claude Code, Codex CLI. C'est un skill en Markdown, il n'est donc lié à aucun modèle.
 
 ```bash
-npx skills add Aboudjem/secure-my-app
+npx skills add Aboudjem/secure-my-app -g
+# then, in your agent: secure my app before I launch
 ```
 
-Ouvrez votre projet dans votre agent et dites :
-
-```text
-secure my app before I launch
-```
-
-## Ce que vous obtenez
-
-Il écrit `.secure-my-app/report.md` puis s'arrête. Voici le haut d'un vrai rapport, du 2026-11-17 :
+Le début d'un vrai rapport, issu d'une exécution sur la petite application d'essai de ce dépôt, le 2026-11-17 :
 
 ```text
 VERDICT: DO NOT LAUNCH   coverage 21 checked / 2 unproven / 42 n/a   [static + live: 127.0.0.1:4310]
@@ -60,41 +59,80 @@ VERIFY  alice:  GET /api/invoices/1042 (bob's)   -> 404 "no such invoice"
 STATUS  OPEN
 ```
 
-Une correction ne compte que lorsque cette même requête cesse de marcher.
-Ce n'est pas un test d'intrusion. Sans URL en ligne, la plupart des contrôles d'accès reviennent `UNPROVEN`, et la seule exécution publiée porte sur une petite application d'essai.
+**Ce que c'est :** un skill qui cherche les failles de sécurité de votre application.
+**Quand l'utiliser :** avant le lancement, ou avant que des inconnus puissent s'inscrire.
+**Ce que vous obtenez :** un rapport avec la preuve de chaque faille. Votre code reste tel quel.
 
-Vous lancez lundi. Vous avez construit vite, peut-être avec un agent.
-Vous ne savez pas si un utilisateur connecté peut lire les données d'un autre. Cet outil le découvre et vous montre comment il le sait.
-
-## Pourquoi l'utiliser
-
-- **Des preuves, pas des suppositions.** Chaque constat montre sa `PROOF`, marquée `[static]` pour une ligne de code ou `[executed]` pour une commande et sa vraie sortie. `make test` rejoue la preuve des 11 constats de l'exemple.
-- **Une correction que vous pouvez vérifier.** Chaque constat a une commande `VERIFY` dont la sortie doit changer. Les 11 constats du [rapport d'exemple](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) en ont une : `grep -c '^VERIFY' examples/sample-report.md` affiche 11.
-- **Vous gardez la main.** Il écrit un rapport et s'arrête. Rien ne change dans votre application avant que vous approuviez une correction. Le rapport d'exemple dit `Nothing in the app was changed.`
+**Limite :** ce n'est pas un test d'intrusion (une attaque payée, faite par un expert). Sans URL en ligne, la plupart des contrôles d'accès restent `UNPROVEN`.
 
 ## Installation
 
-**Claude Code.** Ajoutez la marketplace, puis installez le plugin.
+**Choisissez votre agent.** Chaque commande installe secure-my-app pour tous vos projets.
+
+<p align="center">
+  <a href="#install-claude-code"><img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code"></a>
+  <a href="#install-codex"><img src="https://img.shields.io/badge/Codex-000000?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyBmaWxsPSJ3aGl0ZSIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHRpdGxlPk9wZW5BSTwvdGl0bGU%2BPHBhdGggZD0iTTIyLjI4MTkgOS44MjExYTUuOTg0NyA1Ljk4NDcgMCAwIDAtLjUxNTctNC45MTA4IDYuMDQ2MiA2LjA0NjIgMCAwIDAtNi41MDk4LTIuOUE2LjA2NTEgNi4wNjUxIDAgMCAwIDQuOTgwNyA0LjE4MThhNS45ODQ3IDUuOTg0NyAwIDAgMC0zLjk5NzcgMi45IDYuMDQ2MiA2LjA0NjIgMCAwIDAgLjc0MjcgNy4wOTY2IDUuOTggNS45OCAwIDAgMCAuNTExIDQuOTEwNyA2LjA1MSA2LjA1MSAwIDAgMCA2LjUxNDYgMi45MDAxQTUuOTg0NyA1Ljk4NDcgMCAwIDAgMTMuMjU5OSAyNGE2LjA1NTcgNi4wNTU3IDAgMCAwIDUuNzcxOC00LjIwNTggNS45ODk0IDUuOTg5NCAwIDAgMCAzLjk5NzctMi45MDAxIDYuMDU1NyA2LjA1NTcgMCAwIDAtLjc0NzUtNy4wNzI5em0tOS4wMjIgMTIuNjA4MWE0LjQ3NTUgNC40NzU1IDAgMCAxLTIuODc2NC0xLjA0MDhsLjE0MTktLjA4MDQgNC43NzgzLTIuNzU4MmEuNzk0OC43OTQ4IDAgMCAwIC4zOTI3LS42ODEzdi02LjczNjlsMi4wMiAxLjE2ODZhLjA3MS4wNzEgMCAwIDEgLjAzOC4wNTJ2NS41ODI2YTQuNTA0IDQuNTA0IDAgMCAxLTQuNDk0NSA0LjQ5NDR6bS05LjY2MDctNC4xMjU0YTQuNDcwOCA0LjQ3MDggMCAwIDEtLjUzNDYtMy4wMTM3bC4xNDIuMDg1MiA0Ljc4MyAyLjc1ODJhLjc3MTIuNzcxMiAwIDAgMCAuNzgwNiAwbDUuODQyOC0zLjM2ODV2Mi4zMzI0YS4wODA0LjA4MDQgMCAwIDEtLjAzMzIuMDYxNUw5Ljc0IDE5Ljk1MDJhNC40OTkyIDQuNDk5MiAwIDAgMS02LjE0MDgtMS42NDY0ek0yLjM0MDggNy44OTU2YTQuNDg1IDQuNDg1IDAgMCAxIDIuMzY1NS0xLjk3MjhWMTEuNmEuNzY2NC43NjY0IDAgMCAwIC4zODc5LjY3NjVsNS44MTQ0IDMuMzU0My0yLjAyMDEgMS4xNjg1YS4wNzU3LjA3NTcgMCAwIDEtLjA3MSAwbC00LjgzMDMtMi43ODY1QTQuNTA0IDQuNTA0IDAgMCAxIDIuMzQwOCA3Ljg3MnptMTYuNTk2MyAzLjg1NThMMTMuMTAzOCA4LjM2NCAxNS4xMTkyIDcuMmEuMDc1Ny4wNzU3IDAgMCAxIC4wNzEgMGw0LjgzMDMgMi43OTEzYTQuNDk0NCA0LjQ5NDQgMCAwIDEtLjY3NjUgOC4xMDQydi01LjY3NzJhLjc5Ljc5IDAgMCAwLS40MDctLjY2N3ptMi4wMTA3LTMuMDIzMWwtLjE0Mi0uMDg1Mi00Ljc3MzUtMi43ODE4YS43NzU5Ljc3NTkgMCAwIDAtLjc4NTQgMEw5LjQwOSA5LjIyOTdWNi44OTc0YS4wNjYyLjA2NjIgMCAwIDEgLjAyODQtLjA2MTVsNC44MzAzLTIuNzg2NmE0LjQ5OTIgNC40OTkyIDAgMCAxIDYuNjgwMiA0LjY2ek04LjMwNjUgMTIuODYzbC0yLjAyLTEuMTYzOGEuMDgwNC4wODA0IDAgMCAxLS4wMzgtLjA1NjdWNi4wNzQyYTQuNDk5MiA0LjQ5OTIgMCAwIDEgNy4zNzU3LTMuNDUzN2wtLjE0Mi4wODA1TDguNzA0IDUuNDU5YS43OTQ4Ljc5NDggMCAwIDAtLjM5MjcuNjgxM3ptMS4wOTc2LTIuMzY1NGwyLjYwMi0xLjQ5OTggMi42MDY5IDEuNDk5OHYyLjk5OTRsLTIuNTk3NCAxLjQ5OTctMi42MDY3LTEuNDk5N1oiLz48L3N2Zz4%3D" alt="Codex"></a>
+  <a href="#install-cursor"><img src="https://img.shields.io/badge/Cursor-3B3B3B?style=for-the-badge&logo=cursor&logoColor=white" alt="Cursor"></a>
+  <a href="#install-gemini-cli"><img src="https://img.shields.io/badge/Gemini_CLI-1A73E8?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini CLI"></a>
+  <a href="#install-github-copilot"><img src="https://img.shields.io/badge/GitHub_Copilot-24292F?style=for-the-badge&logo=githubcopilot&logoColor=white" alt="GitHub Copilot"></a>
+  <a href="#install-opencode"><img src="https://img.shields.io/badge/OpenCode-4A4A4A?style=for-the-badge&logo=opencode&logoColor=white" alt="OpenCode"></a>
+</p>
+
+<a id="install-claude-code"></a>**Claude Code**, testé. Installe pour tous vos projets :
 
 ```bash
-claude plugin marketplace add Aboudjem/10x
+claude plugin marketplace add Aboudjem/10x && claude plugin install secure-my-app@10x
 ```
+
+<a id="install-codex"></a>**Codex**, testé :
 
 ```bash
-claude plugin install secure-my-app@10x
+npx skills add Aboudjem/secure-my-app -g -a codex
 ```
 
-**Tout autre agent.** La commande du CLI skills en haut de cette page l'installe.
-Dites ensuite `secure my app before I launch`.
-Cette phrase correspond à la description du skill, donc tout agent qui charge des skills la reconnaît.
-Sur Codex CLI 0.169.0, elle a lancé le skill le 2026-11-17. Chaque agent a aussi un déclencheur court :
+<a id="install-cursor"></a>**Cursor**, installation testée :
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a cursor
+```
+
+<a id="install-gemini-cli"></a>**Gemini CLI**, installation testée :
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a gemini-cli
+```
+
+<a id="install-github-copilot"></a>**GitHub Copilot**, installation testée :
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a github-copilot
+```
+
+<a id="install-opencode"></a>**OpenCode**, installation testée :
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a opencode
+```
+
+Pour ce projet seulement : retirez `-g`. Autre agent : son code `-a` est dans [Installer dans votre éditeur](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md).
+
+**Votre première commande.** Ouvrez votre projet dans votre agent et dites :
+
+```text
+secure my app before I launch
+```
+
+1. Il pose trois questions.
+2. Il lit votre code et écrit `.secure-my-app/report.md`.
+3. Il s'arrête. Rien ne change avant votre oui à une correction.
+
+Cette phrase correspond à la description du skill, donc tout agent qui charge les skills la reconnaît.
+Chaque agent a aussi un déclencheur court :
 
 | Agent | Déclencheur court |
 | --- | --- |
 | Claude Code | `/secure-my-app:secure-my-app` |
 | Codex CLI | `$secure-my-app` |
-
-Il pose trois questions, lit votre code et écrit `.secure-my-app/report.md`. Puis il s'arrête.
 
 ### Fonctionne avec
 
@@ -102,9 +140,11 @@ Il pose trois questions, lit votre code et écrit `.secure-my-app/report.md`. Pu
 | --- | --- | --- |
 | Claude Code 2.1.326 | Plugin chargé, exécution complète sur l'application d'essai, [rapport écrit](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) | 2026-11-17 |
 | Codex CLI 0.169.0 | `npx skills add -a codex`, exécution complète sur l'application d'essai, [rapport écrit](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report-codex.md) | 2026-11-17 |
+| Claude Code (installation seule) | La commande du plugin ci-dessus, dans un dossier personnel vide : installé avec la portée user | 2026-11-17 |
+| Cursor, Gemini CLI, GitHub Copilot, OpenCode (installation seule) | La commande `-g -a` ci-dessus, dans un dossier personnel vide : fichiers dans `~/.agents/skills/secure-my-app` | 2026-11-17 |
 
-Documentés, pas testés : Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev et Kimi Code CLI.
-Le CLI skills installe pour eux les mêmes fichiers. Aucune exécution sur ces agents n'est enregistrée ici.
+« Installation seule » veut dire que les fichiers sont arrivés là où l'agent les lit. Aucune exécution complète sur ces agents n'est enregistrée ici.
+Documentés, non testés : Windsurf, Zed, Continue.dev et Kimi Code CLI.
 Les chemins par agent sont dans [Installer dans votre éditeur](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md).
 
 ## Lire le rapport
@@ -140,6 +180,9 @@ Le [README de l'application d'essai](https://github.com/Aboudjem/secure-my-app/b
 
 ## Ce qu'il vérifie
 
+Vous lancez lundi. Vous avez construit vite, peut-être avec un agent.
+Un utilisateur connecté peut-il lire les données d'un autre ? Ce skill vérifie, et vous montre la preuve.
+
 65 contrôles en sept groupes, dans l'ordre où un attaquant les essaie ([catalogue complet](https://github.com/Aboudjem/secure-my-app/blob/main/docs/controls.md)).
 
 | Groupe | Couvre |
@@ -153,6 +196,9 @@ Le [README de l'application d'essai](https://github.com/Aboudjem/secure-my-app/b
 | SUPPLY (7) | Dépendances, fichiers de verrouillage, scripts d'installation, permissions CI |
 
 ## Comment ça marche
+
+Le résumé du skill lui-même : **trouvez ce qu'un inconnu peut prendre dans votre application, puis refermez-le et prouvez que c'est refermé.**
+La partie correction ne commence qu'avec votre oui. Une correction ne compte que si cette même requête échoue.
 
 - **Pas de preuve, pas de constat.** Ce qu'il ne peut pas trancher revient `UNPROVEN`, jamais comme une réussite.
 - **Vous approuvez chaque correction.** Rien ne change dans votre dépôt avant votre oui à cette correction précise. Il n'y a pas de mode par lot.
@@ -181,6 +227,18 @@ make test
 | `evals/check_skill.py` | Le texte du skill : l'échelle de preuve, la ligne de verdict, les règles RLS, l'en-tête du rapport |
 | `tests/test_manifests.py` | Manifestes, une seule version partout, fichiers requis, ce README |
 | `tests/test_fixture.py` | Démarre l'application d'essai et rejoue la preuve de chacun des 11 constats de l'exemple |
+
+Les lignes `VERIFY` du rapport d'exemple, une par constat :
+
+```bash
+grep -c '^VERIFY' examples/sample-report.md
+```
+
+```text
+11
+```
+
+L'exécution de l'exemple n'a rien changé : son en-tête dit `Nothing in the app was changed.`
 
 Le nombre de contrôles :
 
@@ -229,11 +287,11 @@ D'autres réponses sont dans la [FAQ complète](https://github.com/Aboudjem/secu
 
 ## Limites
 
-- **Ce n'est pas un test d'intrusion.** Personne ne signe le rapport. Ce n'est pas non plus un audit de conformité.
+- **Ce n'est pas un test d'intrusion** (une attaque payée, faite par un expert). Personne ne signe le rapport. Ce n'est pas non plus un audit de conformité.
 - **Il voit votre dépôt, pas votre système.** Réglages cloud, DNS, ordinateurs portables et personnes sont hors de sa portée.
 - **Deux exécutions peuvent différer.** La notation est une table fixe. L'analyse est le jugement d'un agent.
-- **Une seule exécution enregistrée.** L'exemple vient d'une petite application d'essai. Aucune exécution sur une application en production n'est publiée ici.
-- **Sans URL, il prouve moins.** La plupart des contrôles d'accès reviennent alors `UNPROVEN`.
+- **Une seule exécution enregistrée.** La seule exécution publiée porte sur une petite application d'essai. Aucune exécution sur une application en production n'est publiée ici.
+- **Sans URL, il prouve moins.** Sans URL en ligne, la plupart des contrôles d'accès restent `UNPROVEN`.
 - **Les sondes en ligne sont bornées.** Environ 30 requêtes, un seul hôte qui vous appartient, pas de `DELETE`, pas de test de charge.
 
 Tout ce qu'il ne promet pas est dans [Limites honnêtes](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md).

@@ -15,7 +15,7 @@ description: >-
 argument-hint: "[path, url, or control group to audit]"
 license: MIT
 metadata:
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # secure-my-app

@@ -446,7 +446,7 @@ try:
     check("README.md shows the Claude Code install command in a code block",
           f"claude plugin install {NAME}@10x" in shell)
     check("README.md shows the skills CLI install command in a code block",
-          f"npx skills add Aboudjem/{NAME}\n" in shell)
+          f"npx skills add Aboudjem/{NAME} -g\n" in shell)
     check("README.md shows what to type after installing, in a code block",
           any(body.strip() == "secure my app before I launch" for _, body in blocks),
           "a reader who installed it must see the plain-language trigger on a line of its own")

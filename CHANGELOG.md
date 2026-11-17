@@ -4,6 +4,25 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-11-17
+
+A shorter first screen, an install line for each agent, and new images. No change to what the skill does.
+
+### Changed
+
+- **README first screen.** One line, one sentence, three points with their proof (fixes proven
+  closed, proof for each hole, no surprise changes), the agents it works with, the command, the real
+  sample, then what it is, when to use it and what you get. The limit stays on the first screen.
+- **Pick your agent.** The Install section opens with a badge for Claude Code, Codex, Cursor, Gemini
+  CLI, GitHub Copilot and OpenCode. Each links to one command that installs for all your projects
+  (`-g`). Each command was run into an empty home folder on 2026-11-17.
+- **Install paths.** `docs/editors.md` now gives `~/.agents/skills/` as the global path for Cursor,
+  Codex, GitHub Copilot, Gemini CLI and OpenCode, where skills 1.9.0 puts the files.
+- **Images.** New hero (dark and light) and social preview: the headline, the three points, the
+  command, and alice's request to bob's invoice, `200` before the fix and `404` after it.
+- **Listing description.** Shorter and plainer. The skill's own description is unchanged.
+- **Translations.** The four translations carry the same changes.
+
 ## [0.3.1] - 2026-11-17
 
 A clearer first screen and truer wording. No change to what the skill does.

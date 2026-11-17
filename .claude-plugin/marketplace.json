@@ -4,14 +4,14 @@
     "name": "Adam Boudjemaa"
   },
   "metadata": {
-    "description": "Runs 65 security checks on your app before launch. Each hole comes with its proof, and a fix counts only when the VERIFY command shows the change."
+    "description": "65 security checks for your app before launch. Each hole comes with its proof, and a fix counts only when its VERIFY output changes."
   },
   "plugins": [
     {
       "name": "secure-my-app",
       "source": "./",
-      "description": "Runs 65 security checks on your app before launch. Each hole comes with its proof, and a fix counts only when the VERIFY command shows the change.",
-      "version": "0.3.1"
+      "description": "65 security checks for your app before launch. Each hole comes with its proof, and a fix counts only when its VERIFY output changes.",
+      "version": "0.3.2"
     }
   ]
 }

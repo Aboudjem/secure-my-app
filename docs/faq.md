@@ -123,7 +123,7 @@ says so. A missing tool never turns a check into a `PASS`, and it never installs
 
 ## Does it work outside Claude Code
 
-Yes. `npx skills add Aboudjem/secure-my-app` puts the same directory wherever your agent reads skills,
+Yes. `npx skills add Aboudjem/secure-my-app -g` puts the same directory wherever your agent reads skills,
 and it degrades honestly: no shell means those controls come back `UNPROVEN` with their commands
 written out, no network means the header says `static only`. See [editors](editors.md).
 

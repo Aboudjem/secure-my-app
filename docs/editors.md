@@ -16,7 +16,7 @@ Then say "secure my app before I launch", or run `/secure-my-app:secure-my-app`.
 ## Any other agent
 
 ```bash
-npx skills add Aboudjem/secure-my-app -a <agent>
+npx skills add Aboudjem/secure-my-app -g -a <agent>
 ```
 
 Replace `<agent>` with a code from this table, read from the supported-agents table in
@@ -26,11 +26,11 @@ in all, so if yours is missing here it is almost certainly there.
 | Agent | `-a` code | Project path | Global path |
 | --- | --- | --- | --- |
 | Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
-| Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
-| Codex | `codex` | `.agents/skills/` | `~/.codex/skills/` |
-| GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
-| Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
-| OpenCode | `opencode` | `.agents/skills/` | `~/.config/opencode/skills/` |
+| Cursor | `cursor` | `.agents/skills/` | `~/.agents/skills/` |
+| Codex | `codex` | `.agents/skills/` | `~/.agents/skills/` |
+| GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.agents/skills/` |
+| Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.agents/skills/` |
+| OpenCode | `opencode` | `.agents/skills/` | `~/.agents/skills/` |
 | Windsurf | `windsurf` | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
 | Zed | `zed` | `.agents/skills/` | `~/.agents/skills/` |
 | Continue.dev | `continue` | `.agents/skills/` | `~/.continue/skills/` |
@@ -39,11 +39,11 @@ in all, so if yours is missing here it is almost certainly there.
 So for Cursor, and for VS Code with GitHub Copilot:
 
 ```bash
-npx skills add Aboudjem/secure-my-app -a cursor
-npx skills add Aboudjem/secure-my-app -a github-copilot
+npx skills add Aboudjem/secure-my-app -g -a cursor
+npx skills add Aboudjem/secure-my-app -g -a github-copilot
 ```
 
-Add `-g` to install to the global path instead of the project one, `-y` to skip the prompts in a
+`-g` installs to the global path, for all your projects. Drop `-g` to install for this project only. Add `-y` to skip the prompts in a
 script, or `--list` to print what a repository offers and install nothing. For this repo, `--list`
 reports one skill.
 

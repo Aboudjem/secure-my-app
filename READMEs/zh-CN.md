@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-dark.svg">
-    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app：找出陌生人能从你的应用里拿走什么，然后把它堵上，并证明它确实堵上了。" width="100%">
+    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app：陌生人能拿走什么？三点：修复有证明，每个漏洞都有证据，不会擅自改动。alice 请求 bob 的发票：修复前 200，修复后 404。" width="100%">
   </picture>
 </p>
 
@@ -15,24 +15,23 @@
 </p>
 
 <p align="center">
-  <strong>找出陌生人能从你的应用里拿走什么。然后把它堵上，并证明它确实堵上了。</strong>
+  <strong>找出陌生人能从你的应用里拿走什么。</strong>
 </p>
 
-它读取你的应用，运行 65 项有名称的检查，并为报告的每个漏洞给出证据。
+它运行 65 项有名称的检查，并为报告的每个漏洞给出证据。
+
+| 修复有证明 | 每个漏洞都有证据 | 不会擅自改动 |
+|:--|:--|:--|
+| 只有 VERIFY 的输出改变，修复才算数。示例中的 11 条发现都有。 | 每条发现都给出证据。`make test` 会重放示例中全部 11 条发现的证据。 | 它写出报告后就停下。每项修复都等你同意。 |
+
+**适用于：** 任何能读取技能的智能体。完整运行已测试：Claude Code、Codex CLI。它是一个 Markdown 技能，所以不绑定任何一个模型。
 
 ```bash
-npx skills add Aboudjem/secure-my-app
+npx skills add Aboudjem/secure-my-app -g
+# then, in your agent: secure my app before I launch
 ```
 
-在你的智能体中打开项目，然后说：
-
-```text
-secure my app before I launch
-```
-
-## 你会得到什么
-
-它写出 `.secure-my-app/report.md` 然后停止。下面是一份真实报告的开头，来自 2026-11-17：
+一份真实报告的开头，来自 2026-11-17 在本仓库小型测试应用上的一次运行：
 
 ```text
 VERDICT: DO NOT LAUNCH   coverage 21 checked / 2 unproven / 42 n/a   [static + live: 127.0.0.1:4310]
@@ -43,7 +42,7 @@ DO FIRST
 3. R10 Put a sign-in check and an admin role check on GET /admin/export
 ```
 
-一个用户改掉 URL 里的一个数字，就能读到另一个用户的发票吗？这里 alice 读到了 bob 的：
+改一下 URL 里的数字，一个用户能读到别人的发票吗？这里 alice 读到了 bob 的：
 
 ```text
 HIGH R4 Any signed-in user can read any invoice by changing the number in the URL
@@ -60,52 +59,93 @@ VERIFY  alice:  GET /api/invoices/1042 (bob's)   -> 404 "no such invoice"
 STATUS  OPEN
 ```
 
-只有当同一个请求不再成功时，修复才算数。
-它不是渗透测试。没有在线 URL 时，大多数访问检查会返回 `UNPROVEN`，而且唯一公开的运行是在一个小型测试应用上。
+**它是什么：** 一个查找你应用中安全漏洞的技能。
+**何时使用：** 在上线之前，或在陌生人可以注册之前。
+**你得到什么：** 一份报告，每个漏洞都附有证据。你的代码保持原样。
 
-你周一就要上线。你做得很快，也许还用了智能体。
-你不知道一个已登录用户能否读到别人的数据。它会查清楚，并告诉你它凭什么这么说。
-
-## 为什么用它
-
-- **证据，而不是猜测。** 每条发现都给出它的 `PROOF`：代码行标为 `[static]`，执行过的命令及其真实输出标为 `[executed]`。`make test` 会重放示例中全部 11 条发现的证据。
-- **可以检验的修复。** 每条发现都有一个 `VERIFY` 命令，其输出必须改变。[示例报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)中的 11 条发现都有：`grep -c '^VERIFY' examples/sample-report.md` 输出 11。
-- **由你掌控。** 它写出报告就停下。在你批准某一项修复之前，你的应用不会有任何改动。示例报告写着 `Nothing in the app was changed.`
+**局限：** 它不是渗透测试（由专家进行的付费攻击测试）。没有在线 URL 时，大多数访问检查保持 `UNPROVEN`。
 
 ## 安装
 
-**Claude Code。** 添加市场，然后安装插件。
+**选择你的智能体。** 每条命令都会为你的所有项目安装 secure-my-app。
+
+<p align="center">
+  <a href="#install-claude-code"><img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code"></a>
+  <a href="#install-codex"><img src="https://img.shields.io/badge/Codex-000000?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyBmaWxsPSJ3aGl0ZSIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHRpdGxlPk9wZW5BSTwvdGl0bGU%2BPHBhdGggZD0iTTIyLjI4MTkgOS44MjExYTUuOTg0NyA1Ljk4NDcgMCAwIDAtLjUxNTctNC45MTA4IDYuMDQ2MiA2LjA0NjIgMCAwIDAtNi41MDk4LTIuOUE2LjA2NTEgNi4wNjUxIDAgMCAwIDQuOTgwNyA0LjE4MThhNS45ODQ3IDUuOTg0NyAwIDAgMC0zLjk5NzcgMi45IDYuMDQ2MiA2LjA0NjIgMCAwIDAgLjc0MjcgNy4wOTY2IDUuOTggNS45OCAwIDAgMCAuNTExIDQuOTEwNyA2LjA1MSA2LjA1MSAwIDAgMCA2LjUxNDYgMi45MDAxQTUuOTg0NyA1Ljk4NDcgMCAwIDAgMTMuMjU5OSAyNGE2LjA1NTcgNi4wNTU3IDAgMCAwIDUuNzcxOC00LjIwNTggNS45ODk0IDUuOTg5NCAwIDAgMCAzLjk5NzctMi45MDAxIDYuMDU1NyA2LjA1NTcgMCAwIDAtLjc0NzUtNy4wNzI5em0tOS4wMjIgMTIuNjA4MWE0LjQ3NTUgNC40NzU1IDAgMCAxLTIuODc2NC0xLjA0MDhsLjE0MTktLjA4MDQgNC43NzgzLTIuNzU4MmEuNzk0OC43OTQ4IDAgMCAwIC4zOTI3LS42ODEzdi02LjczNjlsMi4wMiAxLjE2ODZhLjA3MS4wNzEgMCAwIDEgLjAzOC4wNTJ2NS41ODI2YTQuNTA0IDQuNTA0IDAgMCAxLTQuNDk0NSA0LjQ5NDR6bS05LjY2MDctNC4xMjU0YTQuNDcwOCA0LjQ3MDggMCAwIDEtLjUzNDYtMy4wMTM3bC4xNDIuMDg1MiA0Ljc4MyAyLjc1ODJhLjc3MTIuNzcxMiAwIDAgMCAuNzgwNiAwbDUuODQyOC0zLjM2ODV2Mi4zMzI0YS4wODA0LjA4MDQgMCAwIDEtLjAzMzIuMDYxNUw5Ljc0IDE5Ljk1MDJhNC40OTkyIDQuNDk5MiAwIDAgMS02LjE0MDgtMS42NDY0ek0yLjM0MDggNy44OTU2YTQuNDg1IDQuNDg1IDAgMCAxIDIuMzY1NS0xLjk3MjhWMTEuNmEuNzY2NC43NjY0IDAgMCAwIC4zODc5LjY3NjVsNS44MTQ0IDMuMzU0My0yLjAyMDEgMS4xNjg1YS4wNzU3LjA3NTcgMCAwIDEtLjA3MSAwbC00LjgzMDMtMi43ODY1QTQuNTA0IDQuNTA0IDAgMCAxIDIuMzQwOCA3Ljg3MnptMTYuNTk2MyAzLjg1NThMMTMuMTAzOCA4LjM2NCAxNS4xMTkyIDcuMmEuMDc1Ny4wNzU3IDAgMCAxIC4wNzEgMGw0LjgzMDMgMi43OTEzYTQuNDk0NCA0LjQ5NDQgMCAwIDEtLjY3NjUgOC4xMDQydi01LjY3NzJhLjc5Ljc5IDAgMCAwLS40MDctLjY2N3ptMi4wMTA3LTMuMDIzMWwtLjE0Mi0uMDg1Mi00Ljc3MzUtMi43ODE4YS43NzU5Ljc3NTkgMCAwIDAtLjc4NTQgMEw5LjQwOSA5LjIyOTdWNi44OTc0YS4wNjYyLjA2NjIgMCAwIDEgLjAyODQtLjA2MTVsNC44MzAzLTIuNzg2NmE0LjQ5OTIgNC40OTkyIDAgMCAxIDYuNjgwMiA0LjY2ek04LjMwNjUgMTIuODYzbC0yLjAyLTEuMTYzOGEuMDgwNC4wODA0IDAgMCAxLS4wMzgtLjA1NjdWNi4wNzQyYTQuNDk5MiA0LjQ5OTIgMCAwIDEgNy4zNzU3LTMuNDUzN2wtLjE0Mi4wODA1TDguNzA0IDUuNDU5YS43OTQ4Ljc5NDggMCAwIDAtLjM5MjcuNjgxM3ptMS4wOTc2LTIuMzY1NGwyLjYwMi0xLjQ5OTggMi42MDY5IDEuNDk5OHYyLjk5OTRsLTIuNTk3NCAxLjQ5OTctMi42MDY3LTEuNDk5N1oiLz48L3N2Zz4%3D" alt="Codex"></a>
+  <a href="#install-cursor"><img src="https://img.shields.io/badge/Cursor-3B3B3B?style=for-the-badge&logo=cursor&logoColor=white" alt="Cursor"></a>
+  <a href="#install-gemini-cli"><img src="https://img.shields.io/badge/Gemini_CLI-1A73E8?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini CLI"></a>
+  <a href="#install-github-copilot"><img src="https://img.shields.io/badge/GitHub_Copilot-24292F?style=for-the-badge&logo=githubcopilot&logoColor=white" alt="GitHub Copilot"></a>
+  <a href="#install-opencode"><img src="https://img.shields.io/badge/OpenCode-4A4A4A?style=for-the-badge&logo=opencode&logoColor=white" alt="OpenCode"></a>
+</p>
+
+<a id="install-claude-code"></a>**Claude Code**，已测试。为你的所有项目安装：
 
 ```bash
-claude plugin marketplace add Aboudjem/10x
+claude plugin marketplace add Aboudjem/10x && claude plugin install secure-my-app@10x
 ```
+
+<a id="install-codex"></a>**Codex**，已测试：
 
 ```bash
-claude plugin install secure-my-app@10x
+npx skills add Aboudjem/secure-my-app -g -a codex
 ```
 
-**其他任何智能体。** 用本页顶部的 skills CLI 命令安装。
-然后说 `secure my app before I launch`。
-这句话与技能的描述相符，所以任何加载技能的智能体都会识别它。
-在 Codex CLI 0.169.0 上，它于 2026-11-17 启动了该技能。每个智能体还有一个简短触发词：
+<a id="install-cursor"></a>**Cursor**，已测试安装：
 
-| 智能体 | 简短触发词 |
+```bash
+npx skills add Aboudjem/secure-my-app -g -a cursor
+```
+
+<a id="install-gemini-cli"></a>**Gemini CLI**，已测试安装：
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a gemini-cli
+```
+
+<a id="install-github-copilot"></a>**GitHub Copilot**，已测试安装：
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a github-copilot
+```
+
+<a id="install-opencode"></a>**OpenCode**，已测试安装：
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a opencode
+```
+
+只装在当前项目：去掉 `-g`。其他智能体：它的 `-a` 代码见[在编辑器中安装](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md)。
+
+**你的第一条命令。** 在智能体中打开你的项目，然后说：
+
+```text
+secure my app before I launch
+```
+
+1. 它问三个问题。
+2. 它读取你的代码并写出 `.secure-my-app/report.md`。
+3. 它停下。在你同意某项修复之前，什么都不会改变。
+
+这句话与技能的描述相符，所以任何加载技能的智能体都能识别。
+每个智能体也有一个短触发词：
+
+| 智能体 | 短触发词 |
 | --- | --- |
 | Claude Code | `/secure-my-app:secure-my-app` |
 | Codex CLI | `$secure-my-app` |
-
-它会问三个问题，读取你的代码，写出 `.secure-my-app/report.md`。然后停止。
 
 ### 适用于
 
 | 智能体 | 运行内容 | 测试日期 |
 | --- | --- | --- |
-| Claude Code 2.1.326 | 加载插件，在测试应用上完整运行，[已写出报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) | 2026-11-17 |
-| Codex CLI 0.169.0 | `npx skills add -a codex`，在测试应用上完整运行，[已写出报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report-codex.md) | 2026-11-17 |
+| Claude Code 2.1.326 | 加载插件，在测试应用上完整运行，[写出报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) | 2026-11-17 |
+| Codex CLI 0.169.0 | `npx skills add -a codex`，在测试应用上完整运行，[写出报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report-codex.md) | 2026-11-17 |
+| Claude Code（仅安装） | 上面的插件命令，装入空的主目录：以 user 范围安装 | 2026-11-17 |
+| Cursor、Gemini CLI、GitHub Copilot、OpenCode（仅安装） | 上面的 `-g -a` 命令，装入空的主目录：文件在 `~/.agents/skills/secure-my-app` | 2026-11-17 |
 
-已有文档、未测试：Cursor、GitHub Copilot、Gemini CLI、OpenCode、Windsurf、Zed、Continue.dev 和 Kimi Code CLI。
-skills CLI 为它们安装相同的文件。这里没有记录这些智能体上的运行。
-各智能体的路径见[在你的编辑器中安装](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md)。
+“仅安装”表示文件已放到智能体读取的位置。这里没有记录这些智能体上的完整运行。
+已有文档、未测试：Windsurf、Zed、Continue.dev 和 Kimi Code CLI。
+各智能体的路径见[在编辑器中安装](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md)。
 
 ## 阅读报告
 
@@ -140,6 +180,9 @@ node examples/vulnerable-app/server.js
 
 ## 检查什么
 
+你周一上线。你做得很快，也许用了智能体。
+一个已登录用户能读到另一个用户的数据吗？这个技能会检查，并给你看证据。
+
 65 项控制分为七组，按攻击者尝试的顺序排列（[完整目录](https://github.com/Aboudjem/secure-my-app/blob/main/docs/controls.md)）。
 
 | 组 | 涵盖 |
@@ -153,6 +196,9 @@ node examples/vulnerable-app/server.js
 | SUPPLY (7) | 依赖、锁文件、安装脚本、CI 权限 |
 
 ## 工作原理
+
+技能自己的概括：**找出陌生人能从你的应用里拿走什么，然后把它堵上，并证明它确实堵上了。**
+只有在你同意某项修复后，才会开始堵漏洞。只有同一个请求失败了，修复才算数。
 
 - **没有证据，就没有发现。** 无法定论的项目返回 `UNPROVEN`，绝不算作通过。
 - **每项修复都由你批准。** 在你同意那一项修复之前，仓库不会有任何改动。没有批量模式。
@@ -181,6 +227,18 @@ make test
 | `evals/check_skill.py` | 技能文本：证据阶梯、结论行、RLS 规则、报告标题 |
 | `tests/test_manifests.py` | 清单文件、处处一致的版本、必需文件、本 README |
 | `tests/test_fixture.py` | 启动测试应用并重放示例中 11 条发现各自的证据 |
+
+示例报告中的 `VERIFY` 行，每条发现一行：
+
+```bash
+grep -c '^VERIFY' examples/sample-report.md
+```
+
+```text
+11
+```
+
+示例运行没有改动任何东西：它的标题写着 `Nothing in the app was changed.`
 
 控制项数量：
 
@@ -229,11 +287,11 @@ secure-my-app 读取整个应用，找出没人写过的防御。
 
 ## 局限
 
-- **它不是渗透测试。** 没有人为报告签字。它也不是合规审计。
+- **它不是渗透测试**（由专家进行的付费攻击测试）。 没有人为报告签字。它也不是合规审计。
 - **它看到的是你的仓库，不是你的系统。** 云设置、DNS、笔记本电脑和人员都不在范围内。
 - **两次运行可能不同。** 评级是固定的查表。扫描是智能体的判断。
-- **只有一次记录在案的运行。** 示例来自一个小型测试应用。这里没有公开在生产应用上的运行。
-- **没有 URL 时它能证明的更少。** 那时大多数访问检查返回 `UNPROVEN`。
+- **只有一次记录在案的运行。** 唯一公开的运行是在一个小型测试应用上。这里没有公开在生产应用上的运行。
+- **没有 URL 时它能证明的更少。** 没有在线 URL 时，大多数访问检查保持 `UNPROVEN`。
 - **在线探测有上限。** 大约 30 个请求，只针对你拥有的一个主机，不用 `DELETE`，不做压力测试。
 
 它不承诺的一切都在[诚实的局限](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md)中。

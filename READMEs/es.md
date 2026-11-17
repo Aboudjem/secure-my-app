@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-dark.svg">
-    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app: descubre qué puede llevarse un desconocido de tu aplicación, después ciérralo y demuestra que está cerrado." width="100%">
+    <img src="https://raw.githubusercontent.com/Aboudjem/secure-my-app/main/assets/hero-light.svg" alt="secure-my-app: ¿qué puede llevarse un desconocido? Tres puntos: correcciones probadas, una prueba por agujero, ningún cambio sorpresa. Alice pide la factura de bob: 200 antes de la corrección, 404 después." width="100%">
   </picture>
 </p>
 
@@ -15,24 +15,23 @@
 </p>
 
 <p align="center">
-  <strong>Descubre qué puede llevarse un desconocido de tu aplicación. Después ciérralo y demuestra que está cerrado.</strong>
+  <strong>Descubre qué puede llevarse un desconocido de tu aplicación.</strong>
 </p>
 
-Lee tu aplicación, ejecuta 65 comprobaciones con nombre y muestra la prueba de cada agujero que reporta.
+Aplica 65 controles con nombre y muestra la prueba de cada agujero que informa.
+
+| Correcciones probadas | Una prueba por agujero | Ningún cambio sorpresa |
+|:--|:--|:--|
+| Una corrección cuenta solo si cambia la salida de VERIFY. Los 11 hallazgos del ejemplo tienen uno. | Cada hallazgo muestra su prueba. `make test` repite la prueba de los 11 hallazgos del ejemplo. | Escribe un informe y se detiene. Cada corrección espera tu sí. |
+
+**Funciona con:** cualquier agente que lea skills. Ejecuciones completas probadas: Claude Code, Codex CLI. Es un skill en Markdown, así que no depende de un solo modelo.
 
 ```bash
-npx skills add Aboudjem/secure-my-app
+npx skills add Aboudjem/secure-my-app -g
+# then, in your agent: secure my app before I launch
 ```
 
-Abre tu proyecto en tu agente y di:
-
-```text
-secure my app before I launch
-```
-
-## Qué obtienes
-
-Escribe `.secure-my-app/report.md` y se detiene. Este es el inicio de un informe real, del 2026-11-17:
+El inicio de un informe real, de una ejecución sobre la pequeña aplicación de prueba de este repositorio, el 2026-11-17:
 
 ```text
 VERDICT: DO NOT LAUNCH   coverage 21 checked / 2 unproven / 42 n/a   [static + live: 127.0.0.1:4310]
@@ -60,41 +59,80 @@ VERIFY  alice:  GET /api/invoices/1042 (bob's)   -> 404 "no such invoice"
 STATUS  OPEN
 ```
 
-Una corrección solo cuenta cuando esa misma petición deja de funcionar.
-No es una prueba de penetración. Sin una URL en vivo, la mayoría de los controles de acceso vuelven `UNPROVEN`, y la única ejecución publicada es sobre una pequeña aplicación de prueba.
+**Qué es:** un skill que busca agujeros de seguridad en tu aplicación.
+**Cuándo usarlo:** antes del lanzamiento, o antes de que desconocidos puedan registrarse.
+**Qué obtienes:** un informe con la prueba de cada agujero. Tu código queda como estaba.
 
-Lanzas el lunes. Construiste rápido, quizá con un agente.
-No sabes si un usuario con sesión puede leer los datos de otro. Esto lo averigua y te muestra cómo lo sabe.
-
-## Por qué usarlo
-
-- **Pruebas, no suposiciones.** Cada hallazgo muestra su `PROOF`, marcada `[static]` para una línea de código o `[executed]` para un comando y su salida real. `make test` repite la prueba de los 11 hallazgos del ejemplo.
-- **Una corrección que puedes comprobar.** Cada hallazgo tiene un comando `VERIFY` cuya salida debe cambiar. Los 11 hallazgos del [informe de ejemplo](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) tienen uno: `grep -c '^VERIFY' examples/sample-report.md` imprime 11.
-- **Tú mandas.** Escribe un informe y se detiene. Nada cambia en tu aplicación hasta que apruebes una corrección. El informe de ejemplo dice `Nothing in the app was changed.`
+**Límite:** no es una prueba de penetración (un ataque pagado, hecho por un experto). Sin una URL en vivo, la mayoría de los controles de acceso quedan `UNPROVEN`.
 
 ## Instalación
 
-**Claude Code.** Añade el marketplace y luego instala el plugin.
+**Elige tu agente.** Cada comando instala secure-my-app para todos tus proyectos.
+
+<p align="center">
+  <a href="#install-claude-code"><img src="https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=claude&logoColor=white" alt="Claude Code"></a>
+  <a href="#install-codex"><img src="https://img.shields.io/badge/Codex-000000?style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyBmaWxsPSJ3aGl0ZSIgcm9sZT0iaW1nIiB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI%2BPHRpdGxlPk9wZW5BSTwvdGl0bGU%2BPHBhdGggZD0iTTIyLjI4MTkgOS44MjExYTUuOTg0NyA1Ljk4NDcgMCAwIDAtLjUxNTctNC45MTA4IDYuMDQ2MiA2LjA0NjIgMCAwIDAtNi41MDk4LTIuOUE2LjA2NTEgNi4wNjUxIDAgMCAwIDQuOTgwNyA0LjE4MThhNS45ODQ3IDUuOTg0NyAwIDAgMC0zLjk5NzcgMi45IDYuMDQ2MiA2LjA0NjIgMCAwIDAgLjc0MjcgNy4wOTY2IDUuOTggNS45OCAwIDAgMCAuNTExIDQuOTEwNyA2LjA1MSA2LjA1MSAwIDAgMCA2LjUxNDYgMi45MDAxQTUuOTg0NyA1Ljk4NDcgMCAwIDAgMTMuMjU5OSAyNGE2LjA1NTcgNi4wNTU3IDAgMCAwIDUuNzcxOC00LjIwNTggNS45ODk0IDUuOTg5NCAwIDAgMCAzLjk5NzctMi45MDAxIDYuMDU1NyA2LjA1NTcgMCAwIDAtLjc0NzUtNy4wNzI5em0tOS4wMjIgMTIuNjA4MWE0LjQ3NTUgNC40NzU1IDAgMCAxLTIuODc2NC0xLjA0MDhsLjE0MTktLjA4MDQgNC43NzgzLTIuNzU4MmEuNzk0OC43OTQ4IDAgMCAwIC4zOTI3LS42ODEzdi02LjczNjlsMi4wMiAxLjE2ODZhLjA3MS4wNzEgMCAwIDEgLjAzOC4wNTJ2NS41ODI2YTQuNTA0IDQuNTA0IDAgMCAxLTQuNDk0NSA0LjQ5NDR6bS05LjY2MDctNC4xMjU0YTQuNDcwOCA0LjQ3MDggMCAwIDEtLjUzNDYtMy4wMTM3bC4xNDIuMDg1MiA0Ljc4MyAyLjc1ODJhLjc3MTIuNzcxMiAwIDAgMCAuNzgwNiAwbDUuODQyOC0zLjM2ODV2Mi4zMzI0YS4wODA0LjA4MDQgMCAwIDEtLjAzMzIuMDYxNUw5Ljc0IDE5Ljk1MDJhNC40OTkyIDQuNDk5MiAwIDAgMS02LjE0MDgtMS42NDY0ek0yLjM0MDggNy44OTU2YTQuNDg1IDQuNDg1IDAgMCAxIDIuMzY1NS0xLjk3MjhWMTEuNmEuNzY2NC43NjY0IDAgMCAwIC4zODc5LjY3NjVsNS44MTQ0IDMuMzU0My0yLjAyMDEgMS4xNjg1YS4wNzU3LjA3NTcgMCAwIDEtLjA3MSAwbC00LjgzMDMtMi43ODY1QTQuNTA0IDQuNTA0IDAgMCAxIDIuMzQwOCA3Ljg3MnptMTYuNTk2MyAzLjg1NThMMTMuMTAzOCA4LjM2NCAxNS4xMTkyIDcuMmEuMDc1Ny4wNzU3IDAgMCAxIC4wNzEgMGw0LjgzMDMgMi43OTEzYTQuNDk0NCA0LjQ5NDQgMCAwIDEtLjY3NjUgOC4xMDQydi01LjY3NzJhLjc5Ljc5IDAgMCAwLS40MDctLjY2N3ptMi4wMTA3LTMuMDIzMWwtLjE0Mi0uMDg1Mi00Ljc3MzUtMi43ODE4YS43NzU5Ljc3NTkgMCAwIDAtLjc4NTQgMEw5LjQwOSA5LjIyOTdWNi44OTc0YS4wNjYyLjA2NjIgMCAwIDEgLjAyODQtLjA2MTVsNC44MzAzLTIuNzg2NmE0LjQ5OTIgNC40OTkyIDAgMCAxIDYuNjgwMiA0LjY2ek04LjMwNjUgMTIuODYzbC0yLjAyLTEuMTYzOGEuMDgwNC4wODA0IDAgMCAxLS4wMzgtLjA1NjdWNi4wNzQyYTQuNDk5MiA0LjQ5OTIgMCAwIDEgNy4zNzU3LTMuNDUzN2wtLjE0Mi4wODA1TDguNzA0IDUuNDU5YS43OTQ4Ljc5NDggMCAwIDAtLjM5MjcuNjgxM3ptMS4wOTc2LTIuMzY1NGwyLjYwMi0xLjQ5OTggMi42MDY5IDEuNDk5OHYyLjk5OTRsLTIuNTk3NCAxLjQ5OTctMi42MDY3LTEuNDk5N1oiLz48L3N2Zz4%3D" alt="Codex"></a>
+  <a href="#install-cursor"><img src="https://img.shields.io/badge/Cursor-3B3B3B?style=for-the-badge&logo=cursor&logoColor=white" alt="Cursor"></a>
+  <a href="#install-gemini-cli"><img src="https://img.shields.io/badge/Gemini_CLI-1A73E8?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Gemini CLI"></a>
+  <a href="#install-github-copilot"><img src="https://img.shields.io/badge/GitHub_Copilot-24292F?style=for-the-badge&logo=githubcopilot&logoColor=white" alt="GitHub Copilot"></a>
+  <a href="#install-opencode"><img src="https://img.shields.io/badge/OpenCode-4A4A4A?style=for-the-badge&logo=opencode&logoColor=white" alt="OpenCode"></a>
+</p>
+
+<a id="install-claude-code"></a>**Claude Code**, probado. Instala para todos tus proyectos:
 
 ```bash
-claude plugin marketplace add Aboudjem/10x
+claude plugin marketplace add Aboudjem/10x && claude plugin install secure-my-app@10x
 ```
+
+<a id="install-codex"></a>**Codex**, probado:
 
 ```bash
-claude plugin install secure-my-app@10x
+npx skills add Aboudjem/secure-my-app -g -a codex
 ```
 
-**Cualquier otro agente.** El comando del CLI skills al inicio de esta página lo instala.
-Después di `secure my app before I launch`.
-Esa frase coincide con la descripción del skill, así que cualquier agente que cargue skills la reconoce.
-En Codex CLI 0.169.0 inició el skill el 2026-11-17. Cada agente tiene además un disparador corto:
+<a id="install-cursor"></a>**Cursor**, instalación probada:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a cursor
+```
+
+<a id="install-gemini-cli"></a>**Gemini CLI**, instalación probada:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a gemini-cli
+```
+
+<a id="install-github-copilot"></a>**GitHub Copilot**, instalación probada:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a github-copilot
+```
+
+<a id="install-opencode"></a>**OpenCode**, instalación probada:
+
+```bash
+npx skills add Aboudjem/secure-my-app -g -a opencode
+```
+
+Solo este proyecto: quita `-g`. Otro agente: su código `-a` está en [Instalar en tu editor](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md).
+
+**Tu primer comando.** Abre tu proyecto en tu agente y di:
+
+```text
+secure my app before I launch
+```
+
+1. Hace tres preguntas.
+2. Lee tu código y escribe `.secure-my-app/report.md`.
+3. Se detiene. Nada cambia hasta que dices sí a una corrección.
+
+Esa frase coincide con la descripción del skill, así que cualquier agente que carga skills la reconoce.
+Cada agente tiene también un disparador corto:
 
 | Agente | Disparador corto |
 | --- | --- |
 | Claude Code | `/secure-my-app:secure-my-app` |
 | Codex CLI | `$secure-my-app` |
-
-Hace tres preguntas, lee tu código y escribe `.secure-my-app/report.md`. Después se detiene.
 
 ### Funciona con
 
@@ -102,9 +140,11 @@ Hace tres preguntas, lee tu código y escribe `.secure-my-app/report.md`. Despu�
 | --- | --- | --- |
 | Claude Code 2.1.326 | Plugin cargado, ejecución completa sobre la aplicación de prueba, [informe escrito](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md) | 2026-11-17 |
 | Codex CLI 0.169.0 | `npx skills add -a codex`, ejecución completa sobre la aplicación de prueba, [informe escrito](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report-codex.md) | 2026-11-17 |
+| Claude Code (solo instalación) | El comando del plugin de arriba, en una carpeta personal vacía: instalado con alcance user | 2026-11-17 |
+| Cursor, Gemini CLI, GitHub Copilot, OpenCode (solo instalación) | El comando `-g -a` de arriba, en una carpeta personal vacía: archivos en `~/.agents/skills/secure-my-app` | 2026-11-17 |
 
-Documentados, sin probar: Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev y Kimi Code CLI.
-El CLI skills instala los mismos archivos para ellos. Aquí no consta ninguna ejecución en esos agentes.
+«Solo instalación» significa que los archivos llegaron adonde el agente los lee. No se registra aquí ninguna ejecución completa en esos agentes.
+Documentados, no probados: Windsurf, Zed, Continue.dev y Kimi Code CLI.
 Las rutas por agente están en [Instalar en tu editor](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md).
 
 ## Leer el informe
@@ -140,6 +180,9 @@ El [README de la aplicación de prueba](https://github.com/Aboudjem/secure-my-ap
 
 ## Qué comprueba
 
+Lanzas el lunes. Construiste rápido, quizá con un agente.
+¿Puede un usuario con sesión leer los datos de otro? Este skill lo comprueba, y te muestra la prueba.
+
 65 controles en siete grupos, en el orden en que un atacante los prueba ([catálogo completo](https://github.com/Aboudjem/secure-my-app/blob/main/docs/controls.md)).
 
 | Grupo | Cubre |
@@ -153,6 +196,9 @@ El [README de la aplicación de prueba](https://github.com/Aboudjem/secure-my-ap
 | SUPPLY (7) | Dependencias, lockfiles, scripts de instalación, permisos de CI |
 
 ## Cómo funciona
+
+El resumen del propio skill: **descubre qué puede llevarse un desconocido de tu aplicación, después ciérralo y demuestra que está cerrado.**
+La parte de cerrar empieza solo con tu sí. Una corrección cuenta solo cuando esa misma petición falla.
 
 - **Sin prueba, no hay hallazgo.** Lo que no puede resolver vuelve como `UNPROVEN`, nunca como aprobado.
 - **Tú apruebas cada corrección.** Nada cambia en tu repositorio hasta que dices sí a esa corrección. No hay modo por lotes.
@@ -181,6 +227,18 @@ make test
 | `evals/check_skill.py` | El texto del skill: la escalera de pruebas, la línea de veredicto, las reglas RLS, la cabecera del informe |
 | `tests/test_manifests.py` | Manifiestos, una sola versión en todas partes, archivos requeridos, este README |
 | `tests/test_fixture.py` | Arranca la aplicación de prueba y repite la prueba de cada uno de los 11 hallazgos del ejemplo |
+
+Las líneas `VERIFY` del informe de ejemplo, una por hallazgo:
+
+```bash
+grep -c '^VERIFY' examples/sample-report.md
+```
+
+```text
+11
+```
+
+La ejecución del ejemplo no cambió nada: su cabecera dice `Nothing in the app was changed.`
 
 El número de controles:
 
@@ -229,11 +287,11 @@ Hay más respuestas en las [FAQ completas](https://github.com/Aboudjem/secure-my
 
 ## Límites
 
-- **No es una prueba de penetración.** Nadie firma el informe. Tampoco es una auditoría de cumplimiento.
+- **No es una prueba de penetración** (un ataque pagado, hecho por un experto). Nadie firma el informe. Tampoco es una auditoría de cumplimiento.
 - **Ve tu repositorio, no tu sistema.** Ajustes de la nube, DNS, portátiles y personas quedan fuera.
 - **Dos ejecuciones pueden diferir.** La calificación es una tabla fija. El análisis es el juicio de un agente.
-- **Una sola ejecución registrada.** El ejemplo viene de una pequeña aplicación de prueba. No se publica aquí ninguna ejecución sobre una aplicación en producción.
-- **Sin URL prueba menos.** La mayoría de los controles de acceso vuelven entonces `UNPROVEN`.
+- **Una sola ejecución registrada.** La única ejecución publicada es sobre una pequeña aplicación de prueba. No se publica aquí ninguna ejecución sobre una aplicación en producción.
+- **Sin URL prueba menos.** Sin una URL en vivo, la mayoría de los controles de acceso quedan `UNPROVEN`.
 - **Las sondas en vivo están acotadas.** Unas 30 peticiones, un único host tuyo, sin `DELETE`, sin pruebas de carga.
 
 Todo lo que no promete está en [Límites honestos](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md).

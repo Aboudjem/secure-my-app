@@ -14,11 +14,13 @@ claude plugin marketplace add Aboudjem/10x
 claude plugin install secure-my-app@10x
 ```
 
-Any other agent, same skill directory:
+Any other agent, same skill directory, installed for all your projects:
 
 ```bash
-npx skills add Aboudjem/secure-my-app
+npx skills add Aboudjem/secure-my-app -g
 ```
+
+Only this project: drop `-g`.
 
 ## 2. Run it
 
