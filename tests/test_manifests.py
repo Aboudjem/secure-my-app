@@ -353,6 +353,37 @@ for lang in TRANSLATIONS:
     check(f"{rel} carries the may-lag marker", "<!-- may-lag -->" in t,
           f"{rel} must carry the literal `<!-- may-lag -->` marker")
 
+# The translations describe the committed sample by its finding count. That count is the
+# number of severity headings in examples/sample-report.md, so a new sample cannot leave a
+# translation quoting a stale number.
+SAMPLE_FINDINGS = len(re.findall(r"^## (?:CRITICAL|HIGH|MEDIUM|LOW) ",
+                                 read("examples/sample-report.md"), re.M))
+_FR = ["zéro", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix",
+       "onze", "douze", "treize", "quatorze", "quinze", "seize"]
+_ES = ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez",
+       "once", "doce", "trece", "catorce", "quince", "dieciséis"]
+_ZH = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二", "十三",
+       "十四", "十五", "十六"]
+COUNT_PATTERNS = {
+    "fr": (r"sample-report\.md\),\s*(\S+)\s+constats", lambda w: _FR.index(w)),
+    "es": (r"sample-report\.md\),\s*(\S+)\s+hallazgos", lambda w: _ES.index(w)),
+    "zh-CN": (r"sample-report\.md\)，\s*(\S+?)条发现", lambda w: _ZH.index(w)),
+    "ja": (r"sample-report\.md\)、\s*(\d+)\s*件の検出結果", int),
+}
+for lang, (pattern, to_int) in COUNT_PATTERNS.items():
+    rel = f"READMEs/{lang}.md"
+    if not os.path.isfile(os.path.join(ROOT, rel)):
+        continue
+    m = re.search(pattern, read(rel))
+    try:
+        quoted = to_int(m.group(1)) if m else None
+    except ValueError:
+        quoted = None
+    check(f"{rel} quotes the sample's finding count ({SAMPLE_FINDINGS})",
+          quoted == SAMPLE_FINDINGS,
+          f"{rel} says {m.group(1) if m else 'no count'}; examples/sample-report.md has "
+          f"{SAMPLE_FINDINGS} severity headings")
+
 # --- 9. the README contract: a reader can install it, run it, and trust the sample ---
 def fenced_blocks(text):
     """(lang, body) for every fenced block."""
@@ -378,8 +409,13 @@ try:
     check("README.md shows the skills CLI install command in a code block",
           f"npx skills add Aboudjem/{NAME}\n" in shell)
     check("README.md shows what to type after installing, in a code block",
-          any(body.strip() == f"/{NAME}" for _, body in blocks),
-          f"a reader who installed it must see `/{NAME}` on a line of its own")
+          any(body.strip() == "secure my app before I launch" for _, body in blocks),
+          "a reader who installed it must see the plain-language trigger on a line of its own")
+    # The short trigger differs per agent. These two are the ones the dated runs used:
+    # Claude Code namespaces a plugin skill, Codex CLI mentions a skill with `$`.
+    check("README.md gives the per-agent short triggers",
+          f"`/{NAME}:{NAME}`" in readme and f"`${NAME}`" in readme,
+          f"README.md must name `/{NAME}:{NAME}` (Claude Code) and `${NAME}` (Codex CLI)")
     first_h2 = [m.start() for m in re.finditer(r"^## ", readme, re.MULTILINE)]
     check("README.md gives a command before its second section",
           len(first_h2) >= 2 and "```bash" in readme[:first_h2[1]])

@@ -89,7 +89,7 @@ tiene que cambiar antes de dar algo por arreglado. `.secure-my-app/surface.json`
 ## Más información
 
 - [Inicio rápido](https://github.com/Aboudjem/secure-my-app/blob/main/docs/quickstart.md), una primera pasada de principio a fin
-- [Un informe completo](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md), cuatro hallazgos y el apéndice de lo no resuelto
+- [Un informe completo](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md), once hallazgos y el apéndice de lo no resuelto
 - [Límites honestos](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md), todo lo que secure-my-app no promete
 - [Instalar en tu editor](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md) · [FAQ](https://github.com/Aboudjem/secure-my-app/blob/main/docs/faq.md) · [Contribuir](https://github.com/Aboudjem/secure-my-app/blob/main/CONTRIBUTING.md) · [El propio skill](https://github.com/Aboudjem/secure-my-app/blob/main/skills/secure-my-app/SKILL.md)
 

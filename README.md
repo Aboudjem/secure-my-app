@@ -38,11 +38,19 @@ claude plugin install secure-my-app@10x
 npx skills add Aboudjem/secure-my-app
 ```
 
-**Then run it.** Open your project in the agent and type:
+**Then run it.** Open your project in the agent and say:
 
 ```text
-/secure-my-app
+secure my app before I launch
 ```
+
+That sentence matches the skill's description, so any agent that loads skills picks it up.
+On Codex CLI 0.169.0 it started the skill on 2026-11-17. Each agent also has a short trigger:
+
+| Agent | Short trigger |
+| --- | --- |
+| Claude Code | `/secure-my-app:secure-my-app` |
+| Codex CLI | `$secure-my-app` |
 
 It asks three questions, reads your code, and writes `.secure-my-app/report.md`. Then it stops.
 Nothing in your app changes until you approve one fix.
@@ -51,8 +59,8 @@ Nothing in your app changes until you approve one fix.
 
 | Agent | What ran | Tested |
 | --- | --- | --- |
-| Claude Code 2.1.326 | Plugin loaded, full run on the fixture, report written | 2026-11-17 |
-| Codex CLI 0.169.0 | `npx skills add -a codex`, full run on the fixture, report written | 2026-11-17 |
+| Claude Code 2.1.326 | Plugin loaded, full run on the fixture, [report written](examples/sample-report.md) | 2026-11-17 |
+| Codex CLI 0.169.0 | `npx skills add -a codex`, full run on the fixture, [report written](examples/sample-report-codex.md) | 2026-11-17 |
 
 Documented, not tested: Cursor, GitHub Copilot, Gemini CLI, OpenCode, Windsurf, Zed, Continue.dev and Kimi Code CLI.
 The skills CLI installs the same files for them. No run on those agents is recorded here.
@@ -105,11 +113,13 @@ Clone this repo, then start the fixture:
 node examples/vulnerable-app/server.js
 ```
 
-Open your agent in `examples/vulnerable-app/` and type:
+Open your agent in `examples/vulnerable-app/` and type the line for your agent:
 
 ```text
-/secure-my-app --report-only --live http://127.0.0.1:4310
+/secure-my-app:secure-my-app --report-only --live http://127.0.0.1:4310
 ```
+
+In Codex CLI, start the same line with `$secure-my-app` instead.
 
 The [fixture README](examples/vulnerable-app/README.md) has the three answers and two test accounts.
 
@@ -147,7 +157,7 @@ make test
 
 ```text
 79/79 checks passed for skills/secure-my-app/SKILL.md
-133/133 checks passed
+138/138 checks passed
 33/33 checks passed
 ```
 

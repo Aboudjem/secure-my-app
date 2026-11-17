@@ -89,7 +89,7 @@ STATUS   OPEN
 ## 了解更多
 
 - [快速上手](https://github.com/Aboudjem/secure-my-app/blob/main/docs/quickstart.md)，第一次运行从头到尾
-- [一份完整报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)，四条发现和未定项附录
+- [一份完整报告](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)，十一条发现和未定项附录
 - [诚实的边界](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md)，secure-my-app 不承诺的一切
 - [在你的编辑器里安装](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md) · [FAQ](https://github.com/Aboudjem/secure-my-app/blob/main/docs/faq.md) · [参与贡献](https://github.com/Aboudjem/secure-my-app/blob/main/CONTRIBUTING.md) · [技能本体](https://github.com/Aboudjem/secure-my-app/blob/main/skills/secure-my-app/SKILL.md)
 

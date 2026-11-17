@@ -11,7 +11,7 @@ claude plugin marketplace add Aboudjem/10x
 claude plugin install secure-my-app@10x
 ```
 
-Then say "secure my app before I launch", or run `/secure-my-app`.
+Then say "secure my app before I launch", or run `/secure-my-app:secure-my-app`.
 
 ## Any other agent
 
@@ -46,6 +46,9 @@ npx skills add Aboudjem/secure-my-app -a github-copilot
 Add `-g` to install to the global path instead of the project one, `-y` to skip the prompts in a
 script, or `--list` to print what a repository offers and install nothing. For this repo, `--list`
 reports one skill.
+
+Then open your project and say "secure my app before I launch". In Codex CLI you can also type
+`$secure-my-app`. Both started the skill in Codex CLI 0.169.0 on 2026-11-17.
 
 ## Copy it in by hand
 

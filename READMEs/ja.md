@@ -90,7 +90,7 @@ STATUS   OPEN
 ## もっと詳しく
 
 - [クイックスタート](https://github.com/Aboudjem/secure-my-app/blob/main/docs/quickstart.md)、最初の 1 回を最初から最後まで
-- [完成したレポート](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)、4 件の検出結果と未確定の付録
+- [完成したレポート](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md)、11 件の検出結果と未確定の付録
 - [正直な限界](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md)、secure-my-app が約束しないことすべて
 - [各エディタでのインストール](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md) · [FAQ](https://github.com/Aboudjem/secure-my-app/blob/main/docs/faq.md) · [コントリビュート](https://github.com/Aboudjem/secure-my-app/blob/main/CONTRIBUTING.md) · [スキル本体](https://github.com/Aboudjem/secure-my-app/blob/main/skills/secure-my-app/SKILL.md)
 

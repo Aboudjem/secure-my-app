@@ -9,9 +9,15 @@ DO FIRST
 
 > **A real run, not an illustration.** secure-my-app 0.3.0 wrote this report on 2026-11-17, against
 > the fixture in [`examples/vulnerable-app/`](vulnerable-app/README.md), which has holes on purpose.
-> Agent: Claude Code 2.1.326, headless. Command: `/secure-my-app --report-only --live http://127.0.0.1:4310`.
-> The text below is the file the run wrote to `.secure-my-app/report.md`, unedited. The only
-> addition is this note. [`sample-surface.json`](sample-surface.json) is the inventory from the same run.
+> The run used a copy of that folder, committed as the only commit (`fe13fab`) of a fresh git repo,
+> served on 127.0.0.1:4310. Agent: Claude Code 2.1.326, headless, with the plugin loaded.
+> Command: `/secure-my-app:secure-my-app --report-only --live http://127.0.0.1:4310`, plus the
+> answers to the three phase 0 questions, since a headless run cannot ask them.
+> The text below is the file the run wrote to `.secure-my-app/report.md`, byte for byte. The only
+> addition is this note. One redaction was made by the run itself, not afterwards: in V3 the agent
+> cut the absolute path of the temp folder (it held the local account name) and says so in the
+> finding. The skill's rule is to redact secrets in a report; the run treated that path the same way.
+> [`sample-surface.json`](sample-surface.json) is the inventory from the same run.
 > [`tests/test_fixture.py`](../tests/test_fixture.py) replays the requests behind the findings.
 > Your run can differ: the rating is deterministic, the scan is not.
 

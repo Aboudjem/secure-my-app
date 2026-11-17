@@ -89,7 +89,7 @@ changer avant qu'une chose soit déclarée corrigée. `.secure-my-app/surface.js
 ## Pour aller plus loin
 
 - [Démarrage rapide](https://github.com/Aboudjem/secure-my-app/blob/main/docs/quickstart.md), un premier passage de bout en bout
-- [Un rapport complet](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md), quatre constats et l'annexe des points non tranchés
+- [Un rapport complet](https://github.com/Aboudjem/secure-my-app/blob/main/examples/sample-report.md), onze constats et l'annexe des points non tranchés
 - [Limites honnêtes](https://github.com/Aboudjem/secure-my-app/blob/main/docs/limits.md), tout ce que secure-my-app ne promet pas
 - [Installer dans votre éditeur](https://github.com/Aboudjem/secure-my-app/blob/main/docs/editors.md) · [FAQ](https://github.com/Aboudjem/secure-my-app/blob/main/docs/faq.md) · [Contribuer](https://github.com/Aboudjem/secure-my-app/blob/main/CONTRIBUTING.md) · [Le skill lui-même](https://github.com/Aboudjem/secure-my-app/blob/main/skills/secure-my-app/SKILL.md)
 

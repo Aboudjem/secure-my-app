@@ -2,7 +2,9 @@
 
 A first run on a Next.js and Supabase booking app at `/Users/you/tidemark`. Tidemark is made up, so
 the output below is an illustration. Yours prints your real paths. To try a real run first, use the
-[vulnerable fixture](../examples/vulnerable-app/README.md) that ships in this repo. Phases 0 to 4 read your code and write a report. Phase 5 is the only one that changes anything,
+[vulnerable fixture](../examples/vulnerable-app/README.md) that ships in this repo.
+
+Phases 0 to 4 read your code and write a report. Phase 5 is the only one that changes anything,
 and it asks first, one finding at a time.
 
 ## 1. Install
@@ -20,8 +22,10 @@ npx skills add Aboudjem/secure-my-app
 
 ## 2. Run it
 
-Type `/secure-my-app` in your project, or just say what you want. "Is this safe to launch", "am I
+Say what you want in plain words. "Secure my app before I launch", "is this safe to launch", "am I
 going to get hacked" and "did I leak a key" all reach the same skill.
+
+The short triggers: `/secure-my-app:secure-my-app` in Claude Code, `$secure-my-app` in Codex CLI.
 
 ## 3. Answer three questions
 
