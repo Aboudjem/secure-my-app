@@ -29,7 +29,7 @@
 ```bash
 claude plugin marketplace add Aboudjem/10x
 claude plugin install secure-my-app@10x       # Claude Code
-npx skills add Aboudjem/secure-my-app         # Cursor, Codex, Copilot, Gemini CLI, 70+ others
+npx skills add Aboudjem/secure-my-app         # any agent the skills CLI supports
 ```
 
 ## 你会得到什么
