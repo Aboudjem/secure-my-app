@@ -113,7 +113,7 @@ skill can produce, because a run that checked everything and a run that could ba
 reach the same label:
 
 ```
-GATE: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 6 n/a   [static only, no live probes]
+VERDICT: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 15 n/a   [static only, no live probes]
 ```
 
 Three rules on that line:

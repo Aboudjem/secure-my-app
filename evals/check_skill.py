@@ -74,6 +74,10 @@ ADVICE_PHRASES = [
 # hatch cannot widen silently.
 EXPECTED_SPECIMENS = 1
 
+# The catalogue size. A full run ends every control in exactly one outcome, so the three coverage
+# counts on a verdict line add up to this. Change it only when references/controls.md changes.
+EXPECTED_CONTROLS = 65
+
 # --- domain invariants -----------------------------------------------------------------
 # Two claims in this skill are the kind that read as fine and are wrong, so they are pinned
 # here rather than trusted to review. Both were caught by an adversarial review on 2026-09-06.
@@ -84,7 +88,7 @@ EXPECTED_SPECIMENS = 1
 #    so the coverage counts have to ride on the same line.
 GATE_LABEL = "NOTHING CONFIRMED HERE"
 RETIRED_GATE_LABEL = "NO CONFIRMED EXPOSURE"
-GATE_WITH_COVERAGE_RE = re.compile(r"GATE:\s+" + GATE_LABEL + r"\s+coverage\s+\d+\s+checked")
+GATE_WITH_COVERAGE_RE = re.compile(r"VERDICT:\s+" + GATE_LABEL + r"\s+coverage\s+\d+\s+checked")
 
 # 2. The RLS direction. Row-level security switched ON with no matching policy DENIES. The
 #    inverted claim, that a table with no policy is therefore readable, sends a user to "fix"
@@ -98,7 +102,7 @@ RLS_WRONG_SPECIMEN = ("There is no policy on this table, so the data is public."
 RLS_RIGHT_SPECIMEN = ('RLS switched ON with no matching policy denies. So "there is no policy on '
                       'this table" is not evidence of exposure on its own.')
 
-EM_DASH = "—"
+EM_DASH = "\u2014"
 
 # Emoji blocks. Arrows (U+2190-U+21FF), the middle dot and the maths operators the house style
 # uses on purpose are deliberately NOT in here.
@@ -328,7 +332,34 @@ def main():
                    "the gate alone is misleading and the skill has to say so"))
     checks.append(("gate: a worked example prints the label with its coverage counts inline",
                    bool(GATE_WITH_COVERAGE_RE.search(text)),
-                   f"no line matching `GATE: {GATE_LABEL}   coverage N checked ...`"))
+                   f"no line matching `VERDICT: {GATE_LABEL}   coverage N checked ...`"))
+
+    # --- the report header: verdict first, then what to do, and coverage that adds up ---
+    header = re.search(r"^VERDICT: (?:DO NOT LAUNCH|LAUNCH WITH KNOWN GAPS|NOTHING CONFIRMED HERE)"
+                       r"\s+coverage[^\n]*\nfindings:[^\n]*\nDO FIRST\n((?:\d\. [^\n]+\n)+)",
+                       text, re.MULTILINE)
+    checks.append(("output: a worked header opens VERDICT, then findings, then DO FIRST",
+                   bool(header), "the first three lines of a report are fixed, in that order"))
+    todo = header.group(1).strip().split("\n") if header else []
+    checks.append(("output: the worked DO FIRST list holds exactly three numbered lines",
+                   len(todo) == 3, f"{len(todo)} line(s)"))
+    checks.append(("output: every DO FIRST line starts with a control id",
+                   bool(todo) and all(re.match(r"\d\. [KDRPVFS]\d{1,2}  \S", l) for l in todo),
+                   "each line is `<n>. <ID>  <action>`"))
+    checks.append(("output: the rule that DO FIRST is never padded is stated",
+                   "never pad it" in low, "an action with no finding behind it is advice"))
+    checks.append(("output: no report example opens on the retired `gate:` header",
+                   not any(re.search(r"^SECURE-MY-APP\s+gate:", t, re.MULTILINE)
+                           for t in corpus.values()), "the header starts with VERDICT"))
+    cov = [(f, m.group(0), sum(int(x) for x in m.groups()))
+           for f, t in corpus.items()
+           for m in re.finditer(r"coverage (\d+) checked / (\d+) unproven / (\d+) n/a", t)]
+    off = [f"{f}: {line} = {total}" for f, line, total in cov if total != EXPECTED_CONTROLS]
+    checks.append((f"output: every coverage example adds up to {EXPECTED_CONTROLS} controls",
+                   bool(cov) and not off, "; ".join(off) or "no coverage example found"))
+    checks.append(("output: surface.json keys a finding by control id plus WHERE",
+                   "control id plus its where" in low,
+                   "a positional key makes every re-run report the same finding as new"))
 
     rls_deny = [f for f, t in corpus.items()
                 if re.search(r"no matching policy\s+denies", t, re.I)]

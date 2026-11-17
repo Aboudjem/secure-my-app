@@ -1,7 +1,8 @@
 # Quickstart
 
-A first run on a Next.js and Supabase booking app at `/Users/you/tidemark`. Yours prints your real
-paths. Phases 0 to 4 read your code and write a report. Phase 5 is the only one that changes anything,
+A first run on a Next.js and Supabase booking app at `/Users/you/tidemark`. Tidemark is made up, so
+the output below is an illustration. Yours prints your real paths. To try a real run first, use the
+[vulnerable fixture](../examples/vulnerable-app/README.md) that ships in this repo. Phases 0 to 4 read your code and write a report. Phase 5 is the only one that changes anything,
 and it asks first, one finding at a time.
 
 ## 1. Install
@@ -52,13 +53,15 @@ reach it, nothing stops them through the real calling role, and it costs you som
 Stop short of a rung and it is `UNPROVEN`, with the reason. Phase 3 asks again before touching the
 network: about 30 requests at most, no `DELETE`, that host only.
 
-## 5. Read the gate
+## 5. Read the verdict
 
 ```text
-SECURE-MY-APP   gate: DO NOT LAUNCH
-coverage 47 checked / 8 unproven / 4 n/a   [static + live: tidemark-preview.vercel.app]
-scan: gitleaks yes, osv yes, semgrep no, trufflehog no
-findings: 2 critical  3 high  2 medium  0 low
+VERDICT: DO NOT LAUNCH   coverage 53 checked / 8 unproven / 4 n/a   [static + live: tidemark-preview.vercel.app]
+findings: 2 critical  3 high  2 medium  0 low   scan: gitleaks yes, osv-scanner yes, semgrep no, trufflehog no
+DO FIRST
+1. R1  Switch on row level security for bookings, with an owner-only policy
+2. K5  Rotate the Stripe secret key in the dashboard, then scrub it from history
+3. R4  Add the ownership check to GET /api/bookings/[id]
 
 CRITICAL  R1  Anyone can read every row of `bookings`
   where   supabase/migrations/0002_bookings.sql:11   no ENABLE ROW LEVEL SECURITY
@@ -76,10 +79,11 @@ full report  /Users/you/tidemark/.secure-my-app/report.md
 Stopping here. Say which findings to fix, or "fix the criticals".
 ```
 
-The coverage sits on the gate line because the gate alone is misleading: a thorough run and a run that
-could barely check anything reach the same label. The third label is `NOTHING CONFIRMED HERE`, never
-"secure" and never "passed", and it would mean only that of the 47 controls this run could check,
-nothing reached the top two bands, with 8 still unproven.
+The first line is the verdict, and the next lines are the three things to do first. You can stop
+reading there and still act. The coverage sits on the verdict line because the label alone is
+misleading: a thorough run and a run that could barely check anything reach the same label. The third
+label is `NOTHING CONFIRMED HERE`, never "secure" and never "passed", and it would mean only that of
+the 53 controls this run could check, nothing reached the top two bands, with 8 still unproven.
 
 Then it stops. Open `.secure-my-app/report.md`, where every finding carries the same six fields plus a
 status: what, where, proof, impact, fix, verify, status. Add `.secure-my-app/` to your `.gitignore`.
@@ -141,5 +145,5 @@ new`. With both criticals closed the gate moves to `LAUNCH WITH KNOWN GAPS`.
 ## Next
 
 - [Honest limits](limits.md), what a clean run does not prove. Read it before you tell anyone it passed
-- [The control catalogue](controls.md), all 65 controls · [A worked report](../examples/sample-report.md)
+- [The control catalogue](controls.md), all 65 controls · [A report from a real run](../examples/sample-report.md)
 - [FAQ](faq.md) · [Install in your editor](editors.md)

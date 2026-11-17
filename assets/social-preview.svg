@@ -127,6 +127,6 @@
   <rect x="744" y="526" width="8" height="8" rx="2" fill="#2BE844"/>
   <text class="mono res" x="762" y="534" fill="#2BE844">200 OK  &#183;  their own order, still</text>
 
-  <text class="mono tag" x="64" y="600">no proof, no finding  &#183;  read only until you approve  &#183;  runs locally</text>
-  <text class="mono tag" x="1216" y="600" text-anchor="end" fill="#5B6B85">github.com/Aboudjem/secure-my-app</text>
+  <text class="mono tag" x="64" y="600" fill="#2BE844">$ npx skills add Aboudjem/secure-my-app</text>
+  <text class="mono tag" x="1216" y="600" text-anchor="end" fill="#5B6B85">no proof, no finding  &#183;  read only until you approve</text>
 </svg>

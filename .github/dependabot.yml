@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # Workflows pin every action to a commit sha. Dependabot moves the sha and
+  # the version comment together, once a week, in one pull request.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "run": {
+    "date": "2026-11-17",
+    "commit": "fe13fab",
+    "mode": "report-only",
+    "evidence": "static + live",
+    "live_host": "http://127.0.0.1:4310",
+    "live_requests": 27,
+    "scanners": {
+      "gitleaks": "ran, no leaks reported (missed the K3 literal)",
+      "semgrep": "installed, not run (remote ruleset fetch)",
+      "osv-scanner": "absent",
+      "trufflehog": "absent"
+    },
+    "answers": { "live": true, "repo_public": true, "multi_tenant": true }
+  },
+  "verdict": {
+    "gate": "DO NOT LAUNCH",
+    "coverage": {
+      "checked": 21,
+      "pass": 5,
+      "fail": 16,
+      "unproven": 2,
+      "na": 42,
+      "total": 65
+    },
+    "findings": { "critical": 3, "high": 2, "medium": 6, "low": 0 }
+  },
+  "surface": {
+    "stack": {
+      "runtime": "node",
+      "framework": "none (node:http)",
+      "database": "none (in memory)",
+      "dependencies": [],
+      "lockfile": null,
+      "ci": null
+    },
+    "routes": [
+      {
+        "method": "GET",
+        "path": "/",
+        "where": "server.js:66",
+        "auth": "none",
+        "data": "none"
+      },
+      {
+        "method": "POST",
+        "path": "/login",
+        "where": "server.js:70",
+        "auth": "none",
+        "data": "issues session cookie",
+        "rate_limit": false
+      },
+      {
+        "method": "GET",
+        "path": "/api/invoices",
+        "where": "server.js:77",
+        "auth": "session",
+        "scope": "owner == session user"
+      },
+      {
+        "method": "GET",
+        "path": "/api/invoices/:id",
+        "where": "server.js:83",
+        "auth": "session",
+        "scope": "none (id only)",
+        "dynamic_id": true
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/me",
+        "where": "server.js:94",
+        "auth": "session",
+        "writes": "whole body onto user record",
+        "mutating": true
+      },
+      {
+        "method": "GET",
+        "path": "/admin/export",
+        "where": "server.js:101",
+        "auth": "none",
+        "role_check": false,
+        "data": "all users, all invoices"
+      }
+    ],
+    "tables": [
+      {
+        "name": "users",
+        "where": "server.js:14",
+        "store": "in memory",
+        "rls": "n/a",
+        "fields": ["id", "email", "team", "role", "password_hash"],
+        "privileged_fields": ["role", "team", "id", "password_hash"]
+      },
+      {
+        "name": "invoices",
+        "where": "server.js:20",
+        "store": "in memory",
+        "rls": "n/a",
+        "fields": [
+          "id",
+          "owner",
+          "team",
+          "customer",
+          "customer_email",
+          "total_cents",
+          "iban_last4"
+        ],
+        "tenant_field": "team"
+      }
+    ],
+    "tenants": ["team_1", "team_2"],
+    "session": {
+      "type": "HMAC-SHA256 signed cookie",
+      "where": "server.js:26",
+      "payload": ["sub"],
+      "expiry": false,
+      "revocable": false,
+      "cookie_flags": ["Path=/"]
+    },
+    "secrets_in_tree": [
+      {
+        "name": "SESSION_SECRET",
+        "where": "server.js:10",
+        "redacted": "pape...",
+        "in_history": true,
+        "rotated": false
+      },
+      {
+        "name": "seeded account passwords",
+        "where": "server.js:15-17",
+        "redacted": true
+      }
+    ],
+    "env_vars": [
+      { "name": "PORT", "where": "server.js:9", "client_reachable": false }
+    ],
+    "env_files": [],
+    "client_db_calls": [],
+    "webhooks": [],
+    "uploads": [],
+    "llm_calls": [],
+    "outbound_fetches": []
+  },
+  "findings": [
+    {
+      "key": "K3:server.js",
+      "control": "K3",
+      "also": ["K4", "K5"],
+      "severity": "CRITICAL",
+      "who": "override",
+      "what": "override",
+      "title": "Session signing secret committed in the public repo, live and unrotated",
+      "where": "server.js:10",
+      "evidence": ["static", "executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "D3:server.js",
+      "control": "D3",
+      "severity": "CRITICAL",
+      "who": "PUBLIC",
+      "what": "ALL_DATA",
+      "title": "Passwords stored as unsalted SHA-256, hashes publicly served",
+      "where": "server.js:12",
+      "evidence": ["static", "executed"],
+      "status": "OPEN",
+      "note": "MEDIUM (ADMIN_ONLY x ALL_DATA) once R10 is closed"
+    },
+    {
+      "key": "R10:server.js#GET /admin/export",
+      "control": "R10",
+      "also": ["D1"],
+      "severity": "CRITICAL",
+      "who": "PUBLIC",
+      "what": "ALL_DATA",
+      "title": "/admin/export has no sign-in and no role check",
+      "where": "server.js:101",
+      "evidence": ["static", "executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "R4:server.js#GET /api/invoices/:id",
+      "control": "R4",
+      "severity": "HIGH",
+      "who": "ANY_USER",
+      "what": "OTHER_USERS",
+      "title": "Invoice by id has no ownership or team check",
+      "where": "server.js:89",
+      "evidence": ["static", "executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "R6:server.js#PATCH /api/me",
+      "control": "R6",
+      "also": ["R5"],
+      "severity": "HIGH",
+      "who": "ANY_USER",
+      "what": "SELF_ESCALATION",
+      "title": "Profile update copies the whole body onto the user record",
+      "where": "server.js:97",
+      "evidence": ["static", "recipe"],
+      "status": "OPEN",
+      "note": "write not sent live; must be fixed with R10"
+    },
+    {
+      "key": "D2:server.js#POST /login",
+      "control": "D2",
+      "severity": "MEDIUM",
+      "who": "PUBLIC",
+      "what": "INFO",
+      "title": "Session cookie lacks HttpOnly, Secure, SameSite",
+      "where": "server.js:74",
+      "evidence": ["executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "D6:server.js#POST /login",
+      "control": "D6",
+      "severity": "MEDIUM",
+      "who": "PUBLIC",
+      "what": "INFO",
+      "title": "No rate limit on login",
+      "where": "server.js:70",
+      "evidence": ["static", "executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "V3:server.js",
+      "control": "V3",
+      "also": ["P2"],
+      "severity": "MEDIUM",
+      "who": "PUBLIC",
+      "what": "INFO",
+      "title": "500 responses carry the stack trace and file paths",
+      "where": "server.js:110",
+      "evidence": ["executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "V5:server.js",
+      "control": "V5",
+      "severity": "MEDIUM",
+      "who": "PUBLIC",
+      "what": "INFO",
+      "title": "No security event logging",
+      "where": "server.js",
+      "evidence": ["static", "executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "D5:server.js",
+      "control": "D5",
+      "severity": "MEDIUM",
+      "who": "ADMIN_ONLY",
+      "what": "OTHER_USERS",
+      "title": "Sessions never expire and cannot be revoked",
+      "where": "server.js:74",
+      "evidence": ["static", "executed"],
+      "status": "OPEN"
+    },
+    {
+      "key": "V2:server.js#GET /admin/export",
+      "control": "V2",
+      "severity": "MEDIUM",
+      "who": "ADMIN_ONLY",
+      "what": "ALL_DATA",
+      "title": "Export returns password_hash",
+      "where": "server.js:102",
+      "evidence": ["executed"],
+      "status": "OPEN"
+    }
+  ],
+  "unproven": [
+    {
+      "key": "P4:server.js#PATCH /api/me",
+      "control": "P4",
+      "reason": "No CSRF control in code, but the only cookie-authenticated write is PATCH and the preflight returns 404 with no CORS headers; browser exploit not established",
+      "settle": "From another origin in a signed-in browser: fetch('http://127.0.0.1:4310/api/me',{method:'PATCH',credentials:'include',body:'{}'})"
+    },
+    {
+      "key": "P10:deployment",
+      "control": "P10",
+      "reason": "Only a loopback http host was given; no TLS, redirect or HSTS in code; any TLS proxy in a real deployment is not visible",
+      "settle": "curl -sI http://<host>/ and curl -sI https://<host>/ on the deployed host"
+    }
+  ],
+  "controls": {
+    "K1": "N/A",
+    "K2": "N/A",
+    "K3": "FAIL",
+    "K4": "FAIL",
+    "K5": "FAIL",
+    "K6": "N/A",
+    "K7": "N/A",
+    "K8": "N/A",
+    "D1": "FAIL",
+    "D2": "FAIL",
+    "D3": "FAIL",
+    "D4": "N/A",
+    "D5": "FAIL",
+    "D6": "FAIL",
+    "D7": "N/A",
+    "D8": "N/A",
+    "D9": "PASS",
+    "R1": "N/A",
+    "R2": "N/A",
+    "R3": "N/A",
+    "R4": "FAIL",
+    "R5": "FAIL",
+    "R6": "FAIL",
+    "R7": "N/A",
+    "R8": "N/A",
+    "R9": "N/A",
+    "R10": "FAIL",
+    "P1": "N/A",
+    "P2": "FAIL",
+    "P3": "N/A",
+    "P4": "UNPROVEN",
+    "P5": "PASS",
+    "P6": "N/A",
+    "P7": "N/A",
+    "P8": "N/A",
+    "P9": "N/A",
+    "P10": "UNPROVEN",
+    "P11": "N/A",
+    "P12": "N/A",
+    "P13": "PASS",
+    "V1": "N/A",
+    "V2": "FAIL",
+    "V3": "FAIL",
+    "V4": "PASS",
+    "V5": "FAIL",
+    "V6": "N/A",
+    "V7": "N/A",
+    "V8": "N/A",
+    "F1": "N/A",
+    "F2": "N/A",
+    "F3": "N/A",
+    "F4": "N/A",
+    "F5": "N/A",
+    "F6": "N/A",
+    "F7": "N/A",
+    "F8": "N/A",
+    "F9": "PASS",
+    "F10": "N/A",
+    "S1": "N/A",
+    "S2": "N/A",
+    "S3": "N/A",
+    "S4": "N/A",
+    "S5": "N/A",
+    "S6": "N/A",
+    "S7": "N/A"
+  }
+}

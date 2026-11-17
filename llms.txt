@@ -38,7 +38,7 @@ a live unrotated credential is always CRITICAL, and anything below rung 4 gets n
 There is deliberately no score out of 100. What ships is a count and a three-state gate computed by
 rule (`DO NOT LAUNCH` >= 1 critical; `LAUNCH WITH KNOWN GAPS` 0 critical and >= 1 high; `NOTHING
 CONFIRMED HERE` 0 critical and 0 high), always printed with its coverage on the same line, e.g.
-`GATE: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 6 n/a   [static only, no live
+`VERDICT: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 15 n/a   [static only, no live
 probes]`. The rating is deterministic; the scan is not, because discovery and classification are
 judgements. `.secure-my-app/surface.json` exists so a second run can be diffed against the first.
 

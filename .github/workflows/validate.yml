@@ -14,10 +14,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.x"
 
@@ -175,17 +175,25 @@ jobs:
           sys.exit(0 if ok else 1)
           PY
 
-      # (b) SKILL EVAL: the design lock encoded as assertions (RED->GREEN regression guard)
-      - name: Skill eval (check_skill.py)
+      # (b) THE TEST COMMAND: `make test` is the one declared test command, and CI runs exactly
+      #     what a contributor runs. Three suites, each prints its own count:
+      #       evals/check_skill.py     the design lock on SKILL.md (RED->GREEN regression guard)
+      #       tests/test_manifests.py  manifests, version parity, required files, README contract
+      #       tests/test_fixture.py    starts examples/vulnerable-app and replays every hole the
+      #                                sample report names, with its legitimate twin
+      #     Node is preinstalled on the runner; the fixture needs no package.
+      - name: Tests (make test)
         shell: bash
-        run: python3 evals/check_skill.py skills/secure-my-app/SKILL.md
+        run: make test
 
-      # (b2) MANIFEST + CONTRACT TESTS: AGENTS.md calls this a release gate, so CI must run it.
-      #      Covers manifest validity, version parity, the required-file list, the frontmatter
-      #      contract, README link and asset resolution, and i18n parity.
-      - name: Manifest and contract tests (test_manifests.py)
+      # (b2) SECOND INSTALL RAIL: the skills CLI must find the skill in this checkout. The version
+      #      is pinned on purpose; bump it deliberately.
+      - name: Skills CLI finds the skill (npx skills add . --list)
         shell: bash
-        run: python3 tests/test_manifests.py
+        run: |
+          set -o pipefail
+          npx -y skills@1.9.0 add . --list | tee /tmp/skills-list.txt
+          grep -q "secure-my-app" /tmp/skills-list.txt
 
       # (c) NO-SECRETS CHECK (all tracked files)
       - name: No secrets
@@ -340,10 +348,9 @@ jobs:
           PY
 
       # (e2) MARKDOWN LINK CHECK (lychee): the remote half of (e).
-      # GitHub answers 404 to any non-browser client on /stargazers pages, so the star-badge
-      # link is skipped; the token lets lychee resolve other github.com links through the API.
+      # The token lets lychee resolve github.com links through the API.
       - name: Markdown link check (lychee)
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: >-
@@ -351,7 +358,6 @@ jobs:
             --accept 200,206,403,429
             --exclude linkedin\.com
             --exclude adam-boudjemaa\.com
-            --exclude 'github\.com/.*/stargazers'
             --exclude '^https?://(127\.|0\.0\.0\.0|localhost|\[::1\]|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|169\.254\.)'
             --exclude 'evil\.example'
             --exclude 'example\.(com|org|net)'
@@ -406,13 +412,23 @@ jobs:
           /tmp/gitleaks version
           /tmp/gitleaks dir . --no-banner --redact --exit-code 1
 
-      # (g) PLUGIN VALIDATION: the Claude CLI is not on a stock GitHub runner, so this is
-      #     best-effort here and mandatory locally before a release.
-      - name: Plugin validate (if CLI present)
+      # (g) PLUGIN VALIDATION on a pinned Claude Code. Unconditional: a manifest that does not
+      #     load, or a listing warning such as a missing icon, fails the build.
+      - name: Install Claude Code (pinned)
         shell: bash
         run: |
-          if command -v claude >/dev/null; then
-            claude plugin validate . --strict && claude plugin validate ./.claude-plugin/plugin.json --strict
-          else
-            echo "claude CLI not on the runner; validate locally before tagging a release"
-          fi
+          # The native binary is an optional dependency whose download can
+          # stall, so check that it runs and retry from a clean state.
+          for attempt in 1 2 3; do
+            timeout -k 10 300 npm install -g --include=optional "@anthropic-ai/claude-code@2.1.326" || true
+            if claude --version; then exit 0; fi
+            npm uninstall -g @anthropic-ai/claude-code || true
+            npm cache clean --force || true
+            sleep $((attempt * 10))
+          done
+          echo "::error::Claude Code did not install after 3 attempts."
+          exit 1
+
+      - name: claude plugin validate (strict)
+        shell: bash
+        run: claude plugin validate . --strict

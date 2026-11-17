@@ -4,6 +4,41 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project uses
 [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-11-17
+
+The report now opens with its verdict and the three things to do first. The README shows a report
+from a real run, and one command runs every test.
+
+### Changed
+
+- **Verdict first.** Line 1 of every report is `VERDICT: <gate label>` with the coverage counts on
+  the same line. Line 2 holds the counts. Then `DO FIRST`: at most three numbered actions, each a
+  control id and a plain action. The list is never padded. Gate labels, gate rule, control ids,
+  severities and the proof-first ladder are unchanged.
+- **Coverage adds up.** Every coverage example now sums to the 65 controls (`15 n/a`, was `6`).
+- **Stable finding keys.** `surface.json` keys a finding by control id plus its `WHERE`, so a
+  second run matches it when a line number moves.
+- **README.** The invocation (`/secure-my-app`) is in the first screen. New sections: Proof, FAQ,
+  Limits, and a works-with table of the agents tested on 2026-11-17. Star badge removed.
+- **No email in the manifests.** The author is a name and a URL.
+
+### Added
+
+- `examples/vulnerable-app/`, a one-file API with holes on purpose, to try the skill safely.
+- `examples/sample-report.md` and `sample-surface.json`, written by a real run on that fixture
+  (Claude Code 2.1.326). The old Tidemark report is kept as `examples/illustration-supabase.md`
+  and says it is invented.
+- `make test`, the one test command: the skill eval, the manifest and README contract tests, and
+  `tests/test_fixture.py`, which starts the fixture and replays each hole the sample report names.
+- `.claude-plugin/icon.png`, `.github/social-preview.png`, `CODEOWNERS`, Dependabot for actions.
+
+### CI
+
+- CI runs `make test` on every push and pull request.
+- `npx skills@1.9.0 add . --list` must find the skill.
+- `claude plugin validate . --strict` runs on a pinned Claude Code, unconditionally.
+- Every action is pinned to a commit sha.
+
 ## [0.2.0] - 2026-09-07
 
 Renamed from `lockpatch` to `secure-my-app`, and the docs cut down to something you can read in a

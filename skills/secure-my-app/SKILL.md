@@ -15,7 +15,7 @@ description: >-
 argument-hint: "[path, url, or control group to audit]"
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # secure-my-app
@@ -221,10 +221,11 @@ GATE: NOTHING CONFIRMED HERE   0 CRITICAL, 0 HIGH
 
 **Always print the gate with its coverage, on the same line.** The gate alone is misleading: a
 thoroughly checked app and a run that could barely check anything can reach the same label, and
-"nothing confirmed" is false comfort when nine controls came back `UNPROVEN`.
+"nothing confirmed" is false comfort when nine controls came back `UNPROVEN`. That line is the first
+line of every report, and it starts with the word `VERDICT`.
 
 ```
-GATE: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 6 n/a   [static only, no live probes]
+VERDICT: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 15 n/a   [static only, no live probes]
 ```
 
 The third label is deliberate. Not "secure", not "passed", not even "no exposure". **Nothing
@@ -356,11 +357,34 @@ report a `PASS` it did not earn. See `docs/editors.md` for the per-editor setup.
 
 Three artifacts, in decreasing urgency.
 
-**On screen:** the gate line, every CRITICAL in full, the HIGHs as one line each, then counts. If the
-criticals scroll off the top, it is wrong.
+**The header, verdict first.** On screen and in the file, a report opens with the same lines in the
+same order: the verdict, the counts, then what to do first. A tired reader stops after six lines and
+still knows the answer and the next three moves.
 
-**`.secure-my-app/report.md`:** the full report, ordered by severity. Every finding is the same six
-fields, in this order, always:
+```
+VERDICT: DO NOT LAUNCH   coverage 47 checked / 8 unproven / 10 n/a   [static + live: app.example.com]
+findings: 2 critical  1 high  1 medium  0 low   scan: gitleaks yes, osv-scanner yes, semgrep no
+DO FIRST
+1. R1  Switch on row level security for profiles, with an owner-only policy
+2. K5  Rotate the Stripe key in the dashboard, then scrub it from history
+3. R4  Add the ownership check to GET /api/orders/[id]
+```
+
+- `VERDICT` is the gate label, verbatim, with the coverage on the same line. Checked, unproven and
+  n/a add up to the 65 controls, or to the size of the group when the run was `--group`.
+- `DO FIRST` holds at most three numbered lines. Open findings come first, in report order. Each line
+  is the control id, then the action in plain words, verb first.
+- With fewer than three open findings, the remaining lines are the `UNPROVEN` checks worth settling
+  first, written as `Settle <ID>: <the command or the question>`.
+- Never pad it. A line with no finding and no unproven check behind it is advice, and advice is what
+  this skill does not ship. A run with nothing to list says `DO FIRST  nothing from this run` and
+  points at "not checked, and why".
+
+**On screen:** the header, every CRITICAL in full, the HIGHs as one line each. If the criticals
+scroll off the top, it is wrong.
+
+**`.secure-my-app/report.md`:** the header, then the full report, ordered by severity. Every finding
+is the same six fields plus a status, in this order, always:
 
 ```markdown
 ## <SEVERITY>  <CONTROL ID>  <one-line title>
@@ -377,13 +401,19 @@ STATUS   OPEN | FIXED | FIX FAILED | DECLINED | HANDED OVER | OUT OF SCOPE
 Then the `UNPROVEN` appendix, then "not checked, and why".
 
 **`.secure-my-app/surface.json`:** the inventory and findings as data, so the next run can say "3 fixed,
-1 regressed, 1 new" instead of starting over.
+1 regressed, 1 new" instead of starting over. Key each finding by its control id plus its `WHERE`
+(`R4:app/api/orders/[id]/route.ts`), not by its position in the report. A finding keeps its key when
+its line number moves, so a second run matches it instead of calling it new.
 
 Example, as it appears on screen:
 
 ```
-SECURE-MY-APP   gate: DO NOT LAUNCH      2 critical  5 high  9 medium  4 unproven
-scan: static + live (https://app.example.com)   gitleaks yes, osv yes, semgrep no
+VERDICT: DO NOT LAUNCH   coverage 47 checked / 8 unproven / 10 n/a   [static + live: app.example.com]
+findings: 2 critical  1 high  1 medium  0 low   scan: gitleaks yes, osv-scanner yes, semgrep no
+DO FIRST
+1. R1  Switch on row level security for profiles, with an owner-only policy
+2. K5  Rotate the Stripe key in the dashboard, then scrub it from history
+3. R4  Add the ownership check to GET /api/orders/[id]
 
 CRITICAL  R1  Anyone can read every row of `profiles`
   where   supabase/migrations/0002_profiles.sql:14   no ENABLE ROW LEVEL SECURITY

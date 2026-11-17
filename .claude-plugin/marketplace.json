@@ -11,7 +11,7 @@
       "name": "secure-my-app",
       "source": "./",
       "description": "Find what a stranger can take from your app. Then close it and prove it closed.",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

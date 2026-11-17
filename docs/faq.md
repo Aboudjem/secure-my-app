@@ -72,7 +72,7 @@ bands. It is never printed without its coverage on the same line, because a thor
 that could barely check anything reach the same label:
 
 ```
-GATE: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 6 n/a   [static only]
+VERDICT: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 15 n/a   [static only]
 ```
 
 ## What does UNPROVEN mean

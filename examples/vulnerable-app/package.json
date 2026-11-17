@@ -1,0 +1,10 @@
+{
+  "name": "paperboat-vulnerable-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deliberately vulnerable invoice API. A fixture for secure-my-app. Never deploy it.",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

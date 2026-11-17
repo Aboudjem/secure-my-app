@@ -81,7 +81,9 @@ report any of the following:
 
 **Please do not open a public issue for a security problem.**
 
-Email **boudjemaa.adam@gmail.com** with:
+Report it privately through GitHub:
+[open a private security advisory](https://github.com/Aboudjem/secure-my-app/security/advisories/new).
+Include:
 
 - A description of the issue and its impact.
 - Steps to reproduce.

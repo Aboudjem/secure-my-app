@@ -15,7 +15,13 @@ Manifest + contract tests for secure-my-app (a release gate; runs in CI).
   6. Every asset README.md references resolves to a file that exists.
   7. Every references/*.md path SKILL.md mentions exists on disk.
   8. READMEs/{es,fr,ja,zh-CN}.md exist and carry the may-lag marker.
-  9. No tracked file matches a credential pattern.
+  9. The README contract: the install commands, what to type next, the section order, a FAQ,
+     no star badge, a works-with table with dates, and a sample that is the header of the
+     committed real report, line for line. The counts it quotes are the counts the suites print.
+ 10. `make test` runs the three suites and CI runs `make test`. Every action is pinned to a
+     commit sha. No manifest carries an email. The icon and the social preview have the right size.
+ 11. No em dash in any text file.
+ 12. No tracked file matches a credential pattern.
 
 Standard library only. Run: python3 tests/test_manifests.py   (exit 0 = all pass)
 """
@@ -68,6 +74,18 @@ REQUIRED_FILES = [
     "evals/scenarios.md",
     "evals/check_skill.py",
     "tests/test_manifests.py",
+    "tests/test_fixture.py",
+    "Makefile",
+    ".github/CODEOWNERS",
+    ".github/dependabot.yml",
+    ".github/social-preview.png",
+    ".claude-plugin/icon.png",
+    "examples/sample-report.md",
+    "examples/sample-surface.json",
+    "examples/illustration-supabase.md",
+    "examples/vulnerable-app/server.js",
+    "examples/vulnerable-app/package.json",
+    "examples/vulnerable-app/README.md",
     SKILL_MD,
 ]
 REQUIRED_DIRS = ["assets", "examples", f"skills/{NAME}/references"]
@@ -335,7 +353,154 @@ for lang in TRANSLATIONS:
     check(f"{rel} carries the may-lag marker", "<!-- may-lag -->" in t,
           f"{rel} must carry the literal `<!-- may-lag -->` marker")
 
-# --- 9. no secrets (the CI patterns, mirrored so a local run catches them too) ---
+# --- 9. the README contract: a reader can install it, run it, and trust the sample ---
+def fenced_blocks(text):
+    """(lang, body) for every fenced block."""
+    return [(m.group(1).strip().lower(), m.group(2))
+            for m in re.finditer(r"^```([^\n]*)\n(.*?)^```\s*$", text, re.MULTILINE | re.DOTALL)]
+
+
+def png_size(rel):
+    """(width, height) read from the PNG header, or None when the file is not a PNG."""
+    with open(os.path.join(ROOT, rel), "rb") as f:
+        head = f.read(24)
+    if head[:8] != b"\x89PNG\r\n\x1a\n":
+        return None
+    return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
+
+
+try:
+    readme = read("README.md")
+    blocks = fenced_blocks(readme)
+    shell = "\n".join(body for lang, body in blocks if lang in ("bash", "sh"))
+    check("README.md shows the Claude Code install command in a code block",
+          f"claude plugin install {NAME}@10x" in shell)
+    check("README.md shows the skills CLI install command in a code block",
+          f"npx skills add Aboudjem/{NAME}\n" in shell)
+    check("README.md shows what to type after installing, in a code block",
+          any(body.strip() == f"/{NAME}" for _, body in blocks),
+          f"a reader who installed it must see `/{NAME}` on a line of its own")
+    first_h2 = [m.start() for m in re.finditer(r"^## ", readme, re.MULTILINE)]
+    check("README.md gives a command before its second section",
+          len(first_h2) >= 2 and "```bash" in readme[:first_h2[1]])
+    check("README.md carries no star badge and no stargazers link",
+          "stargazers" not in readme and "github/stars" not in readme,
+          "a star count is a number this repo cannot re-run")
+    order = [readme.find(h) for h in ("\n## Install", "\n## How it works", "\n## Proof",
+                                      "\n## FAQ", "\n## Limits")]
+    check("README.md has Install, How it works, Proof, FAQ and Limits, in that order",
+          all(i >= 0 for i in order) and order == sorted(order), str(order))
+    faq = readme[order[3]:order[4]] if order[3] >= 0 and order[4] >= 0 else ""
+    check("README.md FAQ asks at least 5 questions",
+          len(re.findall(r"^### .+\?$", faq, re.MULTILINE)) >= 5)
+    check("README.md names `make test` as the test command", "make test" in shell)
+
+    # The sample in the README is the top of the committed real report, line for line. A sample
+    # that drifts from its source is how a fictional report got called real output once.
+    sample = read("examples/sample-report.md")
+    report_head = next((body for _, body in fenced_blocks(sample)
+                        if body.startswith("VERDICT: ")), "")
+    readme_head = next((body for _, body in blocks if body.startswith("VERDICT: ")), "")
+    check("examples/sample-report.md opens with the VERDICT block",
+          sample.lstrip().startswith("```") and bool(report_head))
+    check("README.md sample is the header of examples/sample-report.md, line for line",
+          bool(readme_head) and readme_head == report_head,
+          "copy the first fenced block of examples/sample-report.md into the README")
+    lines = [l for l in readme_head.split("\n") if l.strip()]
+    check("the sample opens VERDICT, then findings, then DO FIRST with three actions",
+          len(lines) >= 6 and lines[0].startswith("VERDICT: ") and lines[1].startswith("findings:")
+          and lines[2] == "DO FIRST" and all(re.match(r"\d\. \S", l) for l in lines[3:6]))
+    check("examples/sample-report.md says it is a real run and names the fixture",
+          "A real run, not an illustration" in sample and "examples/vulnerable-app/" in sample)
+    illustration = read("examples/illustration-supabase.md")
+    check("examples/illustration-supabase.md says it is an illustration in its first lines",
+          "This is an illustration, not a run" in "\n".join(illustration.split("\n")[:4]))
+    check("README.md never calls the invented report real",
+          "illustration" in readme and "That one is invented" in readme)
+    counts = re.findall(r"^(\d+)/(\d+) checks passed", readme, re.MULTILINE)
+    check("README.md quotes three `N/N checks passed` lines, one per suite",
+          len(counts) == 3 and all(a == b for a, b in counts), str(counts))
+    for rel, quoted in (("evals/check_skill.py", counts[0] if counts else None),
+                        ("tests/test_fixture.py", counts[2] if len(counts) > 2 else None)):
+        args = [sys.executable, os.path.join(ROOT, rel)]
+        if rel.startswith("evals/"):
+            args.append(os.path.join(ROOT, SKILL_MD))
+        out = subprocess.run(args, capture_output=True, text=True, cwd=ROOT).stdout
+        got = re.findall(r"^(\d+)/(\d+) checks passed", out, re.MULTILINE)
+        check(f"the count README.md quotes for {rel} is the count it prints",
+              bool(got) and quoted == got[-1], f"README {quoted}, suite prints {got[-1:]}")
+    controls = len(re.findall(r"^\| [KDRPVFS]\d+ \|", read(f"skills/{NAME}/references/controls.md"),
+                              re.MULTILINE))
+    check("the catalogue holds 65 controls, the number every doc quotes", controls == 65,
+          f"{controls} rows")
+    table = re.search(r"^\| Agent \|.*\| Tested \|\n\|[- |]+\|\n((?:\|.*\|\n)+)", readme, re.MULTILINE)
+    rows = table.group(1).strip().split("\n") if table else []
+    check("README.md works-with table gives every row a test date",
+          bool(rows) and all(re.search(r"\| 20\d\d-\d\d-\d\d \|$", r) for r in rows),
+          "an agent nobody ran goes in the sentence under the table")
+except FileNotFoundError as e:
+    check("README.md and the examples are readable", False, str(e))
+
+# --- 10. the test command, the supply chain, the listing images ---
+makefile = read("Makefile") if os.path.isfile(os.path.join(ROOT, "Makefile")) else ""
+recipe = re.search(r"^test:\n((?:\t.+\n)+)", makefile, re.MULTILINE)
+check("Makefile `test` runs the three suites",
+      bool(recipe) and all(s in recipe.group(1) for s in
+                           ("evals/check_skill.py", "tests/test_manifests.py",
+                            "tests/test_fixture.py")))
+workflow = read(".github/workflows/validate.yml")
+check("CI runs `make test` on push and on pull request",
+      "run: make test" in workflow and bool(re.search(r"^on:\n  push:\n  pull_request:", workflow,
+                                                     re.MULTILINE)))
+uses = []
+for wf in sorted(os.listdir(os.path.join(ROOT, ".github", "workflows"))):
+    uses += re.findall(r"uses:\s*(\S+)", read(f".github/workflows/{wf}"))
+loose = [u for u in uses if not re.search(r"@[0-9a-f]{40}$", u)]
+check(f"every GitHub action is pinned to a commit sha ({len(uses)} checked)",
+      bool(uses) and not loose, ", ".join(loose))
+check("CI installs a pinned Claude Code and a pinned skills CLI, never @latest",
+      "@latest" not in workflow and bool(re.search(r"skills@\d+\.\d+\.\d+", workflow))
+      and bool(re.search(r"@anthropic-ai/claude-code@\d+\.\d+\.\d+", workflow)))
+for rel in (".claude-plugin/plugin.json", ".cursor-plugin/plugin.json",
+            ".copilot-plugin/plugin.json", ".claude-plugin/marketplace.json"):
+    check(f"{rel} carries no email address", "@" not in read(rel).replace("@10x", ""),
+          "the author is a name and a URL")
+icon = png_size(".claude-plugin/icon.png") if os.path.isfile(
+    os.path.join(ROOT, ".claude-plugin/icon.png")) else None
+check(".claude-plugin/icon.png is a square PNG, 512 to 2048 px, under 2 MB",
+      bool(icon) and icon[0] == icon[1] and 512 <= icon[0] <= 2048
+      and os.path.getsize(os.path.join(ROOT, ".claude-plugin/icon.png")) < 2 * 1024 * 1024,
+      str(icon))
+card = png_size(".github/social-preview.png") if os.path.isfile(
+    os.path.join(ROOT, ".github/social-preview.png")) else None
+check(".github/social-preview.png is a 1280x640 PNG under 1 MB",
+      card == (1280, 640)
+      and os.path.getsize(os.path.join(ROOT, ".github/social-preview.png")) < 1024 * 1024,
+      str(card))
+try:
+    surface = json.loads(read("examples/sample-surface.json"))
+    keys = [f.get("key", "") for f in surface.get("findings", [])]
+    check("examples/sample-surface.json keys every finding by control id plus location",
+          bool(keys) and all(re.match(r"[KDRPVFS]\d{1,2}:\S", k) for k in keys), str(keys[:3]))
+except (OSError, ValueError) as e:
+    check("examples/sample-surface.json parses as JSON", False, str(e))
+
+# --- 11. house style: no em dash in any tracked text file ---
+EM = "\u2014"
+TEXT_EXT = {".md", ".txt", ".json", ".yml", ".yaml", ".svg", ".html", ".py", ".js", ".toml", ""}
+dashed = []
+for rel in subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+                          capture_output=True, text=True, cwd=ROOT).stdout.splitlines():
+    if os.path.splitext(rel)[1].lower() not in TEXT_EXT:
+        continue
+    try:
+        if EM in read(rel):
+            dashed.append(rel)
+    except (OSError, UnicodeDecodeError):
+        continue
+check("no em dash in any text file of the repo", not dashed, ", ".join(dashed[:8]))
+
+# --- 12. no secrets (the CI patterns, mirrored so a local run catches them too) ---
 SECRETS = [re.compile(p) for p in (
     r"AKIA[0-9A-Z]{16}", r"-----BEGIN (?:RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----",
     r"ghp_[A-Za-z0-9]{36}", r"github_pat_[A-Za-z0-9_]{22,}", r"gh[osur]_[A-Za-z0-9]{36}",

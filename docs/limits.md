@@ -6,7 +6,10 @@ claims, and the distance between them is where people get hurt.
 
 Below is what it does not do, cannot see, or cannot promise. Every report reprints a short version.
 
-## The gate is not a verdict
+## The verdict is about this run, not about your app
+
+The first line of a report starts with `VERDICT`. It is the gate below, computed by rule from what
+this run found. It is a verdict on the run. It is not a verdict on the app.
 
 ```
 GATE: DO NOT LAUNCH            >= 1 CRITICAL
@@ -26,11 +29,12 @@ A run that checked everything and a run that could barely check anything reach t
 counts are printed on the same line, always:
 
 ```
-GATE: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 6 n/a   [static only, no live probes]
+VERDICT: NOTHING CONFIRMED HERE   coverage 41 checked / 9 unproven / 15 n/a   [static only, no live probes]
 ```
 
-Read it as one sentence. Nine unproven means nine controls this run could not settle either way. Six
-`n/a` means six controls whose surface does not exist in your app, which is a real result.
+Read it as one sentence. Nine unproven means nine controls this run could not settle either way.
+Fifteen `n/a` means fifteen controls whose surface does not exist in your app, which is a real result.
+The three counts add up to the 65 controls.
 
 ## Evidence has tiers, and the weak ones close nothing
 
