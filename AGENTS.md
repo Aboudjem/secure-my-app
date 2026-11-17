@@ -78,8 +78,9 @@ counts, usage metrics or benchmark figures.
   I launch", "harden this", "is this safe to launch", "am I going to get hacked", "check my RLS",
   "did I leak a key", "security audit". Claude Code matches these to the skill's `description` and
   loads `SKILL.md`.
-- Install: the plugin (`claude plugin marketplace add Aboudjem/10x`, then
-  `claude plugin install secure-my-app@10x`); the skills CLI for all projects (`npx skills add Aboudjem/secure-my-app -g`, drop `-g` for one project); or by
+- Install: the Vercel skills CLI first, for all projects (`npx skills add Aboudjem/secure-my-app -g`, add
+  `-a <agent>` in a script, drop `-g` for one project); the Claude Code plugin, the same skill
+  (`claude plugin marketplace add Aboudjem/10x`, then `claude plugin install secure-my-app@10x`); or by
   hand, `git clone https://github.com/Aboudjem/secure-my-app` then copy `skills/secure-my-app` into
   `~/.claude/skills/`. Copy the whole directory, because `references/` is loaded by relative path at
   run time.

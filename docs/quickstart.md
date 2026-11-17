@@ -9,18 +9,20 @@ and it asks first, one finding at a time.
 
 ## 1. Install
 
-```bash
-claude plugin marketplace add Aboudjem/10x
-claude plugin install secure-my-app@10x
-```
-
-Any other agent, same skill directory, installed for all your projects:
+The Vercel skills CLI, for all your projects. In a terminal it shows the agent menu:
 
 ```bash
 npx skills add Aboudjem/secure-my-app -g
 ```
 
-Only this project: drop `-g`.
+Only this project: drop `-g`. In a script, add `-a <agent>`.
+
+Or as a Claude Code plugin, the same skill:
+
+```bash
+claude plugin marketplace add Aboudjem/10x
+claude plugin install secure-my-app@10x
+```
 
 ## 2. Run it
 
