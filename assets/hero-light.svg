@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" width="1200" height="470" role="img" aria-label="secure-my-app. What can a stranger take? Three points: fixes proven closed, proof for each hole, no surprise changes. In the real sample, alice asks for bob's invoice with GET /api/invoices/1042 and gets 200 before the fix, and 404 after it. Install with npx skills add Aboudjem/secure-my-app -g. Full runs tested in Claude Code and Codex CLI.">
   <title>secure-my-app</title>
+  <style>@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }</style>
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="0.4" y2="1">
       <stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#F6F8FC"/>
